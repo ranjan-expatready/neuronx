@@ -13,6 +13,7 @@ This playbook is the single entry point for understanding how the Sales OS engin
 - [Documentation System](#documentation-system)
 - [Decision Making](#decision-making)
 - [CI/CD Pipeline](#cicd-pipeline)
+- [Branch Protection Policy](#branch-protection-policy)
 - [Memory and Context](#memory-and-context)
 
 ## Operating Principles
@@ -166,6 +167,29 @@ All pull requests must pass these quality gates:
 - Manual promotion to production
 - Rollback procedures documented
 - Monitoring and alerting configured
+
+## Branch Protection Policy
+
+### Main Branch Protection
+The `main` branch is protected to ensure code quality and prevent unauthorized changes:
+
+- **Required Reviews**: At least 1 approving review required
+- **Status Checks**: All CI quality gates must pass:
+  - `CI / Quality Gate`: Code formatting, linting, type checking, and coverage
+  - `CodeQL / Analyze`: Security code analysis
+  - `Secret Scan / Secret Scan`: Secret leakage detection
+- **Pull Request Required**: All changes must go through pull request review
+- **Conversation Resolution**: All PR conversations must be resolved
+- **Admin Enforcement**: Rules apply to administrators
+- **Force Push Blocked**: No force pushes allowed
+- **Deletion Blocked**: Branch deletion not permitted
+- **Stale Review Dismissal**: Reviews dismissed when new commits are pushed
+
+### Enforcement
+Branch protection rules are automatically enforced via `scripts/github_enforce.sh` which configures GitHub's branch protection API. This script should be run after repository setup and whenever protection rules need updating.
+
+### Bypass Policy
+Branch protection cannot be bypassed except by repository administrators in emergency situations. All bypasses should be documented and reviewed.
 
 ## Memory and Context
 
