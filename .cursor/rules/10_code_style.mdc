@@ -1,0 +1,57 @@
+# Code Style Standards
+
+## Language-Agnostic Principles
+
+### Readability First
+- Code must be readable by humans first, machines second
+- Use descriptive names for variables, functions, classes, and files
+- Prefer clarity over cleverness
+- Write self-documenting code
+
+### Consistency
+- Follow established patterns within the codebase
+- Use consistent naming conventions across languages
+- Maintain uniform formatting and structure
+- Align with industry standards for each technology
+
+### Structure
+- Organize code logically with clear separation of concerns
+- Use appropriate abstraction levels
+- Keep functions and methods focused on single responsibilities
+- Structure files for easy navigation
+
+### Error Handling
+- Handle errors gracefully and predictably
+- Provide meaningful error messages
+- Fail fast with clear error information
+- Log appropriately without exposing sensitive data
+
+### Documentation
+- Comment complex business logic
+- Document public APIs and interfaces
+- Keep comments current with code changes
+- Use consistent documentation formats
+
+## Formatting Standards
+
+### Whitespace
+- Use consistent indentation (2 spaces or 4 spaces)
+- No trailing whitespace
+- One blank line between logical sections
+- Consistent line breaks
+
+### File Organization
+- Group related functionality together
+- Order imports/dependencies consistently
+- Separate public and private interfaces
+- Use clear file naming conventions
+
+### Code Metrics
+- Functions should be < 50 lines when possible
+- Files should be < 500 lines when possible
+- Cyclomatic complexity should be kept low
+- Avoid deep nesting (> 3 levels)
+
+## Technology-Specific Rules
+
+Rules for specific languages and frameworks will be added to this document as technologies are adopted. All language-specific rules must align with these core principles.

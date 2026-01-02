@@ -1,0 +1,91 @@
+# Pull Request Quality Standards
+
+## PR Size Rules
+
+### Maximum PR Size
+- **Small**: < 200 lines changed - Preferred for most changes
+- **Medium**: 200-500 lines changed - Requires additional review
+- **Large**: 500+ lines changed - Must be broken down further
+
+### When to Split PRs
+- Multiple unrelated features
+- Refactoring mixed with feature work
+- Changes spanning multiple domains
+- Complex changes requiring extensive testing
+
+## Verification Requirements
+
+### Automated Verification
+- All existing tests must pass
+- Code must pass linting and formatting checks
+- Security scans must pass
+- Build must succeed in CI environment
+
+### Manual Verification
+- Code review by at least one qualified reviewer
+- Functional testing of changed features
+- Regression testing of related functionality
+- Performance impact assessment for significant changes
+
+## Documentation Expectations
+
+### PR Description Requirements
+- Clear description of what changed
+- Explanation of why changes were needed
+- How changes were verified
+- Any risks or concerns
+- Rollback plan if applicable
+
+### Code Documentation
+- Update relevant docs for API changes
+- Add inline comments for complex logic
+- Update README if user-facing changes
+- Document breaking changes clearly
+
+## Review Checklist
+
+### Code Quality
+- [ ] Follows established code style
+- [ ] Includes appropriate error handling
+- [ ] Has meaningful variable/function names
+- [ ] Maintains backward compatibility
+- [ ] Includes necessary logging
+
+### Testing
+- [ ] Unit tests added/updated for new code
+- [ ] Integration tests added for API changes
+- [ ] Manual testing completed
+- [ ] Edge cases considered
+
+### Security
+- [ ] No secrets or sensitive data exposed
+- [ ] Input validation implemented
+- [ ] Authentication/authorization checked
+- [ ] Dependencies reviewed for vulnerabilities
+
+### Documentation
+- [ ] Code comments added where needed
+- [ ] Documentation updated
+- [ ] Breaking changes documented
+- [ ] Migration guide provided if needed
+
+## Approval Requirements
+
+### Single Approver
+- Small, low-risk changes
+- Bug fixes with tests
+- Documentation updates
+- Non-functional changes
+
+### Multiple Approvers
+- API changes
+- Security-related changes
+- Database schema changes
+- Infrastructure changes
+- Changes to core business logic
+
+### Lead/Architect Approval
+- Architectural changes
+- Major refactoring
+- New technology adoption
+- Changes affecting multiple systems

@@ -1,0 +1,92 @@
+# Sales OS Code Owners
+#
+# This file defines who owns and is responsible for reviewing changes to different
+# parts of the codebase. Owners are automatically requested for review when PRs
+# affect their owned files.
+#
+# Format: path pattern @owner1 @owner2
+# Use * for wildcards, ** for recursive matching
+# Order matters - more specific patterns should come first
+
+# Global owners - required for all changes
+* @sales-os/engineering-lead @sales-os/tech-lead
+
+# Governance and documentation - requires technical leadership approval
+.cursor/rules/** @sales-os/tech-lead @sales-os/engineering-manager
+docs/** @sales-os/tech-lead @sales-os/tech-writer
+memory/** @sales-os/tech-lead @sales-os/engineering-manager
+
+# Architecture decisions - requires architecture review
+docs/DECISIONS/** @sales-os/tech-lead @sales-os/architect
+
+# Security-critical files - requires security team review
+# Add patterns for security-related code when implemented
+# src/**/auth/** @sales-os/security-team
+# src/**/security/** @sales-os/security-team
+
+# Frontend code - requires frontend team review
+# src/frontend/** @sales-os/frontend-team
+# src/web/** @sales-os/frontend-team
+
+# Backend/API code - requires backend team review
+# src/backend/** @sales-os/backend-team
+# src/api/** @sales-os/backend-team
+
+# Data layer - requires data team review
+# src/data/** @sales-os/data-team
+# src/database/** @sales-os/data-team
+
+# Infrastructure and DevOps - requires DevOps team review
+# infrastructure/** @sales-os/devops-team
+# deployment/** @sales-os/devops-team
+# .github/workflows/** @sales-os/devops-team
+
+# Testing code - requires QA team review
+# tests/** @sales-os/qa-team
+# src/**/test/** @sales-os/qa-team
+
+# Configuration files - requires DevOps and security review
+# config/** @sales-os/devops-team @sales-os/security-team
+# .env* @sales-os/devops-team @sales-os/security-team
+
+# Package and dependency files - requires security review
+# package.json @sales-os/security-team
+# requirements.txt @sales-os/security-team
+# go.mod @sales-os/security-team
+# Cargo.toml @sales-os/security-team
+
+# CI/CD configuration - requires DevOps and security review
+.github/** @sales-os/devops-team @sales-os/security-team
+
+# Documentation files - technical writer owns, tech lead reviews
+*.md @sales-os/tech-writer @sales-os/tech-lead
+docs/*.md @sales-os/tech-writer @sales-os/tech-lead
+
+# Special files requiring multiple approvals
+# Critical infrastructure changes
+# docker-compose.yml @sales-os/devops-team @sales-os/tech-lead @sales-os/security-team
+# Dockerfile* @sales-os/devops-team @sales-os/security-team
+
+# Emergency contacts (for when teams are not available)
+# If no specific owners are available, these will be contacted:
+# * @sales-os/emergency-contact-1 @sales-os/emergency-contact-2
+
+# Instructions for maintainers:
+# 1. Keep this file up to date as team structure changes
+# 2. Add specific patterns before general ones
+# 3. Use team names that match your GitHub team structure
+# 4. Consider backup owners for critical paths
+# 5. Review and update quarterly during team restructuring
+
+# Current team placeholders (replace with actual team names):
+# @sales-os/engineering-lead - Engineering leadership
+# @sales-os/tech-lead - Technical leadership
+# @sales-os/engineering-manager - Engineering management
+# @sales-os/tech-writer - Technical writing team
+# @sales-os/architect - Architecture team
+# @sales-os/security-team - Security team
+# @sales-os/frontend-team - Frontend development team
+# @sales-os/backend-team - Backend development team
+# @sales-os/data-team - Data engineering team
+# @sales-os/devops-team - DevOps/Infrastructure team
+# @sales-os/qa-team - Quality assurance team

@@ -1,0 +1,41 @@
+# Operating Mode
+
+## Core Operating Principle
+
+All development work MUST follow the **PLAN → IMPLEMENT → VERIFY → DOCUMENT** loop.
+
+## Plan Phase
+- Understand requirements and constraints
+- Break down work into manageable, verifiable tasks
+- Identify dependencies and risks
+- Create implementation plan with acceptance criteria
+
+## Implement Phase
+- Write code following established patterns
+- Maintain code quality standards
+- Include appropriate error handling and logging
+- Keep changes focused and incremental
+
+## Verify Phase
+- Run automated tests if available
+- Manual verification of functionality
+- Code review against established rules
+- Confirm no regressions in existing functionality
+
+## Document Phase
+- Update relevant documentation
+- Record decisions in ADRs if architectural
+- Update memory files with context changes
+- Ensure PR documentation is complete
+
+## Safety Protocols
+- Never delete files without explicit approval
+- Prefer incremental changes over large rewrites
+- Stop and ask for clarification when requirements are unclear
+- Maintain audit trail through git history
+
+## AI-Assisted Development Expectations
+- AI agents must follow these rules without exception
+- All changes must be reviewable and understandable
+- Governance and quality come before speed
+- Repository must remain audit-ready at all times

@@ -1,0 +1,89 @@
+# Testing Contract
+
+## Test Pyramid Philosophy
+
+### Unit Tests (Base Layer - 70% of tests)
+- Test individual functions, methods, and classes in isolation
+- Mock external dependencies
+- Fast execution (< 100ms per test)
+- High coverage of business logic
+- Run on every code change
+
+### Integration Tests (Middle Layer - 20% of tests)
+- Test component interactions within the system
+- Test API endpoints and data flow
+- Include database operations
+- Medium execution time (100ms - 1s per test)
+- Run on every PR merge
+
+### End-to-End Tests (Top Layer - 10% of tests)
+- Test complete user workflows
+- Real browser/mobile interactions
+- Full system integration
+- Slow execution (1s - 10s+ per test)
+- Run nightly or on release
+
+## When Tests Are Mandatory
+
+### Always Required
+- New feature implementation
+- Bug fixes (must include regression test)
+- API changes
+- Security-related code
+- Database schema changes
+
+### Code Coverage Requirements
+- Unit tests: 80%+ line coverage
+- Integration tests: 70%+ path coverage
+- Critical business logic: 90%+ coverage
+- New code: 100% coverage required
+
+### Test Quality Standards
+- Tests must be deterministic and reliable
+- Tests must provide clear failure messages
+- Tests must be maintainable and readable
+- Tests must run in CI environment
+- Flaky tests are not acceptable
+
+## Test Organization
+
+### Directory Structure
+```
+tests/
+├── unit/          # Unit tests
+├── integration/   # Integration tests
+├── e2e/          # End-to-end tests
+└── fixtures/     # Test data and mocks
+```
+
+### Naming Conventions
+- Test files: `{component}.test.{ext}`
+- Test functions: `test_{behavior}_{condition}`
+- Mock files: `{component}.mock.{ext}`
+
+## Test Execution
+
+### Local Development
+- Run unit tests before commits
+- Run integration tests before PRs
+- Run full suite before releases
+
+### CI/CD Pipeline
+- Unit tests run on every push
+- Integration tests run on PR creation
+- E2E tests run on merge to main
+- Performance tests run nightly
+
+## Test Maintenance
+
+### Refactoring Tests
+- Update tests when refactoring code
+- Remove obsolete tests
+- Improve test readability regularly
+- Keep test dependencies current
+
+### Test Debt
+- Address flaky tests immediately
+- Maintain test coverage standards
+- Review and update test strategies quarterly
+- Document known test limitations
