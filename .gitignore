@@ -161,3 +161,9 @@ kubeconfig
 # Memory and context (will be populated by MCPs later)
 .devcontext/
 .cipher/
+
+# Node.js and tooling
+.cache/
+.pnpm-debug.log*
+.vitest/
+*.tsbuildinfo

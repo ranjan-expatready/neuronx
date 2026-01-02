@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm run format:check
+
+      - name: Lint code
+        run: pnpm run lint
+
+      - name: Type check
+        run: pnpm run typecheck
+
+      - name: Run tests with coverage
+        run: pnpm run test:coverage
+
+      - name: Verify coverage threshold
+        run: |
+          # Extract coverage percentage from text summary
+          COVERAGE=$(grep "lines" coverage/coverage-summary.json | grep -o '[0-9]\+\.[0-9]\+' || echo "0")
+          echo "Coverage: $COVERAGE%"
+
+          # Check if coverage meets 85% threshold
+          if (( $(echo "$COVERAGE < 85" | bc -l) )); then
+            echo "❌ Coverage $COVERAGE% is below required 85% threshold"
+            exit 1
+          else
+            echo "✅ Coverage $COVERAGE% meets 85% requirement"
+          fi

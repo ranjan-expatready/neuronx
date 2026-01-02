@@ -1,0 +1,12 @@
+title = "gitleaks config"
+
+[allowlist]
+  description = "global allowlist"
+  paths = [
+    '''\.env.*''',
+    '''node_modules''',
+    '''\.git''',
+    '''coverage''',
+    '''dist''',
+    '''build''',
+  ]

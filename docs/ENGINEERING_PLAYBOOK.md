@@ -136,12 +136,30 @@ Sales OS/
 
 ## CI/CD Pipeline
 
-### Automated Checks
-- Code linting and formatting
-- Unit and integration tests
-- Security vulnerability scanning
-- Performance benchmarking
-- Build verification
+### Required CI Checks
+All pull requests must pass these quality gates:
+
+#### Code Quality
+- **Formatting**: Prettier format check passes
+- **Linting**: ESLint with TypeScript rules passes
+- **Type Checking**: TypeScript compilation passes
+
+#### Testing
+- **Unit Tests**: Vitest test suite passes
+- **Coverage**: Minimum 85% line coverage enforced
+- **Test Results**: All tests deterministic and reliable
+
+#### Security
+- **Dependency Review**: No moderate/high severity vulnerabilities
+- **Secret Scanning**: No secrets or credentials leaked
+- **CodeQL Analysis**: Automated security analysis passes
+
+### CI Workflow
+- Runs on every PR and push to `main`
+- Uses Node.js 20 LTS and pnpm package manager
+- Parallel execution for fast feedback
+- Coverage threshold enforced programmatically
+- Concurrency control prevents redundant runs
 
 ### Deployment Strategy
 - Automated deployments to staging

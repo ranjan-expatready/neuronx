@@ -31,13 +31,14 @@ Create a comprehensive platform that transforms how sales organizations operate 
 
 ### For Features
 - [ ] Code implemented and peer reviewed
-- [ ] Unit tests written and passing (80%+ coverage)
+- [ ] All CI quality gates pass (formatting, linting, type checking)
+- [ ] Unit tests written and passing (85%+ coverage enforced)
 - [ ] Integration tests implemented
 - [ ] End-to-end tests passing
-- [ ] Security review completed
+- [ ] Security scans pass (CodeQL, dependency review, secret scanning)
 - [ ] Performance tested
 - [ ] Documentation updated
-- [ ] Deployed to staging and verified
+- [ ] ADR created for architectural changes
 
 ### For Releases
 - [ ] All features meet Definition of Done
