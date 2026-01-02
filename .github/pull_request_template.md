@@ -25,6 +25,7 @@
 - [ ] README or user documentation updated (if applicable)
 - [ ] API documentation updated (if applicable)
 - [ ] ADR created for architectural changes (if applicable)
+- [ ] Changeset added (if user-facing change)
 
 ## Checklist
 - [ ] Changes follow established code style guidelines

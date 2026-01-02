@@ -13,6 +13,7 @@ This playbook is the single entry point for understanding how the Sales OS engin
 - [Documentation System](#documentation-system)
 - [Decision Making](#decision-making)
 - [CI/CD Pipeline](#cicd-pipeline)
+- [Release Management](#release-management)
 - [Branch Protection Policy](#branch-protection-policy)
 - [Memory and Context](#memory-and-context)
 
@@ -167,6 +168,46 @@ All pull requests must pass these quality gates:
 - Manual promotion to production
 - Rollback procedures documented
 - Monitoring and alerting configured
+
+## Release Management
+
+### Changesets Workflow
+Sales OS uses [Changesets](https://github.com/changesets/changesets) for automated versioning and changelog management:
+
+- **When to Add a Changeset**: For any user-facing change, new feature, bug fix, or breaking change
+- **Changeset Types**:
+  - `patch`: Bug fixes and minor improvements
+  - `minor`: New features that are backward compatible
+  - `major`: Breaking changes
+- **Process**:
+  1. Run `pnpm changeset` to create a changeset file
+  2. Describe the change and select the appropriate version bump
+  3. Commit the changeset file with your changes
+  4. CI automatically creates/updates a "Version Packages" PR
+  5. Review and merge the version PR to trigger release
+
+### Release Cadence
+- **Automated**: Every merge batch that includes changesets triggers a release
+- **Version Packages PR**: Automatically created/updated when changesets are detected
+- **Release Trigger**: Merging the Version Packages PR creates GitHub releases and publishes packages
+
+### Release Process
+1. **Development**: Create changesets for user-facing changes
+2. **CI Detection**: Release workflow detects changesets on main branch pushes
+3. **Version PR**: Automated PR created with version bumps and changelog
+4. **Review & Merge**: Version PR reviewed and merged
+5. **Release**: GitHub release created with changelog and artifacts published
+
+### Commands
+- `pnpm changeset`: Create a new changeset
+- `pnpm version-packages`: Update versions (used in CI)
+- `pnpm release`: Publish packages (used in CI)
+
+### Governance
+- All releases must include a changeset describing the change
+- Version bumps are determined by changeset types (patch/minor/major)
+- Releases are immutable once published
+- Breaking changes require major version bumps
 
 ## Branch Protection Policy
 

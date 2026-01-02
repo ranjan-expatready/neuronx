@@ -14,9 +14,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "ci": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:coverage"
+    "ci": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:coverage",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "@vitest/coverage-v8": "^2.0.0",
