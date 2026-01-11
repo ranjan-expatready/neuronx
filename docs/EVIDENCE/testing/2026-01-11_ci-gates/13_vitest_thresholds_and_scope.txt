@@ -1,0 +1,37 @@
+PHASE 4 - VITEST THRESHOLDS CONFIG TRUTH
+
+VITEST.CONFIG.TS COVERAGE CONFIGURATION:
+
+Lines 29-57: Coverage configuration
+- provider: 'v8'
+- reporter: ['text', 'lcov', 'json', 'text-summary']
+- include: ['packages/**/*.ts'] (line 32-34)
+- exclude: extensive list (lines 35-49)
+- thresholds: 85% for lines, functions, branches, statements (lines 50-55)
+- reportOnFailure: true
+
+TEST INCLUDE (lines 9-14):
+- 'packages/**/*.spec.ts'
+- 'tests/unit/**/*.spec.ts'
+- 'tests/integration/**/*.spec.ts'
+- 'tests/contract/**/*.spec.ts'
+
+TEST EXCLUDE (lines 15-28):
+- 'apps/core-api/src/**/*/__tests__/**/*.spec.ts' (NestJS tests excluded)
+
+COVERAGE INCLUDE (line 32-34):
+- 'packages/**/*.ts' (only packages directory)
+
+COVERAGE EXCLUDE (lines 35-49):
+- node_modules/, dist/, build/, .cache/
+- **/*.d.ts, **/*.config.{ts,js}
+- **/*.spec.ts, **/*.test.ts
+- tests/, coverage/, scripts/, docs/, memory/
+
+THRESHOLDS (lines 50-55):
+- lines: 85
+- functions: 85
+- branches: 85
+- statements: 85
+
+KEY INSIGHT: Coverage scope is limited to packages/** only, but the filesystem error prevents any coverage data from being generated.

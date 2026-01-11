@@ -1,0 +1,24 @@
+PHASE 2 - RUN GATE 2 EXACTLY LIKE CI
+
+Command: pnpm -w test:coverage
+Exit code: 1
+
+ERROR: Coverage run failed before any coverage data could be collected.
+
+Full error output:
+> sales-os@0.1.0 test:coverage /Users/ranjansingh/Desktop/NeuronX
+> vitest run --coverage
+
+
+ RUN  v2.1.9 /Users/ranjansingh/Desktop/NeuronX
+      Coverage enabled with v8
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+Error: ENAMETOOLONG: name too long, scandir '/Users/ranjansingh/Desktop/NeuronX/packages/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules'
+
+ROOT CAUSE: Filesystem path length limit exceeded due to circular node_modules dependencies.
+
+IMPACT: Coverage cannot run at all - no coverage-summary.json or coverage data generated.
+
+COVERAGE SUMMARY BLOCK: NONE (run failed before any tests executed)
