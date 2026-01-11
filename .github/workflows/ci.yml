@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'pnpm'
 
       - name: Setup pnpm
@@ -43,13 +43,31 @@ jobs:
       - name: Type check
         run: pnpm run typecheck
 
+      - name: Validate traceability integrity
+        run: npx tsx scripts/validate-traceability.ts
+
+      - name: Validate evidence requirements
+        run: npx tsx scripts/validate-evidence.ts
+
+      - name: Validate agent memory updates
+        run: npx tsx scripts/validate-agent-memory.ts
+
       - name: Run tests with coverage
         run: pnpm run test:coverage
 
       - name: Verify coverage threshold
         run: |
-          # Extract coverage percentage from text summary
-          COVERAGE=$(grep "lines" coverage/coverage-summary.json | grep -o '[0-9]\+\.[0-9]\+' || echo "0")
+          # Extract coverage percentage from text output (fallback if JSON parsing fails)
+          if [ -f "coverage/coverage-summary.json" ]; then
+            COVERAGE=$(grep "lines" coverage/coverage-summary.json | grep -o '[0-9]\+\.[0-9]\+' || echo "0")
+          else
+            # Parse from text output stored in coverage text file or extract from logs
+            COVERAGE=$(grep "Lines.*:" coverage/lcov-report/index.html 2>/dev/null | grep -o '[0-9]\+\.[0-9]\+' | head -1 || echo "0")
+            if [ "$COVERAGE" = "0" ]; then
+              # Try to extract from any coverage text files
+              COVERAGE=$(find coverage/ -name "*.txt" -exec grep -l "Lines" {} \; 2>/dev/null | head -1 | xargs grep "Lines.*:" | grep -o '[0-9]\+\.[0-9]\+' | head -1 2>/dev/null || echo "0")
+            fi
+          fi
           echo "Coverage: $COVERAGE%"
 
           # Check if coverage meets 85% threshold

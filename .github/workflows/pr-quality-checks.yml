@@ -1,0 +1,212 @@
+name: PR Quality Checks
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type checking
+        run: npm run typecheck
+
+      - name: Linting
+        run: npm run lint
+
+      - name: Validate traceability integrity
+        run: npx tsx scripts/validate-traceability.ts
+
+      - name: Validate evidence requirements
+        run: npx tsx scripts/validate-evidence.ts
+
+      - name: Validate agent memory updates
+        run: npx tsx scripts/validate-agent-memory.ts
+
+      - name: Unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Coverage validation
+        run: |
+          COVERAGE=$(jq '.total' coverage/coverage-summary.json)
+          echo "Coverage: ${COVERAGE}%"
+
+          if (( $(echo "$COVERAGE < 85" | bc -l) )); then
+            echo "❌ Coverage ${COVERAGE}% is below 85% threshold"
+            exit 1
+          else
+            echo "✅ Coverage ${COVERAGE}% meets 85% threshold"
+          fi
+
+      - name: Evidence validation
+        run: |
+          # Check for evidence directory structure
+          if [ ! -d "docs/EVIDENCE" ]; then
+            echo "❌ Evidence directory missing"
+            exit 1
+          fi
+
+          # Check for evidence capture script
+          if [ ! -f "scripts/capture-evidence.js" ]; then
+            echo "❌ Evidence capture script missing"
+            exit 1
+          fi
+
+          echo "✅ Evidence system validated"
+
+      - name: Test traceability validation
+        run: |
+          # Check that new test files are properly organized
+          NEW_TESTS=$(git diff --name-only HEAD~1 | grep -E '\.spec\.|\.test\.|\.cy\.' || true)
+
+          if [ -n "$NEW_TESTS" ]; then
+            echo "New test files detected: $NEW_TESTS"
+
+            # Validate test file locations
+            INVALID_LOCATIONS=$(echo "$NEW_TESTS" | grep -v -E '(apps/core-api/src.*__tests__|apps/core-api/test|cypress|e2e)' || true)
+
+            if [ -n "$INVALID_LOCATIONS" ]; then
+              echo "❌ Test files in invalid locations: $INVALID_LOCATIONS"
+              echo "Tests should be in:"
+              echo "  - Unit: apps/core-api/src/**/__tests__/*.spec.ts"
+              echo "  - Integration: apps/core-api/test/**/*.spec.ts"
+              echo "  - E2E: e2e/**/*.spec.ts or cypress/**/*.cy.ts"
+              exit 1
+            fi
+
+            echo "✅ Test file locations validated"
+          else
+            echo "ℹ️ No new test files detected"
+          fi
+
+      - name: ADR and documentation check
+        run: |
+          # Check if new features have corresponding documentation
+          CHANGED_FILES=$(git diff --name-only HEAD~1)
+
+          # Check for new API endpoints without tests
+          NEW_CONTROLLERS=$(echo "$CHANGED_FILES" | grep "controller.ts" || true)
+          if [ -n "$NEW_CONTROLLERS" ]; then
+            echo "⚠️ New controllers detected. Ensure corresponding tests are added:"
+            echo "$NEW_CONTROLLERS"
+          fi
+
+          # Check for new services without tests
+          NEW_SERVICES=$(echo "$CHANGED_FILES" | grep "service.ts" | grep -v "spec.ts" || true)
+          if [ -n "$NEW_SERVICES" ]; then
+            echo "⚠️ New services detected. Ensure corresponding unit tests are added:"
+            echo "$NEW_SERVICES"
+          fi
+
+          echo "✅ Documentation check completed"
+
+      - name: Security scan
+        run: |
+          # Run basic security checks on changed files
+          CHANGED_FILES=$(git diff --name-only HEAD~1 | grep -E '\.(ts|js)$' || true)
+
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "Running security checks on changed files..."
+
+            # Check for hardcoded secrets
+            SECRETS_FOUND=$(grep -r -E "(password|secret|token|key).*['\"][^'\"]*(password|secret|token|key)" $CHANGED_FILES || true)
+
+            if [ -n "$SECRETS_FOUND" ]; then
+              echo "❌ Potential hardcoded secrets detected:"
+              echo "$SECRETS_FOUND"
+              echo ""
+              echo "Use environment variables or secure vaults for secrets."
+              exit 1
+            fi
+
+            echo "✅ No hardcoded secrets detected"
+          fi
+
+      - name: Performance regression check
+        run: |
+          # Quick performance check for critical paths
+          echo "Running basic performance validation..."
+
+          # Check for obvious performance issues in changed files
+          CHANGED_TS_FILES=$(git diff --name-only HEAD~1 | grep -E '\.ts$' | head -10 || true)
+
+          if [ -n "$CHANGED_TS_FILES" ]; then
+            # Check for synchronous operations that should be async
+            SYNC_ISSUES=$(grep -n "await\|async" $CHANGED_TS_FILES | grep -v "await\|async" | wc -l || echo "0")
+
+            if [ "$SYNC_ISSUES" -gt 0 ]; then
+              echo "⚠️ $SYNC_ISSUES functions detected without async/await patterns"
+              echo "Review for potential synchronous blocking operations"
+            fi
+          fi
+
+          echo "✅ Basic performance check completed"
+
+      - name: PR comment with quality metrics
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { execSync } = require('child_process');
+
+            // Get coverage
+            let coverage = 'N/A';
+            try {
+              coverage = execSync('jq \'.total\' coverage/coverage-summary.json').toString().trim();
+            } catch (e) {}
+
+            // Get test counts
+            let testSummary = 'N/A';
+            try {
+              const testOutput = execSync('npm run test 2>/dev/null | grep -E "(Test Suites|Tests|Passed|Failed)" | tail -4').toString();
+              testSummary = testOutput.replace(/\n/g, '\n  ');
+            } catch (e) {}
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🔍 PR Quality Check Results
+
+### ✅ Quality Gates Passed
+
+**Coverage:** ${coverage}%
+**Test Summary:**
+  ${testSummary}
+
+### 📋 Quality Checklist
+- [x] TypeScript compilation passes
+- [x] ESLint checks pass
+- [x] Unit test coverage ≥85%
+- [x] Evidence system validated
+- [x] Test file organization correct
+- [x] No hardcoded secrets detected
+- [x] Basic performance validation passed
+
+### 🎯 Next Steps
+- Review test coverage for new features
+- Ensure evidence is captured for critical paths
+- Validate performance impact of changes
+
+### 📖 Testing Resources
+- [Testing Guide](docs/TESTING_GUIDE.md)
+- [Evidence System](docs/EVIDENCE/)
+- [Test Runner](scripts/test-all.js)
+
+---
+*Automated quality checks by NeuronX CI*`
+            });
+

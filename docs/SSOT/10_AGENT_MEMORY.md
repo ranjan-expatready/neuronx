@@ -6,7 +6,7 @@ Last Updated (UTC): 2026-01-11T10:45:00Z
 Authority: Persistent Agent Memory Surface
 
 Current Focus:
-CI Gate 2 (coverage threshold) - PROGRESS: ENAMETOOLONG fixed, now blocked by rollup native dependency issue
+CI Gate 2 (coverage threshold) - FIX IMPLEMENTED: Node LTS pinning applied, ready for local Node switch
 
 Short-Term:
 - ✅ SESSION_OPEN/SESSION_CLOSE prompts completed
@@ -29,7 +29,7 @@ STOP-SHIP Ledger:
 - ✅ **RESOLVED**: NestJS runtime crash in webhook-ordering test (decorators executing at import time)
 - ✅ **RESOLVED**: GitHub governance implementation (branch protection, CI enforcement, PR rules - FAANG-grade)
 - ✅ **RESOLVED**: webhook-ordering integration test failures (9/9 tests now passing - Gate 1 green)
-- 🚧 **IN PROGRESS**: Coverage threshold achievement - ENAMETOOLONG fixed, rollup native dependency issue remains
+- ⏳ **READY FOR LOCAL ACTION**: Coverage threshold achievement - Node LTS pinning implemented, requires local Node switch to 22
 - E2E environment setup for Playwright tests
 
 UNKNOWNs:
@@ -79,6 +79,12 @@ Evidence Links:
 - docs/EVIDENCE/testing/2026-01-11_ci-gates/21_gate2_after_run_proof.txt
 - docs/EVIDENCE/testing/2026-01-11_ci-gates/22_ci_parser_compatibility.txt
 - docs/EVIDENCE/testing/2026-01-11_ci-gates/23_gate2_fix_verdict.md
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/24_gate2_rollup_error_full_tail.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/25_gate2_env_versions_and_rollup_why.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/26_ci_node_version_truth.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/27_post_node_pin_install_proof.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/28_gate2_after_rollup_fix_proof.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/29_ci_parser_after_rollup_fix.txt
 - docs/EVIDENCE/github-governance/
 - docs/EVIDENCE/github-governance/branch-protection.md
 - docs/EVIDENCE/github-governance/failure-modes.md
