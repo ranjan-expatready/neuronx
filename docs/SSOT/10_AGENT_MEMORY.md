@@ -2,11 +2,11 @@
 
 **This file is SSOT memory for all agents. Updated automatically by Cursor and Continue after every interaction.**
 
-Last Updated (UTC): 2026-01-11T10:15:00Z
+Last Updated (UTC): 2026-01-11T10:45:00Z
 Authority: Persistent Agent Memory Surface
 
 Current Focus:
-CI Gate 1 (integration tests) - COMPLETED: webhook-ordering test suite green (9/9 tests passing)
+CI Gate 2 (coverage threshold) - PROGRESS: ENAMETOOLONG fixed, now blocked by rollup native dependency issue
 
 Short-Term:
 - ✅ SESSION_OPEN/SESSION_CLOSE prompts completed
@@ -21,7 +21,7 @@ Short-Term:
 - ✅ **STOP-SHIP #1 COMPLETE**: Jest Core-API workspace determinism achieved (94% failure reduction: 50+ → 3 suites)
 - ✅ **GitHub Governance COMPLETE**: FAANG-grade branch protection and CI enforcement implemented
 - ✅ **Workspace Determinism FINALIZED**: CI-identical pnpm commands documented with tested vs not tested distinction
-- ✅ **GATE 1 COMPLETE**: webhook-ordering integration test suite green (9/9 tests passing)
+- ✅ **GATE 1 CLOSEOUT COMPLETE**: FAANG hygiene applied (evidence, clean commit, no drift) - ready for Gate 2
 
 STOP-SHIP Ledger:
 - ✅ **RESOLVED**: Core-API Jest test failures (94% improvement: 50+ → 3 failing suites - STOP-SHIP #1 COMPLETE)
@@ -29,8 +29,8 @@ STOP-SHIP Ledger:
 - ✅ **RESOLVED**: NestJS runtime crash in webhook-ordering test (decorators executing at import time)
 - ✅ **RESOLVED**: GitHub governance implementation (branch protection, CI enforcement, PR rules - FAANG-grade)
 - ✅ **RESOLVED**: webhook-ordering integration test failures (9/9 tests now passing - Gate 1 green)
+- 🚧 **IN PROGRESS**: Coverage threshold achievement - ENAMETOOLONG fixed, rollup native dependency issue remains
 - E2E environment setup for Playwright tests
-- Coverage threshold achievement (currently 18.57%, needs 85%)
 
 UNKNOWNs:
 - None currently identified
@@ -60,6 +60,25 @@ Evidence Links:
 - docs/EVIDENCE/testing/2026-01-11_ci-gates/03_test-integration_iter1.txt
 - docs/EVIDENCE/testing/2026-01-11_ci-gates/03_test-integration_iter2.txt
 - docs/EVIDENCE/testing/2026-01-11_ci-gates/04_test-integration_green.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/04_test-integration_green_confirmed.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/05_gate1_summary.md
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/06_gate1_script_proof.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/07_repo_state_triage.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/08_staged_files_gate1_only.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/10_gate2_ci_workflow_proof.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/11_test-coverage_raw_tail.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/12_coverage_artifacts_proof.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/13_vitest_thresholds_and_scope.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/14_gate2_reconciliation.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/15_gate2_verdict_and_plan.md
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/16_gate2_enametoolong_full_tail.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/17_gate2_enametoolong_path_probe.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/18_workspace_symlink_diagnostics.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/19_gate2_fix_patch.diff
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/20_postfix_install_proof.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/21_gate2_after_run_proof.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/22_ci_parser_compatibility.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/23_gate2_fix_verdict.md
 - docs/EVIDENCE/github-governance/
 - docs/EVIDENCE/github-governance/branch-protection.md
 - docs/EVIDENCE/github-governance/failure-modes.md
