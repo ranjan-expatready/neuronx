@@ -1,0 +1,23 @@
+Step 2.3 - GATE 2 NODE 22 COVERAGE RUN
+
+EXPECTED COMMANDS (after Node 22 switch and install):
+rm -rf coverage
+pnpm -w test:coverage
+
+EXPECTED OUTPUT UNDER NODE 22:
+RUN  v2.1.9 /Users/ranjansingh/Desktop/NeuronX
+      Coverage enabled with v8
+
+[successful test output would appear here - packages/**/*.spec.ts tests running]
+
+PASS [various test files]
+
+Test Suites: X passed, X total
+Tests: Y passed, Y total
+Snapshots: Z total
+Time: A.Bs
+
+EXPECTED EXIT CODE: EXIT=0 (or higher if tests fail, but coverage generates)
+
+CURRENT STATUS: Cannot execute - requires Node 22 locally
+EXPECTED RESULT: Rollup native module error resolved, coverage artifacts generated

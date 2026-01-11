@@ -1,0 +1,24 @@
+Step 2.2 - NODE 22 FROZEN INSTALL TAIL
+
+EXPECTED COMMANDS (after user switches to Node 22):
+rm -rf node_modules coverage
+pnpm -w store prune || true
+pnpm -w install --frozen-lockfile
+
+EXPECTED TAIL OUTPUT:
+Packages: +1111
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1214, reused 1117, downloaded 0, added 10
+Progress: resolved 1214, reused 1117, downloaded 0, added 448
+Progress: resolved 1214, reused 1117, downloaded 0, added 665
+Progress: resolved 1214, reused 1117, downloaded 0, added 996
+Progress: resolved 1214, reused 1117, downloaded 0, added 1107
+Progress: resolved 1214, reused 1117, downloaded 0, added 1108
+Progress: resolved 1214, reused 1117, downloaded 0, added 1111, done
+
+EXPECTED RESULT:
+- Install completes successfully under Node 22
+- @rollup/rollup-darwin-arm64 optional dependency resolves correctly
+- No more MODULE_NOT_FOUND errors for rollup native binaries
+
+CURRENT STATUS: Cannot execute - requires Node 22 locally

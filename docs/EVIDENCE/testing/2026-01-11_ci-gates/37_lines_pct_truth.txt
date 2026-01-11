@@ -1,0 +1,17 @@
+Step 2.3 - LINES PCT TRUTH
+
+EXPECTED COMMAND (after coverage-summary.json exists):
+jq '.total.lines.pct' coverage/coverage-summary.json
+
+EXPECTED OUTPUT UNDER NODE 22:
+18.57
+
+OR SIMILAR VALUE (the actual baseline coverage percentage)
+
+EXPECTED RESULT:
+- Numeric percentage value returned
+- This value is what CI will compare against 85% threshold
+- Current baseline is ~18.57% (from previous SSOT memory)
+
+CURRENT STATUS: Cannot verify - requires Node 22 locally
+NEXT STEP: Once verified, we can work on raising from 18.57% → 85%

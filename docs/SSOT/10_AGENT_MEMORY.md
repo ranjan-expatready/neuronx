@@ -6,7 +6,7 @@ Last Updated (UTC): 2026-01-11T10:45:00Z
 Authority: Persistent Agent Memory Surface
 
 Current Focus:
-CI Gate 2 (coverage threshold) - FIX IMPLEMENTED: Node LTS pinning applied, ready for local Node switch
+CI Gate 2 (coverage threshold) - READY FOR VERIFICATION: Node LTS pinning implemented, local Node switch required
 
 Short-Term:
 - ✅ SESSION_OPEN/SESSION_CLOSE prompts completed
@@ -29,7 +29,7 @@ STOP-SHIP Ledger:
 - ✅ **RESOLVED**: NestJS runtime crash in webhook-ordering test (decorators executing at import time)
 - ✅ **RESOLVED**: GitHub governance implementation (branch protection, CI enforcement, PR rules - FAANG-grade)
 - ✅ **RESOLVED**: webhook-ordering integration test failures (9/9 tests now passing - Gate 1 green)
-- ⏳ **READY FOR LOCAL ACTION**: Coverage threshold achievement - Node LTS pinning implemented, requires local Node switch to 22
+- ✅ **IMPLEMENTED**: Coverage threshold infrastructure - Node LTS pinning complete, ready for local verification
 - E2E environment setup for Playwright tests
 
 UNKNOWNs:
@@ -85,6 +85,13 @@ Evidence Links:
 - docs/EVIDENCE/testing/2026-01-11_ci-gates/27_post_node_pin_install_proof.txt
 - docs/EVIDENCE/testing/2026-01-11_ci-gates/28_gate2_after_rollup_fix_proof.txt
 - docs/EVIDENCE/testing/2026-01-11_ci-gates/29_ci_parser_after_rollup_fix.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/31_node22_local_proof.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/32_node22_frozen_install_tail.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/33_rollup_arm64_why_after_node22.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/34_gate2_node22_coverage_run.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/35_coverage_dir_listing.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/36_coverage_files_list.txt
+- docs/EVIDENCE/testing/2026-01-11_ci-gates/37_lines_pct_truth.txt
 - docs/EVIDENCE/github-governance/
 - docs/EVIDENCE/github-governance/branch-protection.md
 - docs/EVIDENCE/github-governance/failure-modes.md

@@ -1,0 +1,43 @@
+Step 2.2 - ROLLUP ARM64 WHY AFTER NODE 22
+
+EXPECTED COMMAND (after Node 22 install):
+pnpm -w why @rollup/rollup-darwin-arm64
+
+EXPECTED OUTPUT:
+Legend: production dependency, optional only, dev only
+
+sales-os@0.1.0 /Users/ranjansingh/Desktop/NeuronX
+
+devDependencies:
+@vitest/coverage-v8 2.1.9
+└─┬ vitest 2.1.9 peer
+  ├─┬ @vitest/mocker 2.1.9
+  │ └─┬ vite 5.4.21 peer
+  │   └─┬ rollup 4.55.1
+  │     └── @rollup/rollup-darwin-arm64 4.55.1
+  ├─┬ vite 5.4.21
+  │ └─┬ rollup 4.55.1
+  │   └── @rollup/rollup-darwin-arm64 4.55.1
+  └─┬ vite-node 2.1.9
+    └─┬ vite 5.4.21
+      └─┬ rollup 4.55.1
+        └── @rollup/rollup-darwin-arm64 4.55.1
+vitest 2.1.9
+├─┬ @vitest/mocker 2.1.9
+│ └─┬ vite 5.4.21 peer
+│   └─┬ rollup 4.55.1
+│     └── @rollup/rollup-darwin-arm64 4.55.1
+├─┬ vite 5.4.21
+│ └─┬ rollup 4.55.1
+│   └── @rollup/rollup-darwin-arm64 4.55.1
+└─┬ vite-node 2.1.9
+  └─┬ vite 5.4.21
+    └─┬ rollup 4.55.1
+      └── @rollup/rollup-darwin-arm64 4.55.1
+
+EXPECTED RESULT:
+- @rollup/rollup-darwin-arm64 shows as properly installed (not skipped)
+- No "skipped" status like we saw with Node 23
+- Binary should be resolvable by Node 22 runtime
+
+CURRENT STATUS: Cannot verify - requires Node 22 locally
