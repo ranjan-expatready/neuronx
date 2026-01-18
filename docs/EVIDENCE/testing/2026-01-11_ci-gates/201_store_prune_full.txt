@@ -1,3 +1,0 @@
-Removed all cached metadata files
-Removed 0 files
-Removed 0 packages

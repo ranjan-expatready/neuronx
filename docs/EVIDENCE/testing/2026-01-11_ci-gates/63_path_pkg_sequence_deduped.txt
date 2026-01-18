@@ -1,3 +1,0 @@
-@neuronx/decision-engine
-@neuronx/execution-authority
-@neuronx/playbook-governance

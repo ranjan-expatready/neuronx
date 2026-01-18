@@ -1,4 +1,0 @@
-=== SESSION HOOKS VERIFICATION ===
-508:  - name: SESSION_OPEN
-529:      - Run SESSION_CLOSE before committing any changes
-538:  - name: SESSION_CLOSE

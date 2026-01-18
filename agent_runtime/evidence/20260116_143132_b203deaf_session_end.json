@@ -1,9 +1,0 @@
-{
-  "session_id": "b203deaf",
-  "end_time": "2026-01-16T14:31:32.981251",
-  "duration_seconds": 0.000708,
-  "final_status": "blocked",
-  "summary": {
-    "reason": "mcp_disabled"
-  }
-}

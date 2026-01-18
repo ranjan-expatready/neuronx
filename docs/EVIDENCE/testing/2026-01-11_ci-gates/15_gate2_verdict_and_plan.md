@@ -7,7 +7,6 @@
 **Coverage %**: NONE (0% - run failed before any tests executed)
 
 **Why CI Would Fail**:
-
 1. `pnpm test:coverage` exits 1 due to filesystem path length limit
 2. No coverage artifacts generated (no coverage-summary.json)
 3. CI parsing logic expects coverage/coverage-summary.json but file doesn't exist
@@ -16,7 +15,6 @@
 ## Minimal Path to Green
 
 **Option 1: Fix Filesystem Circular Dependencies (RECOMMENDED)**
-
 - Root cause: Circular node_modules dependencies creating extremely deep paths
 - Fix: Clean node_modules and fix dependency cycles
 - Commands:
@@ -28,13 +26,11 @@
 - Risk: Low - standard dependency cleanup
 
 **Option 2: Bypass Coverage for Now (NOT RECOMMENDED)**
-
 - Temporarily modify CI to skip coverage check
 - Would violate SSOT requirements for 85% coverage
 - Only acceptable if Option 1 fails
 
 **Next Steps**:
-
 1. Apply Option 1 (dependency cleanup)
 2. Re-run `pnpm test:coverage`
 3. Assess actual coverage % against 85% threshold

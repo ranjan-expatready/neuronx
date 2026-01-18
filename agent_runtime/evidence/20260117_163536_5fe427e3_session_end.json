@@ -1,9 +1,0 @@
-{
-  "session_id": "5fe427e3",
-  "end_time": "2026-01-17T16:35:36.025871",
-  "duration_seconds": 0.001093,
-  "final_status": "blocked_red_tier",
-  "summary": {
-    "suggestion_summary": "⚠️  HITL REQUIRED: Red-tier tasks require human-in-the-loop approval\n   No MCP actions should be exe"
-  }
-}

@@ -87,15 +87,11 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
     };
 
     // Setup GHL controller with mocked implementation
-    const MockGhlController = jest.requireMock(
-      '../../integrations/ghl/ghl-webhook.controller'
-    ).GhlWebhookController;
+    const MockGhlController = jest.requireMock('../../integrations/ghl/ghl-webhook.controller').GhlWebhookController;
     ghlController = new MockGhlController();
 
     // Setup Payment controller with mocked implementation
-    const MockPaymentController = jest.requireMock(
-      '../../payments/webhooks/payment-webhook.controller'
-    ).PaymentWebhookController;
+    const MockPaymentController = jest.requireMock('../../payments/webhooks/payment-webhook.controller').PaymentWebhookController;
     paymentController = new MockPaymentController();
   });
 
@@ -117,15 +113,10 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
     };
 
     it('should reject invalid signature before rate limiting is called', async () => {
-      const invalidSignatureHeaders = {
-        ...validHeaders,
-        'x-webhook-signature': '',
-      };
+      const invalidSignatureHeaders = { ...validHeaders, 'x-webhook-signature': '' };
 
       // Mock invalid signature - controller should reject
-      ghlController.processWebhook.mockRejectedValueOnce(
-        new UnauthorizedException()
-      );
+      ghlController.processWebhook.mockRejectedValueOnce(new UnauthorizedException());
 
       await expect(
         ghlController.processWebhook(
@@ -136,23 +127,19 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       ).rejects.toThrow(UnauthorizedException);
 
       // Rate limit service should NOT be called for invalid signatures
-      expect(
-        mockRateLimitService.enforceWebhookRateLimit
-      ).not.toHaveBeenCalled();
+      expect(mockRateLimitService.enforceWebhookRateLimit).not.toHaveBeenCalled();
     });
 
     it('should call rate limiting after valid signature verification', async () => {
       // Mock successful processing
-      ghlController.processWebhook.mockImplementation(
-        async (payload, headers, req) => {
-          // Simulate calling rate limiting (as the real controller would)
-          await mockRateLimitService.enforceWebhookRateLimit({
-            req,
-            providerId: 'ghl',
-          });
-          return { status: 'processed' };
-        }
-      );
+      ghlController.processWebhook.mockImplementation(async (payload, headers, req) => {
+        // Simulate calling rate limiting (as the real controller would)
+        await mockRateLimitService.enforceWebhookRateLimit({
+          req,
+          providerId: 'ghl',
+        });
+        return { status: 'processed' };
+      });
 
       const result = await ghlController.processWebhook(
         { event: 'contact.created' },
@@ -161,35 +148,31 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       );
 
       // Rate limit service should be called AFTER signature verification
-      expect(mockRateLimitService.enforceWebhookRateLimit).toHaveBeenCalledWith(
-        {
-          req: mockRequest,
-          providerId: 'ghl',
-        }
-      );
+      expect(mockRateLimitService.enforceWebhookRateLimit).toHaveBeenCalledWith({
+        req: mockRequest,
+        providerId: 'ghl',
+      });
 
       // Should process successfully
-      expect(result).toEqual(expect.objectContaining({ status: 'processed' }));
+      expect(result).toEqual(
+        expect.objectContaining({ status: 'processed' })
+      );
     });
 
     it('should reject rate limited requests after valid signature', async () => {
       // Mock successful signature verification but rate limit exceeded
-      ghlController.processWebhook.mockImplementation(
-        async (payload, headers, req) => {
-          // Call rate limiting - it should reject
-          await mockRateLimitService.enforceWebhookRateLimit({
-            req,
-            providerId: 'ghl',
-          });
-          return { status: 'processed' }; // This won't be reached due to rejection
-        }
-      );
+      ghlController.processWebhook.mockImplementation(async (payload, headers, req) => {
+        // Call rate limiting - it should reject
+        await mockRateLimitService.enforceWebhookRateLimit({
+          req,
+          providerId: 'ghl',
+        });
+        return { status: 'processed' }; // This won't be reached due to rejection
+      });
 
       // Mock rate limit to reject
       const rateLimitError = new Error('Rate limit exceeded');
-      mockRateLimitService.enforceWebhookRateLimit.mockRejectedValueOnce(
-        rateLimitError
-      );
+      mockRateLimitService.enforceWebhookRateLimit.mockRejectedValueOnce(rateLimitError);
 
       await expect(
         ghlController.processWebhook(
@@ -200,32 +183,23 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       ).rejects.toThrow('Rate limit exceeded');
 
       // Verify rate limit was checked
-      expect(mockRateLimitService.enforceWebhookRateLimit).toHaveBeenCalledWith(
-        {
-          req: mockRequest,
-          providerId: 'ghl',
-        }
-      );
+      expect(mockRateLimitService.enforceWebhookRateLimit).toHaveBeenCalledWith({
+        req: mockRequest,
+        providerId: 'ghl',
+      });
     });
 
     it('should process business logic only after signature + rate limit pass', async () => {
       // Mock successful processing with both signature verification and rate limiting
-      ghlController.processWebhook.mockImplementation(
-        async (payload, headers, req) => {
-          // Call both services in correct order
-          await mockWebhookNormalizer.processWebhook(
-            payload,
-            'signature',
-            headers,
-            'tenant'
-          );
-          await mockRateLimitService.enforceWebhookRateLimit({
-            req,
-            providerId: 'ghl',
-          });
-          return { status: 'processed' };
-        }
-      );
+      ghlController.processWebhook.mockImplementation(async (payload, headers, req) => {
+        // Call both services in correct order
+        await mockWebhookNormalizer.processWebhook(payload, 'signature', headers, 'tenant');
+        await mockRateLimitService.enforceWebhookRateLimit({
+          req,
+          providerId: 'ghl',
+        });
+        return { status: 'processed' };
+      });
 
       const result = await ghlController.processWebhook(
         { event: 'contact.created' },
@@ -238,12 +212,12 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       expect(mockWebhookNormalizer.processWebhook).toHaveBeenCalledTimes(1);
 
       // 2. enforceWebhookRateLimit called second (rate limiting)
-      expect(
-        mockRateLimitService.enforceWebhookRateLimit
-      ).toHaveBeenCalledTimes(1);
+      expect(mockRateLimitService.enforceWebhookRateLimit).toHaveBeenCalledTimes(1);
 
       // 3. Response indicates successful processing
-      expect(result).toEqual(expect.objectContaining({ status: 'processed' }));
+      expect(result).toEqual(
+        expect.objectContaining({ status: 'processed' })
+      );
     });
   });
 
@@ -261,9 +235,7 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
 
     it('should reject invalid signature before rate limiting is called', async () => {
       // Mock invalid signature - controller should reject
-      paymentController.handleStripeWebhook.mockRejectedValueOnce(
-        new UnauthorizedException()
-      );
+      paymentController.handleStripeWebhook.mockRejectedValueOnce(new UnauthorizedException());
 
       await expect(
         paymentController.handleStripeWebhook(
@@ -275,23 +247,19 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       ).rejects.toThrow(UnauthorizedException);
 
       // Rate limit service should NOT be called for invalid signatures
-      expect(
-        mockRateLimitService.enforceWebhookRateLimit
-      ).not.toHaveBeenCalled();
+      expect(mockRateLimitService.enforceWebhookRateLimit).not.toHaveBeenCalled();
     });
 
     it('should call rate limiting after valid signature verification', async () => {
       // Mock successful processing
-      paymentController.handleStripeWebhook.mockImplementation(
-        async (payload, signature, tenantId, req) => {
-          // Simulate calling rate limiting (as the real controller would)
-          await mockRateLimitService.enforceWebhookRateLimit({
-            req,
-            providerId: 'stripe',
-          });
-          return { status: 'success' };
-        }
-      );
+      paymentController.handleStripeWebhook.mockImplementation(async (payload, signature, tenantId, req) => {
+        // Simulate calling rate limiting (as the real controller would)
+        await mockRateLimitService.enforceWebhookRateLimit({
+          req,
+          providerId: 'stripe',
+        });
+        return { status: 'success' };
+      });
 
       const result = await paymentController.handleStripeWebhook(
         { type: 'checkout.session.completed' },
@@ -301,35 +269,31 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       );
 
       // Rate limit service should be called AFTER signature verification
-      expect(mockRateLimitService.enforceWebhookRateLimit).toHaveBeenCalledWith(
-        {
-          req: mockRequest,
-          providerId: 'stripe',
-        }
-      );
+      expect(mockRateLimitService.enforceWebhookRateLimit).toHaveBeenCalledWith({
+        req: mockRequest,
+        providerId: 'stripe',
+      });
 
       // Should return success
-      expect(result).toEqual(expect.objectContaining({ status: 'success' }));
+      expect(result).toEqual(
+        expect.objectContaining({ status: 'success' })
+      );
     });
 
     it('should reject rate limited requests after valid signature', async () => {
       // Mock successful signature verification but rate limit exceeded
-      paymentController.handleStripeWebhook.mockImplementation(
-        async (payload, signature, tenantId, req) => {
-          // Call rate limiting - it should reject
-          await mockRateLimitService.enforceWebhookRateLimit({
-            req,
-            providerId: 'stripe',
-          });
-          return { status: 'success' }; // This won't be reached due to rejection
-        }
-      );
+      paymentController.handleStripeWebhook.mockImplementation(async (payload, signature, tenantId, req) => {
+        // Call rate limiting - it should reject
+        await mockRateLimitService.enforceWebhookRateLimit({
+          req,
+          providerId: 'stripe',
+        });
+        return { status: 'success' }; // This won't be reached due to rejection
+      });
 
       // Mock rate limit to reject
       const rateLimitError = new Error('Rate limit exceeded');
-      mockRateLimitService.enforceWebhookRateLimit.mockRejectedValueOnce(
-        rateLimitError
-      );
+      mockRateLimitService.enforceWebhookRateLimit.mockRejectedValueOnce(rateLimitError);
 
       await expect(
         paymentController.handleStripeWebhook(
@@ -341,16 +305,14 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       ).rejects.toThrow('Rate limit exceeded');
 
       // Verify rate limit was checked
-      expect(mockRateLimitService.enforceWebhookRateLimit).toHaveBeenCalledWith(
-        {
-          req: mockRequest,
-          providerId: 'stripe',
-        }
-      );
+      expect(mockRateLimitService.enforceWebhookRateLimit).toHaveBeenCalledWith({
+        req: mockRequest,
+        providerId: 'stripe',
+      });
     });
-  });
+    });
 
-  describe('Security Guarantees', () => {
+    describe('Security Guarantees', () => {
     const validHeaders = {
       'x-tenant-id': 'test-tenant',
       'x-webhook-signature': 'valid-signature',
@@ -366,9 +328,7 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       // Simulate multiple invalid signature requests
       for (let i = 0; i < 10; i++) {
         // Mock controller to reject invalid signatures
-        ghlController.processWebhook.mockRejectedValueOnce(
-          new UnauthorizedException()
-        );
+        ghlController.processWebhook.mockRejectedValueOnce(new UnauthorizedException());
       }
 
       // Make the requests
@@ -383,16 +343,12 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       }
 
       // Rate limit service should NEVER be called for invalid signatures
-      expect(
-        mockRateLimitService.enforceWebhookRateLimit
-      ).not.toHaveBeenCalled();
+      expect(mockRateLimitService.enforceWebhookRateLimit).not.toHaveBeenCalled();
     });
 
     it('should only consume rate limit quota for authenticated requests', async () => {
       // First request: invalid signature - should reject without calling rate limiting
-      ghlController.processWebhook.mockRejectedValueOnce(
-        new UnauthorizedException()
-      );
+      ghlController.processWebhook.mockRejectedValueOnce(new UnauthorizedException());
 
       await expect(
         ghlController.processWebhook(
@@ -403,15 +359,13 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       ).rejects.toThrow(UnauthorizedException);
 
       // Second request: valid signature - should call rate limiting
-      ghlController.processWebhook.mockImplementation(
-        async (payload, headers, req) => {
-          await mockRateLimitService.enforceWebhookRateLimit({
-            req,
-            providerId: 'ghl',
-          });
-          return { status: 'processed' };
-        }
-      );
+      ghlController.processWebhook.mockImplementation(async (payload, headers, req) => {
+        await mockRateLimitService.enforceWebhookRateLimit({
+          req,
+          providerId: 'ghl',
+        });
+        return { status: 'processed' };
+      });
 
       await ghlController.processWebhook(
         { event: 'contact.created' },
@@ -420,9 +374,7 @@ describe('Webhook Security Ordering - Signature Before Rate Limit', () => {
       );
 
       // Rate limit should only be checked once (for the valid request)
-      expect(
-        mockRateLimitService.enforceWebhookRateLimit
-      ).toHaveBeenCalledTimes(1);
+      expect(mockRateLimitService.enforceWebhookRateLimit).toHaveBeenCalledTimes(1);
     });
   });
 });

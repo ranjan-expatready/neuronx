@@ -1,8 +1,0 @@
-{
-  "session_id": "c89d71c7",
-  "timestamp": "2026-01-17T19:22:50.817846",
-  "event_type": "memory_storage_error",
-  "event_data": {
-    "error": "EOF when reading a line"
-  }
-}

@@ -1,9 +1,0 @@
-{
-  "session_id": "56af6b10",
-  "end_time": "2026-01-17T15:33:11.309229",
-  "duration_seconds": 0.00051,
-  "final_status": "blocked",
-  "summary": {
-    "reason": "Readiness status is RED: cannot proceed with MCP call"
-  }
-}

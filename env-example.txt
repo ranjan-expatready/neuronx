@@ -1,6 +1,0 @@
-# API Key for gateway authentication
-# Generate a secure random key for production use
-PROXY_API_KEY=your-secure-api-key-here
-
-# Whether to log actual prompts (set to false for privacy)
-LOG_PROMPTS=false

@@ -1,49 +1,27 @@
 # Testing Contract
 
-## Comprehensive Testing Ecosystem
+## Test Pyramid Philosophy
 
-### Test Pyramid + Extensions
-
-#### Unit Tests (Foundation - 60% of tests)
+### Unit Tests (Base Layer - 70% of tests)
 - Test individual functions, methods, and classes in isolation
-- Mock external dependencies thoroughly
+- Mock external dependencies
 - Fast execution (< 100ms per test)
 - High coverage of business logic
-- Run on every code change with pre-commit hooks
+- Run on every code change
 
-#### Integration Tests (System Interactions - 20% of tests)
+### Integration Tests (Middle Layer - 20% of tests)
 - Test component interactions within the system
-- Test API endpoints, event flows, and data transformations
-- Include database operations and external service mocks
+- Test API endpoints and data flow
+- Include database operations
 - Medium execution time (100ms - 1s per test)
-- Run on every PR with contract validation
+- Run on every PR merge
 
-#### End-to-End Tests (User Workflows - 10% of tests)
-- **Playwright E2E**: Browser-level testing with auto-wait and resilience
-- **Cypress E2E**: Alternative for UI-heavy flows with strong debugging
-- Test complete user journeys and critical business flows
-- Real browser/mobile interactions with visual regression
+### End-to-End Tests (Top Layer - 10% of tests)
+- Test complete user workflows
+- Real browser/mobile interactions
+- Full system integration
 - Slow execution (1s - 10s+ per test)
-- Run nightly, on releases, and for critical features
-
-#### API & Contract Tests (Interface Validation - 5% of tests)
-- **Postman Collections**: Curated API test suites with Newman CI integration
-- **Contract Tests**: Validate adapter boundaries and external API contracts
-- Schema validation and data transformation testing
-- Authentication and authorization flow testing
-- Run on API changes and external integration updates
-
-#### Performance & Load Tests (System Resilience - 3% of tests)
-- Load testing for critical pipelines with realistic traffic patterns
-- Performance profiling with latency and resource monitoring
-- Stress testing for peak load scenarios
-- Run weekly and before major releases
-
-#### Security & Compliance Tests (Risk Mitigation - 2% of tests)
-- Security scanning for vulnerabilities and misconfigurations
-- Compliance validation for data handling and privacy requirements
-- Penetration testing for authentication and authorization
-- Run monthly and on security-related changes
+- Run nightly or on release
 
 ## When Tests Are Mandatory
 

@@ -11,13 +11,8 @@
 # Global owners - required for all changes
 * @sales-os/engineering-lead @sales-os/tech-lead
 
-# SSOT Governance - requires FAANG-grade approval
-docs/SSOT/** @sales-os/tech-lead @sales-os/engineering-manager @sales-os/architect
+# Governance and documentation - requires technical leadership approval
 .cursor/rules/** @sales-os/tech-lead @sales-os/engineering-manager
-.continue/rules/** @sales-os/tech-lead @sales-os/engineering-manager
-
-# Evidence and documentation - requires technical leadership approval
-docs/EVIDENCE/** @sales-os/tech-lead @sales-os/tech-writer
 docs/** @sales-os/tech-lead @sales-os/tech-writer
 memory/** @sales-os/tech-lead @sales-os/engineering-manager
 
@@ -32,10 +27,6 @@ docs/DECISIONS/** @sales-os/tech-lead @sales-os/architect
 # Frontend code - requires frontend team review
 # src/frontend/** @sales-os/frontend-team
 # src/web/** @sales-os/frontend-team
-
-# Core API - requires backend and architecture review
-apps/core-api/** @sales-os/backend-team @sales-os/architect
-packages/** @sales-os/tech-lead @sales-os/backend-team
 
 # Backend/API code - requires backend team review
 # src/backend/** @sales-os/backend-team

@@ -1,9 +1,0 @@
-{
-  "session_id": "65e36659",
-  "end_time": "2026-01-16T14:07:18.714161",
-  "duration_seconds": 0.0031,
-  "final_status": "failed",
-  "summary": {
-    "test": "mcp_missing_command"
-  }
-}

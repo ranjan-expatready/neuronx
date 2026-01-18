@@ -1,9 +1,0 @@
-{
-  "session_id": "a3737825",
-  "end_time": "2026-01-16T14:18:23.957469",
-  "duration_seconds": 0.000896,
-  "final_status": "blocked",
-  "summary": {
-    "reason": "mcp_disabled"
-  }
-}

@@ -1,2 +1,0 @@
-@neuronx/voice-twilio -> playbook-engine
-pipeline
