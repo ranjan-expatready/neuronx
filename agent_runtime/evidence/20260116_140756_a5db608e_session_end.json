@@ -1,0 +1,9 @@
+{
+  "session_id": "a5db608e",
+  "end_time": "2026-01-16T14:07:56.294590",
+  "duration_seconds": 0.024306,
+  "final_status": "completed",
+  "summary": {
+    "test": "mcp_echo_command"
+  }
+}

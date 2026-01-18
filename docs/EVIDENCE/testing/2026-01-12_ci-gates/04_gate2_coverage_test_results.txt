@@ -1,0 +1,54 @@
+# Gate 2 Results: pnpm -w test:coverage
+
+**Command**: pnpm -w test:coverage
+**Timestamp**: 2026-01-12T14:52:00Z
+**Exit Code**: 1 (FAILED)
+**Duration**: 5.6 seconds
+
+## Command Output Summary
+
+### Initial Setup
+- Node version warning: Current v23.11.0, wanted >=22 <23
+- Vitest coverage enabled with v8
+- Test run started successfully
+
+### Failure Point
+**STOP-SHIP**: Filesystem error during directory scanning
+- Error: ENAMETOOLONG (name too long)
+- Path: Extremely deep nested node_modules structure
+- Scanning `/packages/decision-explainability/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/...` (repeated nesting)
+
+### Root Cause Analysis
+**Infrastructure Issue**: Path length exceeds filesystem limits
+- Path contains 20+ levels of nested node_modules
+- Indicates circular dependencies or incorrect package structure
+- Coverage tool (v8) fails during directory traversal
+
+## Evidence Classification
+- **Gate 2 Status**: ❌ FAILED
+- **Failure Mode**: Filesystem/path length limitation
+- **Severity**: HIGH - Blocks coverage analysis
+- **Evidence Type**: Infrastructure failure with clear error diagnostics
+
+## Impact Assessment
+- **Coverage Measurement**: Impossible until path issue resolved
+- **CI Pipeline**: Blocked from coverage validation
+- **Quality Gates**: Cannot enforce 85% coverage requirement
+
+## Next Actions Required
+1. **Dependency Analysis**: Investigate circular dependencies in @neuronx packages
+2. **Package Structure**: Fix incorrect nesting in decision-explainability package
+3. **Filesystem Limits**: Consider using shorter paths or different filesystem
+4. **Retry Gate 2**: Re-run after dependency structure fixed
+
+## Verification Commands
+```bash
+# Check path length issue
+find packages/ -name "node_modules" -type d | head -5 | xargs ls -ld
+
+# Check for circular dependencies
+pnpm ls --depth=10 | grep -A 5 -B 5 "decision-explainability"
+
+# Check package structure
+find packages/decision-explainability -name "package.json" | head -3
+```

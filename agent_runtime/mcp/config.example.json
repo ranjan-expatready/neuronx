@@ -1,0 +1,152 @@
+{
+  "_comment": "NeuronX MCP Configuration Template - Phase 4A Design",
+  "_warning": "This is a template. Copy to create your config file.",
+  "_security": "Never commit real credentials. Use environment variables only.",
+  "_documentation": "See providers.md for detailed provider specifications",
+
+  "enabled": false,
+  "_enabled_comment": "Set to true to enable MCP integration. Default: false for security",
+
+  "providers": {
+    "github": {
+      "enabled": false,
+      "_enabled_comment": "Enable GitHub MCP provider",
+      "readOnly": true,
+      "_readOnly_comment": "Phase 4B.1 enforces read-only GitHub MCP calls",
+      "actions": [
+        "list_issues",
+        "get_issue",
+        "list_prs",
+        "get_pr",
+        "get_checks",
+        "get_ci_status"
+      ],
+      "_actions_comment": "Allowlisted read-only actions for GitHub provider. See providers.md for details",
+      "command": [],
+      "_command_comment": "Optional stdio GitHub MCP server command argv (e.g., [\"npx\", \"@modelcontextprotocol/server-github\"])",
+      "repository": "${GITHUB_REPO}",
+      "_repository_comment": "Target repository. Use env var for security",
+      "serverMode": "stdio",
+      "_serverMode_comment": "stdio | noop. noop returns a graceful failure without execution",
+      "timeout_seconds": 30,
+      "_timeout_comment": "Per-call timeout for GitHub MCP"
+    },
+
+    "playwright": {
+      "enabled": false,
+      "_enabled_comment": "Enable Playwright MCP provider for web automation",
+      "actions": [
+        "navigate",
+        "click",
+        "type_text",
+        "take_screenshot",
+        "get_text",
+        "wait_for_element",
+        "get_page_info"
+      ],
+      "_actions_comment": "Allowlisted actions for Playwright provider",
+      "command": [],
+      "_command_comment": "Optional Playwright MCP server command argv",
+      "allowed_domains": [
+        "localhost",
+        "*.githubusercontent.com",
+        "*.github.com"
+      ],
+      "_allowed_domains_comment": "Domain allowlist for navigation. Use wildcards carefully",
+      "screenshot_dir": "agent_runtime/evidence/screenshots",
+      "_screenshot_dir_comment": "Directory for screenshot storage",
+      "timeout_seconds": 30,
+      "_timeout_comment": "Default timeout for web operations"
+    },
+
+    "security": {
+      "enabled": false,
+      "_enabled_comment": "Enable security scanning MCP provider",
+      "actions": [
+        "scan_dependencies",
+        "scan_code",
+        "check_secrets",
+        "vulnerability_report",
+        "compliance_check",
+        "get_scan_results"
+      ],
+      "_actions_comment": "Allowlisted actions for security scanning",
+      "command": [],
+      "_command_comment": "Optional Security MCP server command argv",
+      "scan_depth": "shallow",
+      "_scan_depth_comment": "shallow|medium|deep - affects performance vs coverage",
+      "severity_threshold": "medium",
+      "_severity_comment": "minimum|low|medium|high|critical - report threshold",
+      "report_retention_days": 30,
+      "_retention_comment": "Days to keep security reports"
+    },
+
+    "docker": {
+      "enabled": false,
+      "_enabled_comment": "Enable Docker MCP provider (optional, future phase)",
+      "actions": [
+        "build_image",
+        "run_container",
+        "list_images",
+        "scan_image",
+        "get_logs"
+      ],
+      "_actions_comment": "Allowlisted actions for Docker operations",
+      "allowed_base_images": [
+        "node:18-alpine",
+        "python:3.9-slim",
+        "ubuntu:20.04"
+      ],
+      "_base_images_comment": "Approved base images for builds",
+      "max_container_memory": "512m",
+      "_memory_comment": "Memory limit for containers",
+      "max_container_cpu": "0.5",
+      "_cpu_comment": "CPU limit for containers (0.0-1.0)",
+      "network_mode": "none",
+      "_network_comment": "Network access for containers: none|bridge|host"
+    }
+  },
+
+  "global_settings": {
+    "evidence_enabled": true,
+    "_evidence_comment": "Generate evidence for all MCP operations",
+    "evidence_dir": "agent_runtime/evidence/mcp",
+    "_evidence_dir_comment": "Directory for MCP evidence storage",
+    "timeout_seconds": 60,
+    "_timeout_comment": "Global timeout for MCP operations",
+    "retry_attempts": 1,
+    "_retry_comment": "Number of retry attempts for failed operations",
+    "rate_limit_global": 50,
+    "_rate_limit_comment": "Global requests per minute across all providers"
+  },
+
+  "security_policy": {
+    "_comment": "Security settings that cannot be overridden",
+    "red_tier_blocked": true,
+    "_red_tier_comment": "Always block MCP for Red-tier tasks",
+    "credential_validation": true,
+    "_credential_comment": "Validate credentials exist before enabling providers",
+    "audit_required": true,
+    "_audit_comment": "Require audit logging for all MCP operations"
+  },
+
+  "environment_variables": {
+    "_comment": "Required environment variables for MCP operation",
+    "_note": "These must be set for enabled providers. Never store actual values in config files.",
+
+    "github_token": "${GITHUB_TOKEN}",
+    "_github_token_comment": "GitHub personal access token with repo permissions",
+
+    "mcp_server_host": "${MCP_SERVER_HOST}",
+    "_server_host_comment": "MCP server hostname/IP",
+
+    "mcp_server_port": "${MCP_SERVER_PORT}",
+    "_server_port_comment": "MCP server port (default: 3000)",
+
+    "mcp_tls_cert": "${MCP_TLS_CERT_PATH}",
+    "_tls_cert_comment": "Path to TLS certificate for secure connections",
+
+    "mcp_api_key": "${MCP_API_KEY}",
+    "_api_key_comment": "API key for MCP server authentication"
+  }
+}

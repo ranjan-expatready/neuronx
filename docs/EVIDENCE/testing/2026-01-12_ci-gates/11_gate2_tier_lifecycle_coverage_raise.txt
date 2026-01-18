@@ -1,0 +1,28 @@
+COMMAND: npx vitest run apps/core-api/src/config/entitlements/__tests__/tier.lifecycle.spec.ts --coverage
+EXIT CODE: 0
+JQ COVERAGE: 1.07
+VITEST SUMMARY:
+ ✓ apps/core-api/src/config/entitlements/__tests__/tier.lifecycle.spec.ts (24)
+   ✓ TierLifecycleManager (19)
+     ✓ validateTransition (8)
+     ✓ calculateTransitionEffect (3)
+     ✓ getGracePeriod (5)
+     ✓ getFeatureDisablementBehavior (3)
+   ✓ FeatureDowngradeHandler (5)
+     ✓ should generate correct payload for voice disablement
+     ✓ should generate correct payload for SLA freeze
+     ✓ should generate correct payload for routing degradation (starter)
+     ✓ should generate correct payload for routing degradation (free)
+     ✓ should generate correct payload for integration fallback
+
+ Test Files  1 passed (1)
+      Tests  24 passed (24)
+   Start at  13:42:50
+   Duration  1.59s
+
+=============================== Coverage summary ===============================
+Statements   : 1.07% ( 238/22125 )
+Branches     : 22.99% ( 43/187 )
+Functions    : 20.78% ( 37/178 )
+Lines        : 1.07% ( 238/22125 )
+================================================================================

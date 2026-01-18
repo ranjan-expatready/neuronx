@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "providers": {
+    "github": {
+      "enabled": true,
+      "actions": ["list_issues", "get_issue"],
+      "command": ["echo", "github"]
+    },
+    "playwright": {
+      "enabled": false,
+      "actions": [],
+      "command": []
+    }
+  }
+}

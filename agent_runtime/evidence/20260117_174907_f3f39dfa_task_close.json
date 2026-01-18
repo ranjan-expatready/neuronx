@@ -1,0 +1,12 @@
+{
+  "session_id": "f3f39dfa",
+  "timestamp": "2026-01-17T17:49:07.654404",
+  "event_type": "task_close",
+  "event_data": {
+    "session_id": "f3f39dfa",
+    "task": "TDD proof blocked demo",
+    "result": "error",
+    "closure_status": "not_applicable",
+    "closure_reason": "Execution error: EOF when reading a line"
+  }
+}

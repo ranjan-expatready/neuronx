@@ -1,0 +1,9 @@
+{
+  "session_id": "65e36659",
+  "task_description": "Test MCP missing command",
+  "start_time": "2026-01-16T14:07:18.711061",
+  "status": "started",
+  "config": {
+    "test": "mcp_missing_command"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "providers": {
+    "github": {
+      "enabled": true,
+      "actions": ["list_issues"],
+      "command": ["python3", "-c", "import sys, json; print(json.dumps({'ok': True, 'data': {'issues': []}}))"]
+    }
+  }
+}

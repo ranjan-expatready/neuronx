@@ -1,0 +1,24 @@
+{
+  "session_id": "65e36659",
+  "timestamp": "2026-01-16T14:07:18.713972",
+  "event_type": "mcp_call",
+  "event_data": {
+    "provider": "github",
+    "action": "list_issues",
+    "ok": false,
+    "error": "MCP integration not enabled",
+    "meta": {
+      "checks": {
+        "mcp_enabled": false,
+        "provider_enabled": false,
+        "action_allowed": false,
+        "risk_tier_allowed": true,
+        "role_allowed": true
+      }
+    },
+    "params_hash": "a03c8657a575356d",
+    "params_keys": [
+      "limit"
+    ]
+  }
+}

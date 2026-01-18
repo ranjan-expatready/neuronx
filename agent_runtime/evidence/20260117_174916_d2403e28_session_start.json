@@ -1,0 +1,23 @@
+{
+  "session_id": "d2403e28",
+  "task_description": "TDD proof blocked demo",
+  "start_time": "2026-01-17T17:49:16.200803",
+  "status": "started",
+  "config": {
+    "task": "TDD proof blocked demo",
+    "dry_run": true,
+    "use_contextstream": false,
+    "contextstream_configured": false,
+    "write_memory": false,
+    "memory_type": null,
+    "memory_tags": [],
+    "mcp_config": null,
+    "mcp_enabled": false,
+    "mcp_providers_enabled": [],
+    "mcp_call": {
+      "provider": null,
+      "action": null,
+      "params_raw": null
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "event": "contact.created",
+  "locationId": "loc_123456789",
+  "companyId": "cmp_987654321",
+  "timestamp": "2024-01-03T12:00:00Z",
+  "data": {
+    "id": "contact_abcdef123456",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "+1-555-0123",
+    "companyName": "Acme Corp",
+    "tags": ["lead", "website"],
+    "customFields": {
+      "lead_source": "website",
+      "company_size": "50-100",
+      "industry": "technology"
+    },
+    "dateAdded": "2024-01-03T12:00:00Z",
+    "dateUpdated": "2024-01-03T12:00:00Z"
+  },
+  "metadata": {
+    "webhookId": "wh_123456789",
+    "attempt": 1
+  }
+}

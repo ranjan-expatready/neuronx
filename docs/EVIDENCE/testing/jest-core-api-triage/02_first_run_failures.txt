@@ -1,0 +1,53 @@
+Jest Coverage Test Results - First Run
+====================================
+
+Command: cd /Users/ranjansingh/Desktop/NeuronX/apps/core-api && npm run test:cov -- --runInBand
+
+FAILURE CATEGORIZATION:
+======================
+
+BUCKET 1: Module Resolution Issues (PRIMARY - ~45+ failures)
+----------------------------------------------------------
+- Cannot find module '../../eventing' (multiple files)
+  - src/voice/__tests__/voice-gating.spec.ts:9
+  - src/payments/__tests__/paid-caseopen.spec.ts:9
+  - src/payments/__tests__/payment-webhook-verification.spec.ts:10
+
+- Cannot find module '@nestjs/schedule'
+  - src/webhooks/webhook.dispatcher.ts:9 (imported by webhook-delivery.spec.ts)
+
+- Cannot find module 'ioredis'
+  - src/cache/cache.service.ts:9 (imported by cache.service.spec.ts)
+
+- Cannot find module '../../eventing' (pattern repeats across multiple test files)
+  - Evidence: grep -r "Cannot find module.*eventing" shows ~15+ occurrences
+
+BUCKET 2: Missing Test Environment Variables (SECONDARY - ~5-10 failures)
+------------------------------------------------------------------------
+- Configuration validation failures triggering process.exit(1)
+  - src/config/__tests__/config.persistence.spec.ts:193
+  - Evidence: "process.exit called with "1"" in config validator
+
+BUCKET 3: Timing/Flake Issues (MINIMAL - ~2-3 failures)
+------------------------------------------------------
+- Rate limiting test errors (expected behavior)
+  - src/rate-limit/__tests__/rate-limit.guard.spec.ts
+  - Evidence: "Rate limit exceeded" errors in test output (expected for rate limit tests)
+
+BUCKET 4: Genuine Logic Regressions (MINIMAL - ~1-2 failures)
+------------------------------------------------------------
+- SLA config test failures
+  - src/sla/__tests__/sla.config.spec.ts
+  - Evidence: Test suite failed to run (module resolution blocking execution)
+
+SUCCESSFUL TESTS:
+=================
+- src/rate-limit/__tests__/rate-limit.guard.spec.ts: PASS (22 tests passed)
+
+TOTAL FAILURE COUNT: ~50+ test suites failed
+TOTAL SUCCESS COUNT: 1 test suite passed
+
+PRIMARY ROOT CAUSE: Module resolution issues preventing test execution
+SECONDARY ROOT CAUSE: Missing environment configuration for config validation
+
+Evidence: Full test output captured in agent-tools/67fcf2e7-32d7-4759-8640-b0bd6970b62c.txt

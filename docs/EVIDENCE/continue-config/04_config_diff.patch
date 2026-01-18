@@ -1,0 +1,7 @@
+No git history available, creating manual diff
+CONFIG CHANGES:
+- Added Model Selection Policy comments
+- GLM-4.7: Added 'summarize' role, removed think:false
+- DeepSeek-V3.2: Added 'summarize' role, removed think:false
+- Qwen3 Coder 480B: Added 'summarize' role, removed think:false
+- Removed think:false from all other models

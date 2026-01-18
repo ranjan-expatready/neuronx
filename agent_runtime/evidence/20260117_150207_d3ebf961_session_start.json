@@ -1,0 +1,14 @@
+{
+  "session_id": "d3ebf961",
+  "task_description": "Phase4F state test - MCP working call",
+  "start_time": "2026-01-17T15:02:07.592854",
+  "status": "started",
+  "config": {
+    "task": "Phase4F state test - MCP working call",
+    "mcp_call": {
+      "provider": "github",
+      "action": "list_issues",
+      "params_raw": "{\"limit\":1}"
+    }
+  }
+}

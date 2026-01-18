@@ -1,6 +1,15 @@
 // GHL Webhook Controller - Production webhook processing with rate limiting
 
-import { Controller, Post, Body, Headers, Logger, Req, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Headers,
+  Logger,
+  Req,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { WebhookNormalizer } from '@neuronx/webhooks';
 import { config } from '@neuronx/config';
@@ -12,7 +21,7 @@ export class GhlWebhookController {
 
   constructor(
     private readonly webhookNormalizer: WebhookNormalizer,
-    private readonly rateLimitService: RateLimitService,
+    private readonly rateLimitService: RateLimitService
   ) {}
 
   /**
@@ -25,9 +34,11 @@ export class GhlWebhookController {
   async processWebhook(
     @Body() payload: any,
     @Headers() headers: Record<string, string>,
-    @Req() req: Request,
+    @Req() req: Request
   ) {
-    const requestId = headers['x-request-id'] || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId =
+      headers['x-request-id'] ||
+      `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const startTime = Date.now();
 
     // Extract signature and other headers
@@ -73,9 +84,11 @@ export class GhlWebhookController {
 
       if (!result.processed) {
         // Webhook was not processed (signature invalid, duplicate, etc.)
-        const reason = !result.verification?.valid ? 'signature_invalid' :
-                      result.replayCheck?.isDuplicate ? 'duplicate_webhook' :
-                      'unsupported_event';
+        const reason = !result.verification?.valid
+          ? 'signature_invalid'
+          : result.replayCheck?.isDuplicate
+            ? 'duplicate_webhook'
+            : 'unsupported_event';
 
         this.logger.warn('GHL webhook processing skipped', {
           requestId,
@@ -131,7 +144,6 @@ export class GhlWebhookController {
         eventId: result.event?.metadata.correlationId,
         processingTime,
       };
-
     } catch (error) {
       const processingTime = Date.now() - startTime;
 
@@ -148,4 +160,3 @@ export class GhlWebhookController {
     }
   }
 }
-

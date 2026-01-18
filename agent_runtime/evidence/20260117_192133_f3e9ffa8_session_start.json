@@ -1,0 +1,25 @@
+{
+  "session_id": "f3e9ffa8",
+  "task_description": "Test memory storage",
+  "start_time": "2026-01-17T19:21:33.851422",
+  "status": "started",
+  "config": {
+    "task": "Test memory storage",
+    "dry_run": true,
+    "use_contextstream": false,
+    "contextstream_configured": false,
+    "write_memory": true,
+    "memory_type": "pattern",
+    "memory_tags": [
+      "test"
+    ],
+    "mcp_config": null,
+    "mcp_enabled": false,
+    "mcp_providers_enabled": [],
+    "mcp_call": {
+      "provider": null,
+      "action": null,
+      "params_raw": null
+    }
+  }
+}

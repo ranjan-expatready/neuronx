@@ -1,0 +1,10 @@
+{
+  "session_id": "af34b61c",
+  "timestamp": "2026-01-16T14:36:15.795316",
+  "event_type": "mcp_call_blocked",
+  "event_data": {
+    "reason": "mcp_disabled",
+    "provider": "github",
+    "action": "list_issues"
+  }
+}

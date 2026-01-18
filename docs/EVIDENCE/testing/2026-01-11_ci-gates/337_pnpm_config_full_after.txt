@@ -1,0 +1,3 @@
+node-linker=isolated
+registry=https://registry.npmjs.org/
+user-agent=pnpm/9.0.0 npm/? node/v22.21.1 darwin arm64

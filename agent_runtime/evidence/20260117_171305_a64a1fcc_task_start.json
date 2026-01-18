@@ -1,0 +1,28 @@
+{
+  "session_id": "a64a1fcc",
+  "timestamp": "2026-01-17T17:13:05.170290",
+  "event_type": "task_start",
+  "event_data": {
+    "session_id": "a64a1fcc",
+    "task": "No-op task for closure gate test",
+    "mode": "normal",
+    "features": {
+      "contextstream": {
+        "enabled": false,
+        "configured": false
+      },
+      "mcp": {
+        "enabled": false,
+        "providers": []
+      },
+      "memory_write": {
+        "enabled": false
+      }
+    },
+    "readiness_summary": {
+      "overall_status": "YELLOW",
+      "missing_env_count": 0
+    },
+    "close_governance": null
+  }
+}

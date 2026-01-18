@@ -1,0 +1,7 @@
+
+> sales-os@0.1.0 test:coverage /Users/ranjansingh/Desktop/NeuronX
+> vitest run --coverage
+
+sh: vitest: command not found
+ ELIFECYCLE  Command failed.
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?

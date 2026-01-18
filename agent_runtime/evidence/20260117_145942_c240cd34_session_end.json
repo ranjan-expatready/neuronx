@@ -1,0 +1,14 @@
+{
+  "session_id": "c240cd34",
+  "end_time": "2026-01-17T14:59:42.305895",
+  "duration_seconds": 0.004835,
+  "final_status": "failed",
+  "summary": {
+    "mcp_call": {
+      "provider": "github",
+      "action": "list_issues",
+      "ok": false,
+      "error": "Invalid MCP response (non-JSON)"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+124:    const validHeaders = {
+125:      'x-tenant-id': 'test-tenant',
+126:      'x-webhook-signature': 'valid-signature',
+127:      'x-request-id': 'test-request-id',
+133:      headers: validHeaders,
+136:    it('should reject invalid signature before rate limiting is called', async () => {
+137:      const invalidSignatureHeaders = { ...validHeaders, 'x-webhook-signature': '' };
+152:      // Rate limit service should NOT be called for invalid signatures
+156:    it('should call rate limiting after valid signature verification', async () => {
+157:      // Mock successful signature verification
+165:        validHeaders,
+169:      // Rate limit service should be called AFTER signature verification
+181:    it('should reject rate limited requests after valid signature', async () => {
+182:      // Mock successful signature verification
+193:          validHeaders,
+205:    it('should process business logic only after signature + rate limit pass', async () => {
+206:      // Mock successful signature verification
+214:        validHeaders,
+219:      // 1. processWebhook called first (signature verification)
+233:    const validHeaders = {
+234:      'x-tenant-id': 'payment-tenant',
+235:      'stripe-signature': 'valid-stripe-signature',
+241:      headers: validHeaders,
+244:    it('should reject invalid signature before rate limiting is called', async () => {
+245:      // Mock signature verification failure
+252:          'invalid-signature',
+258:      // Rate limit service should NOT be called for invalid signatures
+262:    it('should call rate limiting after valid signature verification', async () => {
+263:      // Mock successful signature verification
+274:        'valid-signature',
+279:      // Rate limit service should be called AFTER signature verification
+291:    it('should reject rate limited requests after valid signature', async () => {
+292:      // Mock successful signature verification
+308:          'valid-signature',
+326:      // Simulate multiple invalid signature requests
+335:          { ...validHeaders, 'x-webhook-signature': 'invalid' },
+341:      // Rate limit service should NEVER be called for invalid signatures
+352:      // First request: invalid signature
+360:        { ...validHeaders, 'x-webhook-signature': 'invalid' },
+365:      // Second request: valid signature
+371:        validHeaders,

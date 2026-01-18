@@ -1,0 +1,11 @@
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "refresh_token": "refresh_token_abcdef123456789",
+  "companyId": "cmp_987654321",
+  "locationIds": ["loc_123456789"],
+  "scope": "contacts.readonly contacts.write opportunities.readonly opportunities.write",
+  "userId": "user_456789",
+  "userType": "Account"
+}

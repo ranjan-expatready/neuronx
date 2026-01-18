@@ -1,0 +1,14 @@
+{
+  "session_id": "a3737825",
+  "task_description": "Read GitHub issues",
+  "start_time": "2026-01-16T14:18:23.956573",
+  "status": "started",
+  "config": {
+    "task": "Read GitHub issues",
+    "mcp_call": {
+      "provider": "github",
+      "action": "list_issues",
+      "params_raw": "{}"
+    }
+  }
+}

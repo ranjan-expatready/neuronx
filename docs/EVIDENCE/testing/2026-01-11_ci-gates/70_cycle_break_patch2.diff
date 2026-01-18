@@ -1,0 +1,12 @@
+diff --git a/packages/decision-explainability/package.json b/packages/decision-explainability/package.json
+index 9fec045..ee96f96 100644
+--- a/packages/decision-explainability/package.json
++++ b/packages/decision-explainability/package.json
+@@ -11,7 +11,6 @@
+     "typecheck": "tsc --noEmit"
+   },
+   "dependencies": {
+-    "@neuronx/decision-engine": "workspace:*",
+     "@neuronx/billing-entitlements": "workspace:*",
+     "@neuronx/org-authority": "workspace:*",
+     "@neuronx/ghl-drift": "workspace:*"

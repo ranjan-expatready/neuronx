@@ -57,9 +57,9 @@ jobs:
 
       - name: Verify coverage threshold
         run: |
-          # Extract coverage percentage from text output (fallback if JSON parsing fails)
+          # Extract coverage percentage from JSON summary (FAANG-grade robust parsing)
           if [ -f "coverage/coverage-summary.json" ]; then
-            COVERAGE=$(grep "lines" coverage/coverage-summary.json | grep -o '[0-9]\+\.[0-9]\+' || echo "0")
+            COVERAGE=$(jq '.total.lines.pct' coverage/coverage-summary.json || echo "0")
           else
             # Parse from text output stored in coverage text file or extract from logs
             COVERAGE=$(grep "Lines.*:" coverage/lcov-report/index.html 2>/dev/null | grep -o '[0-9]\+\.[0-9]\+' | head -1 || echo "0")

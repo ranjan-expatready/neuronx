@@ -1,0 +1,14 @@
+{
+  "session_id": "d6aa6628",
+  "task_description": "List issues",
+  "start_time": "2026-01-17T16:36:44.664930",
+  "status": "started",
+  "config": {
+    "task": "List issues",
+    "mcp_call": {
+      "provider": "github",
+      "action": "list_issues",
+      "params_raw": "{\"limit\":5}"
+    }
+  }
+}

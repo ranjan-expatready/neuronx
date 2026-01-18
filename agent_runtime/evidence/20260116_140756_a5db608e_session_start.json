@@ -1,0 +1,9 @@
+{
+  "session_id": "a5db608e",
+  "task_description": "Test MCP echo command",
+  "start_time": "2026-01-16T14:07:56.270284",
+  "status": "started",
+  "config": {
+    "test": "mcp_echo_command"
+  }
+}

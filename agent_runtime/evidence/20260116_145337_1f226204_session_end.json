@@ -1,0 +1,40 @@
+{
+  "session_id": "1f226204",
+  "end_time": "2026-01-16T14:53:37.277773",
+  "duration_seconds": 0.000715,
+  "final_status": "completed",
+  "summary": {
+    "readiness_result": {
+      "overall_status": "RED",
+      "checks": [
+        {
+          "name": "MCP Configuration",
+          "status": "RED",
+          "detail": "MCP configuration failed to load: Configuration file not found: /tmp/mcp-echo.json",
+          "remediation": "Fix MCP configuration file errors"
+        },
+        {
+          "name": "ContextStream",
+          "status": "YELLOW",
+          "detail": "ContextStream not configured",
+          "remediation": "Set CONTEXTSTREAM_URL and CONTEXTSTREAM_API_KEY environment variables"
+        }
+      ],
+      "capabilities": {
+        "mcp": {
+          "enabled": false,
+          "providers": []
+        },
+        "contextstream": {
+          "enabled": true,
+          "configured": false
+        },
+        "memory_write": {
+          "enabled": false
+        }
+      },
+      "missing_env": [],
+      "timestamp": "2026-01-16T10:53:37.277383Z"
+    }
+  }
+}

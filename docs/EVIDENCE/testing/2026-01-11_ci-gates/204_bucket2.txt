@@ -1,0 +1,13 @@
+@neuronx/execution-authority
+@neuronx/execution-framework
+@neuronx/executive-ui
+@neuronx/ghl-boundary-enforcer
+@neuronx/ghl-drift
+@neuronx/ghl-read-adapter
+@neuronx/ghl-snapshots
+@neuronx/manager-ui
+@neuronx/observability
+@neuronx/onboarding-readiness
+@neuronx/operator-ui
+@neuronx/org-authority
+@neuronx/pipeline
