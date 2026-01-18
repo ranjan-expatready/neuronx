@@ -1,0 +1,43 @@
+{
+  "session_id": "a28f67c1",
+  "timestamp": "2026-01-17T19:20:53.289400",
+  "event_type": "readiness_check",
+  "event_data": {
+    "overall_status": "RED",
+    "checks": [
+      {
+        "name": "MCP Configuration",
+        "status": "YELLOW",
+        "detail": "MCP not configured",
+        "remediation": null
+      },
+      {
+        "name": "ContextStream",
+        "status": "YELLOW",
+        "detail": "ContextStream not enabled",
+        "remediation": null
+      },
+      {
+        "name": "Memory Directory Writable",
+        "status": "RED",
+        "detail": "Memory directory not writable: agent_runtime/memory",
+        "remediation": "Ensure agent_runtime/memory/ exists and has write permissions (chmod 700)"
+      }
+    ],
+    "capabilities": {
+      "mcp": {
+        "enabled": false,
+        "providers": []
+      },
+      "contextstream": {
+        "enabled": false,
+        "configured": false
+      },
+      "memory_write": {
+        "enabled": false
+      }
+    },
+    "missing_env": [],
+    "timestamp": "2026-01-17T15:20:53.288675Z"
+  }
+}

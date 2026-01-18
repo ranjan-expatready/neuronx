@@ -1,0 +1,37 @@
+{
+  "session_id": "1e31078d",
+  "timestamp": "2026-01-17T16:22:25.488179",
+  "event_type": "readiness_check",
+  "event_data": {
+    "overall_status": "YELLOW",
+    "checks": [
+      {
+        "name": "MCP Configuration",
+        "status": "YELLOW",
+        "detail": "MCP not configured",
+        "remediation": null
+      },
+      {
+        "name": "ContextStream",
+        "status": "YELLOW",
+        "detail": "ContextStream not enabled",
+        "remediation": null
+      }
+    ],
+    "capabilities": {
+      "mcp": {
+        "enabled": false,
+        "providers": []
+      },
+      "contextstream": {
+        "enabled": false,
+        "configured": false
+      },
+      "memory_write": {
+        "enabled": false
+      }
+    },
+    "missing_env": [],
+    "timestamp": "2026-01-17T12:22:25.487584Z"
+  }
+}

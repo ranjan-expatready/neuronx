@@ -1,0 +1,73 @@
+# Billing Policy Configuration - WI-044: Billing Plan & Limit Configuration
+# Extracted from hardcoded billing limits and enforcement behavior
+
+# Plan configurations with limits and enforcement
+plans:
+  FREE:
+    name: 'Free Plan'
+    limits:
+      executionsPerMonth: 100
+      voiceMinutesPerMonth: 10
+      experimentsPerMonth: 1
+      teams: 1
+      operators: 1
+    enforcementMode: 'block'
+    gracePeriodDays: 0
+    warningThresholds: [80, 95]
+
+  PRO:
+    name: 'Pro Plan'
+    limits:
+      executionsPerMonth: 1000
+      voiceMinutesPerMonth: 100
+      experimentsPerMonth: 10
+      teams: 3
+      operators: 5
+    enforcementMode: 'grace_period'
+    gracePeriodDays: 7
+    warningThresholds: [80, 90, 95]
+
+  ENTERPRISE:
+    name: 'Enterprise Plan'
+    limits:
+      executionsPerMonth: -1 # Unlimited
+      voiceMinutesPerMonth: -1 # Unlimited
+      experimentsPerMonth: -1 # Unlimited
+      teams: -1 # Unlimited
+      operators: -1 # Unlimited
+    enforcementMode: 'monitor_only'
+    gracePeriodDays: 30
+    warningThresholds: [90]
+
+# Usage extraction and estimation rules
+usageExtraction:
+  # Voice minute estimates by mode (conservative estimates)
+  voiceEstimates:
+    - voiceMode: 'SCRIPTED'
+      estimatedMinutes: 2
+    - voiceMode: 'CONVERSATIONAL'
+      estimatedMinutes: 5
+    - voiceMode: 'HUMAN_ONLY'
+      estimatedMinutes: 10
+
+  # Usage type mappings for different channels
+  usageTypeMappings:
+    - channels: ['voice']
+      usageType: 'VOICE_MINUTE'
+      quantity: 0 # Quantity determined by voice estimates above
+    - channels: ['email', 'sms', 'whatsapp', 'calendar']
+      usageType: 'EXECUTION'
+      quantity: 1 # Each execution counts as 1
+
+# Enforcement behavior defaults
+enforcement:
+  defaultEnforcementMode: 'monitor_only'
+  defaultGracePeriodDays: 7
+  failClosedOnErrors: true
+
+# Global warning thresholds (percentage-based)
+warningThresholds:
+  softWarning: 80 # Warning at 80% usage
+  hardWarning: 90 # Hard warning at 90% usage
+  criticalWarning: 95 # Critical warning at 95% usage
+

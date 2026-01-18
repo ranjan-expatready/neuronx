@@ -1,0 +1,10 @@
+{
+  "session_id": "50d52500",
+  "timestamp": "2026-01-17T16:46:33.953107",
+  "event_type": "risk_classification",
+  "event_data": {
+    "task": "No-op task for closure gate test",
+    "risk_tier": "GREEN",
+    "classification_reason": "No risk keywords detected - defaulting to Green"
+  }
+}

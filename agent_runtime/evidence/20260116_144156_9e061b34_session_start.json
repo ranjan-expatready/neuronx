@@ -1,0 +1,14 @@
+{
+  "session_id": "9e061b34",
+  "task_description": "Phase4C verify - MCP disabled",
+  "start_time": "2026-01-16T14:41:56.019349",
+  "status": "started",
+  "config": {
+    "task": "Phase4C verify - MCP disabled",
+    "mcp_call": {
+      "provider": "github",
+      "action": "list_issues",
+      "params_raw": "{}"
+    }
+  }
+}

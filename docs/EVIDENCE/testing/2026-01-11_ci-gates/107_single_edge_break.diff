@@ -1,0 +1,216 @@
+diff --git a/packages/adapters/voice-twilio/package.json b/packages/adapters/voice-twilio/package.json
+new file mode 100644
+index 0000000..c0ca353
+--- /dev/null
++++ b/packages/adapters/voice-twilio/package.json
+@@ -0,0 +1,21 @@
++{
++  "name": "@neuronx/voice-twilio",
++  "version": "1.0.0",
++  "description": "Twilio voice execution adapter for NeuronX - authoritative voice execution with decision enforcement",
++  "main": "dist/index.js",
++  "types": "dist/index.d.ts",
++  "scripts": {
++    "build": "tsc",
++    "test": "vitest",
++    "test:watch": "vitest --watch",
++    "test:coverage": "vitest --coverage"
++  },
++  "dependencies": {
++    "@neuronx/decision-engine": "workspace:*"
++  },
++  "devDependencies": {
++    "typescript": "^5.0.0",
++    "vitest": "^1.0.0",
++    "@types/node": "^20.0.0"
++  }
++}
+diff --git a/packages/decision-engine/package.json b/packages/decision-engine/package.json
+new file mode 100644
+index 0000000..8e42d94
+--- /dev/null
++++ b/packages/decision-engine/package.json
+@@ -0,0 +1,23 @@
++{
++  "name": "@neuronx/decision-engine",
++  "version": "1.0.0",
++  "description": "Decision Engine for NeuronX sales operating system - determines WHO executes, HOW, and under WHAT constraints",
++  "main": "src/index.ts",
++  "type": "module",
++  "scripts": {
++    "build": "tsc",
++    "test": "vitest run",
++    "lint": "eslint src/**/*.ts",
++    "typecheck": "tsc --noEmit"
++  },
++  "dependencies": {
++    "@neuronx/playbook-engine": "workspace:*",
++    "zod": "^3.22.0",
++    "js-yaml": "^4.1.0"
++  },
++  "devDependencies": {
++    "@types/node": "^20.0.0",
++    "typescript": "^5.0.0",
++    "vitest": "^2.0.0"
++  }
++}
+diff --git a/packages/decision-explainability/package.json b/packages/decision-explainability/package.json
+new file mode 100644
+index 0000000..9fec045
+--- /dev/null
++++ b/packages/decision-explainability/package.json
+@@ -0,0 +1,35 @@
++{
++  "name": "@neuronx/decision-explainability",
++  "version": "1.0.0",
++  "description": "Decision explainability engine for NeuronX decisions",
++  "main": "dist/index.js",
++  "scripts": {
++    "build": "tsc",
++    "dev": "tsc --watch",
++    "test": "vitest",
++    "lint": "eslint src/**/*.ts",
++    "typecheck": "tsc --noEmit"
++  },
++  "dependencies": {
++    "@neuronx/decision-engine": "workspace:*",
++    "@neuronx/billing-entitlements": "workspace:*",
++    "@neuronx/org-authority": "workspace:*",
++    "@neuronx/ghl-drift": "workspace:*"
++  },
++  "devDependencies": {
++    "@types/node": "^20.0.0",
++    "typescript": "^5.0.0",
++    "vitest": "^1.0.0",
++    "eslint": "^8.0.0"
++  },
++  "keywords": [
++    "neuronx",
++    "explainability",
++    "decisions",
++    "audit",
++    "compliance"
++  ],
++  "author": "NeuronX Team",
++  "license": "UNLICENSED"
++}
++
+diff --git a/packages/org-authority/package.json b/packages/org-authority/package.json
+new file mode 100644
+index 0000000..317a296
+--- /dev/null
++++ b/packages/org-authority/package.json
+@@ -0,0 +1,20 @@
++{
++  "name": "@neuronx/org-authority",
++  "version": "1.0.0",
++  "description": "Tenant & Organization Authority Model for NeuronX - hierarchical org structure with capability-based authorization",
++  "main": "dist/index.js",
++  "types": "dist/index.d.ts",
++  "scripts": {
++    "build": "tsc",
++    "test": "vitest",
++    "test:watch": "vitest --watch",
++    "test:coverage": "vitest --coverage"
++  },
++  "dependencies": {},
++  "devDependencies": {
++    "typescript": "^5.0.0",
++    "vitest": "^1.0.0",
++    "@types/node": "^20.0.0"
++  }
++}
++
+diff --git a/packages/playbook-governance/package.json b/packages/playbook-governance/package.json
+new file mode 100644
+index 0000000..1665282
+--- /dev/null
++++ b/packages/playbook-governance/package.json
+@@ -0,0 +1,20 @@
++{
++  "name": "@neuronx/playbook-governance",
++  "version": "1.0.0",
++  "description": "Playbook versioning and governance system for NeuronX",
++  "main": "dist/index.js",
++  "types": "dist/index.d.ts",
++  "scripts": {
++    "build": "tsc",
++    "test": "vitest",
++    "test:watch": "vitest --watch",
++    "test:coverage": "vitest --coverage"
++  },
++  "dependencies": {},
++  "devDependencies": {
++    "typescript": "^5.0.0",
++    "vitest": "^1.0.0",
++    "@types/node": "^20.0.0"
++  }
++}
++
+diff --git a/packages/playbook-intelligence/package.json b/packages/playbook-intelligence/package.json
+new file mode 100644
+index 0000000..c10ab2d
+--- /dev/null
++++ b/packages/playbook-intelligence/package.json
+@@ -0,0 +1,20 @@
++{
++  "name": "@neuronx/playbook-intelligence",
++  "version": "1.0.0",
++  "description": "Playbook experimentation and outcome intelligence system for NeuronX",
++  "main": "dist/index.js",
++  "types": "dist/index.d.ts",
++  "scripts": {
++    "build": "tsc",
++    "test": "vitest",
++    "test:watch": "vitest --watch",
++    "test:coverage": "vitest --coverage"
++  },
++  "dependencies": {},
++  "devDependencies": {
++    "typescript": "^5.0.0",
++    "vitest": "^1.0.0",
++    "@types/node": "^20.0.0"
++  }
++}
++
+diff --git a/packages/ui-sdk/package.json b/packages/ui-sdk/package.json
+new file mode 100644
+index 0000000..91e453d
+--- /dev/null
++++ b/packages/ui-sdk/package.json
+@@ -0,0 +1,35 @@
++{
++  "name": "@neuronx/ui-sdk",
++  "version": "1.0.0",
++  "description": "UI SDK for NeuronX - Governance Layer & Action Dispatch",
++  "main": "dist/index.js",
++  "types": "dist/index.d.ts",
++  "scripts": {
++    "build": "tsc",
++    "dev": "tsc --watch",
++    "test": "vitest",
++    "test:watch": "vitest --watch",
++    "test:coverage": "vitest --coverage",
++    "lint": "eslint src/**/*.ts",
++    "typecheck": "tsc --noEmit"
++  },
++  "dependencies": {
++    "zod": "^3.22.0"
++  },
++  "devDependencies": {
++    "@types/node": "^20.0.0",
++    "typescript": "^5.0.0",
++    "vitest": "^1.0.0",
++    "eslint": "^8.0.0"
++  },
++  "keywords": [
++    "neuronx",
++    "ui-sdk",
++    "governance",
++    "action-dispatch",
++    "frontend"
++  ],
++  "author": "NeuronX Team",
++  "license": "UNLICENSED"
++}
++

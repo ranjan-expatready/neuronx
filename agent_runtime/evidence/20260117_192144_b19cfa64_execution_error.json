@@ -1,0 +1,9 @@
+{
+  "session_id": "b19cfa64",
+  "timestamp": "2026-01-17T19:21:44.952579",
+  "event_type": "execution_error",
+  "event_data": {
+    "error": "EOF when reading a line",
+    "traceback": "(<class 'EOFError'>, EOFError('EOF when reading a line'), <traceback object at 0x10ae3f340>)"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "session_id": "7b34f346",
+  "task_description": "Test MCP no command",
+  "start_time": "2026-01-16T14:07:56.268985",
+  "status": "started",
+  "config": {
+    "test": "mcp_no_command"
+  }
+}

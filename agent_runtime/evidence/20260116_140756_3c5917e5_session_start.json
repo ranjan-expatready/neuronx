@@ -1,0 +1,9 @@
+{
+  "session_id": "3c5917e5",
+  "task_description": "Test MCP disabled",
+  "start_time": "2026-01-16T14:07:56.268197",
+  "status": "started",
+  "config": {
+    "test": "mcp_disabled"
+  }
+}

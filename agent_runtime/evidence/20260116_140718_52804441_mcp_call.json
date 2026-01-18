@@ -1,0 +1,27 @@
+{
+  "session_id": "52804441",
+  "timestamp": "2026-01-16T14:07:18.714780",
+  "event_type": "mcp_call",
+  "event_data": {
+    "provider": "github",
+    "action": "list_issues",
+    "ok": false,
+    "error": "Missing required environment variables: GITHUB_TOKEN",
+    "meta": {
+      "checks": {
+        "mcp_enabled": true,
+        "provider_enabled": true,
+        "action_allowed": true,
+        "risk_tier_allowed": true,
+        "role_allowed": true
+      },
+      "missing_env": [
+        "GITHUB_TOKEN"
+      ]
+    },
+    "params_hash": "a03c8657a575356d",
+    "params_keys": [
+      "limit"
+    ]
+  }
+}

@@ -1,0 +1,432 @@
+# GHL Capability Policy Configuration - WI-048: GHL Capability Allow/Deny Matrix
+# Controls which GHL capabilities are allowed per plan tier with enterprise-grade safety
+
+version: '1.0.0'
+description: 'GHL capability matrix for NeuronX plan tiers'
+lastUpdated: '2026-01-05'
+updatedBy: 'NeuronX Platform Team'
+
+# Plan-specific capability matrices (most restrictive to least restrictive)
+planCapabilityMatrices:
+  # FREE Plan - Basic capabilities only
+  - planTier: 'FREE'
+    description: 'Free plan - basic CRM and limited communication'
+    capabilities:
+      # CRM - Basic operations allowed
+      - capability: 'crm_create_lead'
+        enforcementMode: 'allow_with_audit'
+        limits:
+          maxRequestsPerHour: 10
+          maxRequestsPerDay: 50
+        description: 'Basic lead creation'
+        tags: ['crm', 'basic']
+
+      - capability: 'crm_update_lead'
+        enforcementMode: 'allow_with_audit'
+        limits:
+          maxRequestsPerHour: 20
+          maxRequestsPerDay: 100
+        description: 'Basic lead updates'
+        tags: ['crm', 'basic']
+
+      - capability: 'crm_list_leads'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 30
+        description: 'Limited lead listing'
+        tags: ['crm', 'read']
+
+      # Conversations - Limited messaging
+      - capability: 'conversation_send_message'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 5
+          maxRequestsPerDay: 20
+        description: 'Limited outbound messaging'
+        tags: ['communication', 'basic']
+
+      # Block advanced features
+      - capability: 'workflow_trigger'
+        enforcementMode: 'block'
+        description: 'Workflow automation not available on free plan'
+        tags: ['automation', 'blocked']
+
+      - capability: 'voice_call_initiate'
+        enforcementMode: 'block'
+        description: 'Voice calls not available on free plan'
+        tags: ['voice', 'blocked']
+
+      - capability: 'calendar_create_event'
+        enforcementMode: 'block'
+        description: 'Calendar scheduling not available on free plan'
+        tags: ['calendar', 'blocked']
+
+  # PRO Plan - Professional features enabled
+  - planTier: 'PRO'
+    description: 'Professional plan - full CRM, workflows, and communication'
+    capabilities:
+      # CRM - Full access
+      - capability: 'crm_create_lead'
+        enforcementMode: 'allow_with_audit'
+        limits:
+          maxRequestsPerHour: 100
+          maxRequestsPerDay: 500
+        description: 'Full lead creation'
+        tags: ['crm', 'full']
+
+      - capability: 'crm_update_lead'
+        enforcementMode: 'allow_with_audit'
+        limits:
+          maxRequestsPerHour: 200
+          maxRequestsPerDay: 1000
+        description: 'Full lead updates'
+        tags: ['crm', 'full']
+
+      - capability: 'crm_list_leads'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 300
+        description: 'Full lead listing'
+        tags: ['crm', 'read']
+
+      - capability: 'crm_create_opportunity'
+        enforcementMode: 'allow_with_audit'
+        limits:
+          maxRequestsPerHour: 50
+          maxRequestsPerDay: 200
+        description: 'Opportunity management'
+        tags: ['crm', 'sales']
+
+      - capability: 'crm_update_opportunity'
+        enforcementMode: 'allow_with_audit'
+        limits:
+          maxRequestsPerHour: 100
+          maxRequestsPerDay: 400
+        description: 'Opportunity updates'
+        tags: ['crm', 'sales']
+
+      # Conversations - Full communication suite
+      - capability: 'conversation_send_message'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 50
+          maxRequestsPerDay: 200
+        description: 'Full outbound messaging'
+        tags: ['communication', 'full']
+
+      - capability: 'conversation_list_messages'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 100
+        description: 'Message history access'
+        tags: ['communication', 'read']
+
+      # Workflows - Core automation
+      - capability: 'workflow_trigger'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 20
+          maxRequestsPerDay: 100
+        description: 'Workflow automation triggers'
+        tags: ['automation', 'core']
+
+      - capability: 'workflow_get_workflows'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 50
+        description: 'Workflow template access'
+        tags: ['automation', 'read']
+
+      # Voice - Professional calling
+      - capability: 'voice_call_initiate'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 10
+          maxRequestsPerDay: 50
+        description: 'Professional voice calling'
+        tags: ['voice', 'professional']
+
+      # Calendar - Meeting scheduling
+      - capability: 'calendar_create_event'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 20
+          maxRequestsPerDay: 100
+        description: 'Meeting scheduling'
+        tags: ['calendar', 'scheduling']
+
+      # Identity - Team management
+      - capability: 'identity_list_users'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 50
+        description: 'Team member access'
+        tags: ['identity', 'team']
+
+  # ENTERPRISE Plan - Full access with high limits
+  - planTier: 'ENTERPRISE'
+    description: 'Enterprise plan - unlimited access to all GHL capabilities'
+    capabilities:
+      # All CRM capabilities - high limits
+      - capability: 'crm_create_lead'
+        enforcementMode: 'allow_with_audit'
+        limits:
+          maxRequestsPerHour: 1000
+          maxRequestsPerDay: 5000
+        description: 'Unlimited lead creation'
+        tags: ['crm', 'unlimited']
+
+      - capability: 'crm_update_lead'
+        enforcementMode: 'allow_with_audit'
+        limits:
+          maxRequestsPerHour: 2000
+          maxRequestsPerDay: 10000
+        description: 'Unlimited lead updates'
+        tags: ['crm', 'unlimited']
+
+      - capability: 'crm_list_leads'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 5000
+        description: 'Unlimited lead listing'
+        tags: ['crm', 'read']
+
+      - capability: 'crm_create_opportunity'
+        enforcementMode: 'allow_with_audit'
+        limits:
+          maxRequestsPerHour: 500
+          maxRequestsPerDay: 2000
+        description: 'Unlimited opportunity management'
+        tags: ['crm', 'sales']
+
+      - capability: 'crm_update_opportunity'
+        enforcementMode: 'allow_with_audit'
+        limits:
+          maxRequestsPerHour: 1000
+          maxRequestsPerDay: 4000
+        description: 'Unlimited opportunity updates'
+        tags: ['crm', 'sales']
+
+      - capability: 'crm_list_opportunities'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 2000
+        description: 'Unlimited opportunity listing'
+        tags: ['crm', 'read']
+
+      - capability: 'crm_get_pipelines'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 100
+        description: 'Pipeline access'
+        tags: ['crm', 'pipeline']
+
+      # Full communication suite
+      - capability: 'conversation_send_message'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 500
+          maxRequestsPerDay: 2000
+        description: 'Unlimited outbound messaging'
+        tags: ['communication', 'unlimited']
+
+      - capability: 'conversation_list_messages'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 1000
+        description: 'Unlimited message history'
+        tags: ['communication', 'read']
+
+      - capability: 'conversation_get_conversation'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 1000
+        description: 'Conversation access'
+        tags: ['communication', 'read']
+
+      - capability: 'conversation_list_conversations'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 500
+        description: 'Conversation listing'
+        tags: ['communication', 'read']
+
+      - capability: 'conversation_tag_conversation'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 200
+        description: 'Conversation tagging'
+        tags: ['communication', 'management']
+
+      - capability: 'conversation_update_status'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 200
+        description: 'Status updates'
+        tags: ['communication', 'management']
+
+      # Full workflow automation
+      - capability: 'workflow_trigger'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 200
+          maxRequestsPerDay: 1000
+        description: 'Unlimited workflow triggers'
+        tags: ['automation', 'unlimited']
+
+      - capability: 'workflow_pause'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 50
+        description: 'Workflow control'
+        tags: ['automation', 'control']
+
+      - capability: 'workflow_resume'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 50
+        description: 'Workflow control'
+        tags: ['automation', 'control']
+
+      - capability: 'workflow_cancel'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 50
+        description: 'Workflow control'
+        tags: ['automation', 'control']
+
+      - capability: 'workflow_get_execution'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 200
+        description: 'Execution monitoring'
+        tags: ['automation', 'monitoring']
+
+      - capability: 'workflow_get_workflows'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 100
+        description: 'Workflow template access'
+        tags: ['automation', 'read']
+
+      - capability: 'workflow_get_workflow'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 200
+        description: 'Individual workflow access'
+        tags: ['automation', 'read']
+
+      # Enterprise voice capabilities
+      - capability: 'voice_call_initiate'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 100
+          maxRequestsPerDay: 500
+        description: 'Enterprise voice calling'
+        tags: ['voice', 'enterprise']
+
+      - capability: 'voice_call_recording'
+        enforcementMode: 'allow_with_audit'
+        description: 'Call recording access'
+        tags: ['voice', 'recording']
+
+      # Full calendar management
+      - capability: 'calendar_create_event'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 200
+          maxRequestsPerDay: 1000
+        description: 'Unlimited meeting scheduling'
+        tags: ['calendar', 'unlimited']
+
+      - capability: 'calendar_update_event'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 300
+        description: 'Event management'
+        tags: ['calendar', 'management']
+
+      - capability: 'calendar_get_event'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 500
+        description: 'Event access'
+        tags: ['calendar', 'read']
+
+      - capability: 'calendar_list_events'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 300
+        description: 'Event listing'
+        tags: ['calendar', 'read']
+
+      - capability: 'calendar_cancel_event'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 100
+        description: 'Event cancellation'
+        tags: ['calendar', 'management']
+
+      # Full identity management
+      - capability: 'identity_list_users'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 500
+        description: 'Unlimited team member access'
+        tags: ['identity', 'unlimited']
+
+      - capability: 'identity_get_user'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 1000
+        description: 'Individual user access'
+        tags: ['identity', 'read']
+
+      - capability: 'identity_get_user_by_email'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 200
+        description: 'User lookup by email'
+        tags: ['identity', 'lookup']
+
+      - capability: 'identity_map_external_user'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 100
+        description: 'External user mapping'
+        tags: ['identity', 'integration']
+
+      - capability: 'identity_sync_permissions'
+        enforcementMode: 'allow_with_limits'
+        limits:
+          maxRequestsPerHour: 50
+        description: 'Permission synchronization'
+        tags: ['identity', 'permissions']
+
+# Fallback behavior for unknown capabilities (critical safety feature)
+unknownCapabilityFallback:
+  defaultMode: 'block' # Unknown capabilities are blocked by default
+  alertOnUnknown: true
+  alertChannels:
+    - 'security-alerts@neuronx.ai'
+    - 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
+
+# Audit and monitoring settings
+audit:
+  auditCapabilityUsage: true
+  auditCapabilityDenials: true
+  auditCapabilityLimitsExceeded: true
+  auditRetentionDays: 90
+
+# Environment-specific overrides (uncomment for staging/production differences)
+# environmentOverrides:
+#   staging:
+#     - planTier: "FREE"
+#       description: "Staging overrides for testing"
+#       capabilities:
+#         - capability: "workflow_trigger"
+#           enforcementMode: "allow_with_audit"
+#           limits:
+#             maxRequestsPerHour: 5
+#           description: "Limited workflow testing in staging"
+

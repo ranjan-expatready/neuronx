@@ -1,0 +1,14 @@
+{
+  "session_id": "d89d1df2",
+  "end_time": "2026-01-16T14:42:03.494898",
+  "duration_seconds": 0.026381,
+  "final_status": "completed",
+  "summary": {
+    "mcp_call": {
+      "provider": "github",
+      "action": "list_issues",
+      "ok": true,
+      "error": null
+    }
+  }
+}

@@ -1,0 +1,179 @@
+# Adapter Architecture Enforcement
+
+## Purpose
+Enforce clean architectural boundaries between NeuronX core business logic and external vendor systems. Prevent vendor lock-in and maintain testable, swappable integrations.
+
+## Core Rules
+
+### No Vendor Imports in Core
+**❌ FORBIDDEN:** Core business logic modules importing any vendor-specific code
+```
+❌ // In packages/core/leads/lead.service.ts
+import { GhlContact } from '@adapters/ghl'; // NO!
+import { SalesforceLead } from '@adapters/salesforce'; // NO!
+```
+
+**✅ ALLOWED:** Core modules only import canonical domain contracts
+```
+✅ // In packages/core/leads/lead.service.ts
+import { ICRMAdapter, Lead } from '@adapters/contracts';
+```
+
+### Adapters Cannot Import AI/Business Logic
+**❌ FORBIDDEN:** Adapter implementations importing AI, scoring, or orchestration logic
+```
+❌ // In packages/adapters/ghl/ghl.adapter.ts
+import { LeadScorer } from '@core/ai'; // NO!
+import { WorkflowEngine } from '@core/orchestration'; // NO!
+```
+
+**✅ ALLOWED:** Adapters only import domain models, mappers, and HTTP clients
+```
+✅ // In packages/adapters/ghl/ghl.adapter.ts
+import { Lead } from '@domain/models';
+import { GhlMapper } from './ghl.mapper';
+import { GhlClient } from './ghl.client';
+```
+
+### All External Systems Must Go Through Adapters
+**❌ FORBIDDEN:** Direct API calls to external systems from core logic
+```
+❌ // In packages/core/leads/lead.service.ts
+const response = await fetch('https://api.hubspot.com/contacts'); // NO!
+```
+
+**✅ REQUIRED:** All external interactions through adapter interfaces
+```
+✅ // In packages/core/leads/lead.service.ts
+const lead = await this.crmAdapter.createLead(request, context);
+```
+
+## Import Boundaries
+
+### Allowed Imports by Layer
+
+**Core Business Logic:**
+- ✅ `@domain/models` - Canonical data models
+- ✅ `@adapters/contracts` - Interface definitions
+- ✅ Internal core modules (AI, orchestration, etc.)
+
+**Adapter Layer:**
+- ✅ `@domain/models` - For return types
+- ✅ Internal adapter modules (mappers, clients, types)
+- ✅ HTTP clients, utilities
+- ❌ Core business logic modules
+
+**Domain Models:**
+- ✅ Pure data structures only
+- ❌ No business logic or external dependencies
+
+## Interface Compliance
+
+### Required Interface Implementation
+All adapters MUST implement the canonical interfaces:
+
+```typescript
+// ✅ REQUIRED: Full interface compliance
+export class GhlAdapter implements
+  ICRMAdapter,
+  IConversationAdapter,
+  IWorkflowAdapter,
+  IIdentityAdapter,
+  ICalendarAdapter,
+  IBaseAdapter
+{
+  // All methods must match interface signatures exactly
+}
+```
+
+### Method Signature Enforcement
+- ✅ Parameter types must match interfaces exactly
+- ✅ Return types must match interfaces exactly
+- ✅ Context parameters (tenantId, correlationId) required on all methods
+- ❌ No additional required parameters beyond interface definitions
+
+## Type Safety Boundaries
+
+### No Vendor Types in Public APIs
+**❌ FORBIDDEN:** Adapter packages exporting vendor-specific types
+```
+❌ // In packages/adapters/ghl/index.ts
+export { GhlContact } from './ghl.types'; // NO!
+```
+
+**✅ REQUIRED:** Only canonical types and factory functions exported
+```
+✅ // In packages/adapters/ghl/index.ts
+export { GhlAdapter } from './ghl.adapter';
+export function createGhlAdapter(config) { /* ... */ }
+```
+
+### Error Type Consistency
+**✅ REQUIRED:** All adapter errors converted to canonical error types
+```
+✅ // In adapter implementation
+throw new ValidationError('field', 'Invalid email format');
+
+❌ // Forbidden
+throw new GhlApiError('Invalid email', 400);
+```
+
+## Testing Requirements
+
+### Contract Tests Required
+- ✅ Each adapter MUST have contract tests verifying interface compliance
+- ✅ Tests MUST verify method signatures match interfaces exactly
+- ✅ Tests MUST verify no vendor types are leaked
+
+### Integration Tests Required
+- ✅ Adapters MUST have integration tests with mocked external APIs
+- ✅ Tests MUST verify data mapping accuracy
+- ✅ Tests MUST verify error handling consistency
+
+### Architecture Tests Required
+- ✅ Import boundary tests (no forbidden imports)
+- ✅ Type leakage detection tests
+- ✅ Interface compliance verification
+
+## Migration and Evolution
+
+### Adding New Adapters
+1. **Implement canonical interfaces** - Ensure full contract compliance
+2. **Create data mappers** - Vendor ↔ Canonical transformations
+3. **Add contract tests** - Verify interface compliance
+4. **Update factory** - Register new adapter type
+5. **Test swappability** - Ensure core logic works with new adapter
+
+### Modifying Interfaces
+1. **Backward compatibility** - Don't break existing adapters
+2. **Update all implementations** - Modify all adapter implementations
+3. **Update contract tests** - Ensure compliance tests pass
+4. **Version interfaces** - If breaking changes required
+
+### Deprecating Adapters
+1. **Mark as deprecated** - Update documentation and logging
+2. **Maintain compatibility** - Keep working until migration complete
+3. **Remove gradually** - Delete only after full migration
+4. **Archive tests** - Keep tests for regression prevention
+
+## Enforcement
+
+### Automated Checks
+- **Import analysis** - Scan for forbidden import patterns
+- **Type exports** - Verify only canonical types exported
+- **Interface compliance** - Automated contract verification
+- **Architecture tests** - Run on every PR
+
+### Code Review Requirements
+- **Import boundaries** - Review all new imports for architectural violations
+- **Type usage** - Verify vendor types not used in core logic
+- **Interface compliance** - Check adapter implementations match contracts
+- **Test coverage** - Ensure proper testing of architectural boundaries
+
+### Violation Consequences
+- **Critical:** Direct vendor imports in core → PR blocked
+- **Major:** Missing contract tests → PR blocked
+- **Minor:** Type leakage → PR requires fixes
+- **Info:** Suboptimal patterns → PR suggestions
+
+This rule enforces NeuronX's commitment to clean architecture, preventing vendor lock-in while maintaining high-quality, testable integrations.

@@ -1,0 +1,8 @@
+{
+  "session_id": "c1955079",
+  "timestamp": "2026-01-17T19:21:55.673244",
+  "event_type": "memory_storage_error",
+  "event_data": {
+    "error": "build_pattern_record() got an unexpected keyword argument 'summary'"
+  }
+}

@@ -1,0 +1,81 @@
+# Plan Mapping Policy Configuration - WI-045: GHL Product → Plan Mapping Hardening
+# Maps GHL products to NeuronX plan tiers with enterprise-grade safety and auditability
+
+version: '1.0.0'
+description: 'GHL to NeuronX plan mapping policy for production billing sync'
+lastUpdated: '2026-01-05'
+updatedBy: 'NeuronX Platform Team'
+
+# Product mappings (GHL product IDs to NeuronX plan tiers)
+productMappings:
+  # Free tier products
+  - ghlProductId: 'prod_neuronx_free_monthly'
+    neuronxPlanTier: 'FREE'
+    description: 'NeuronX Free Plan - Monthly'
+    sku: 'free_monthly'
+    tags: ['starter', 'monthly']
+    enabled: true
+
+  - ghlProductId: 'prod_neuronx_free_annual'
+    neuronxPlanTier: 'FREE'
+    description: 'NeuronX Free Plan - Annual'
+    sku: 'free_annual'
+    tags: ['starter', 'annual']
+    enabled: true
+
+  # Pro tier products
+  - ghlProductId: 'prod_neuronx_pro_monthly'
+    neuronxPlanTier: 'PRO'
+    description: 'NeuronX Pro Plan - Monthly'
+    sku: 'pro_monthly'
+    priceId: 'price_pro_monthly_2026'
+    tags: ['professional', 'monthly']
+    enabled: true
+
+  - ghlProductId: 'prod_neuronx_pro_annual'
+    neuronxPlanTier: 'PRO'
+    description: 'NeuronX Pro Plan - Annual'
+    sku: 'pro_annual'
+    priceId: 'price_pro_annual_2026'
+    tags: ['professional', 'annual']
+    enabled: true
+
+  # Enterprise tier products
+  - ghlProductId: 'prod_neuronx_enterprise_monthly'
+    neuronxPlanTier: 'ENTERPRISE'
+    description: 'NeuronX Enterprise Plan - Monthly'
+    sku: 'enterprise_monthly'
+    priceId: 'price_enterprise_monthly_2026'
+    tags: ['enterprise', 'monthly', 'custom']
+    enabled: true
+
+  - ghlProductId: 'prod_neuronx_enterprise_annual'
+    neuronxPlanTier: 'ENTERPRISE'
+    description: 'NeuronX Enterprise Plan - Annual'
+    sku: 'enterprise_annual'
+    priceId: 'price_enterprise_annual_2026'
+    tags: ['enterprise', 'annual', 'custom']
+    enabled: true
+
+# Environment-specific overrides (optional)
+# Uncomment and customize for different environments
+# environmentOverrides:
+#   - environment: "staging"
+#     mappings:
+#       - ghlProductId: "prod_staging_test"
+#         neuronxPlanTier: "FREE"
+#         description: "Staging test product"
+#         enabled: true
+
+# Fallback behavior for unmapped products (critical for safety)
+fallback:
+  behavior: 'grace_with_alert' # Options: block, grace_with_alert, default_tier
+  defaultTier: 'FREE' # Only used if behavior is "default_tier"
+  alertChannels:
+    - 'billing-alerts@neuronx.ai'
+    - 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
+  gracePeriodDays: 7
+
+# Audit and governance settings
+auditEnabled: true
+alertOnFallback: true

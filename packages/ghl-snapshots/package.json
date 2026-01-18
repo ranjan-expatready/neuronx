@@ -1,0 +1,32 @@
+{
+  "name": "@neuronx/ghl-snapshots",
+  "version": "1.0.0",
+  "description": "GHL configuration snapshot ingestion for read-only mirroring and drift detection",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.0.0",
+    "@neuronx/billing-entitlements": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0"
+  },
+  "keywords": [
+    "neuronx",
+    "ghl",
+    "snapshots",
+    "drift-detection",
+    "read-only"
+  ],
+  "author": "NeuronX Team",
+  "license": "UNLICENSED"
+}

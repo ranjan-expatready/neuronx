@@ -1,0 +1,5 @@
+decision-engine
+execution-authority
+pipeline
+playbook-engine
+playbook-governance

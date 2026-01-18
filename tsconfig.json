@@ -16,21 +16,13 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     }
   },
-  "include": [
-    "src/**/*",
-    "tests/**/*",
-    "vitest.config.ts",
-    "**/*.d.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    ".cache"
-  ]
+  "include": ["src/**/*", "tests/**/*", "vitest.config.ts", "**/*.d.ts"],
+  "exclude": ["node_modules", "dist", "build", ".cache"]
 }

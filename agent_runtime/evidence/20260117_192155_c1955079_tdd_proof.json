@@ -1,0 +1,12 @@
+{
+  "session_id": "c1955079",
+  "timestamp": "2026-01-17T19:21:55.671989",
+  "event_type": "tdd_proof",
+  "event_data": {
+    "proof_type": "na:docs-only",
+    "ok": true,
+    "missing_items": [],
+    "test_commands_seen": [],
+    "test_files_changed": []
+  }
+}

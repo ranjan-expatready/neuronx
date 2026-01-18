@@ -1,0 +1,44 @@
+# Webhooks Package Discovery - Filesystem Analysis
+
+## Directory Structure Found
+```
+packages/adapters/webhooks/
+├── index.ts (15,375 bytes - contains WebhookNormalizer export)
+└── __tests__/
+    └── webhook-signature-verifier.unit.spec.ts
+```
+
+## Key Findings
+
+### 1. Package Location
+**Actual Path:** `packages/adapters/webhooks/index.ts`
+**Expected by Mapper:** `packages/adapters/webhooks/src/index.ts`
+**Issue:** Missing `/src/` subdirectory
+
+### 2. Export Verification
+**File:** `packages/adapters/webhooks/index.ts` lines 323, 464
+```typescript
+export class WebhookNormalizer { ... }
+export function createWebhookMiddleware(normalizer: WebhookNormalizer) { ... }
+```
+
+**Confirmed:** `WebhookNormalizer` class is exported and available.
+
+### 3. Package Structure Analysis
+- No `package.json` in `packages/adapters/webhooks/` → Not a separate npm package
+- No `src/` subdirectory → Entrypoint is directly at package root
+- `__tests__/` directory exists → Tests are co-located
+
+### 4. Mapper Resolution Failure
+**Current Mapper:** `"^@neuronx/(.*)$": "<rootDir>/../../packages/$1/src/index.ts"`
+**For @neuronx/adapters/webhooks:**
+- `$1` = `adapters/webhooks`
+- Resolves to: `packages/adapters/webhooks/src/index.ts`
+- **Result:** File not found (missing `/src/` directory)
+
+### 5. Root Cause
+The `webhooks` package follows a different structure than other packages:
+- Most packages: `packages/{name}/src/index.ts`
+- Webhooks package: `packages/adapters/webhooks/index.ts`
+
+**Fix Required:** Update Jest moduleNameMapper to handle this structural difference.

@@ -1,0 +1,11 @@
+@neuronx/playbook-engine
+@neuronx/playbook-governance
+@neuronx/playbook-intelligence
+@neuronx/production-readiness
+@neuronx/rep-governance
+@neuronx/scorecard-engine
+@neuronx/tenancy
+@neuronx/uat-harness
+@neuronx/ui-design-system
+@neuronx/ui-sdk
+@neuronx/voice-orchestration

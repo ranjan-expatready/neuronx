@@ -1,0 +1,13 @@
+{
+  "session_id": "997b5edc",
+  "timestamp": "2026-01-17T17:13:10.943530",
+  "event_type": "task_close",
+  "event_data": {
+    "session_id": "997b5edc",
+    "task": "No-op task for closure gate test",
+    "result": "success",
+    "closure_status": "satisfied",
+    "closure_reason": "Governance not applicable: read-only analysis",
+    "close_governance": "na:read-only analysis"
+  }
+}

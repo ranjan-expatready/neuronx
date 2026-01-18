@@ -1,0 +1,64 @@
+{
+  "session_id": "56af6b10",
+  "timestamp": "2026-01-17T15:33:11.309087",
+  "event_type": "mcp_call",
+  "event_data": {
+    "provider": "github",
+    "action": "list_issues",
+    "ok": false,
+    "error": "Readiness status is RED: cannot proceed with MCP call",
+    "meta": {
+      "reason": "Readiness status is RED: cannot proceed with MCP call",
+      "readiness_result": {
+        "overall_status": "RED",
+        "checks": [
+          {
+            "name": "MCP Configuration",
+            "status": "GREEN",
+            "detail": "MCP enabled with 1 providers",
+            "remediation": null
+          },
+          {
+            "name": "MCP Provider github Command",
+            "status": "GREEN",
+            "detail": "Command found on PATH: python3",
+            "remediation": null
+          },
+          {
+            "name": "MCP Provider github Environment",
+            "status": "RED",
+            "detail": "Missing required environment variables: GITHUB_TOKEN",
+            "remediation": "Set environment variables: GITHUB_TOKEN"
+          },
+          {
+            "name": "ContextStream",
+            "status": "YELLOW",
+            "detail": "ContextStream not enabled",
+            "remediation": null
+          }
+        ],
+        "capabilities": {
+          "mcp": {
+            "enabled": true,
+            "providers": [
+              "github"
+            ]
+          },
+          "contextstream": {
+            "enabled": false,
+            "configured": false
+          },
+          "memory_write": {
+            "enabled": false
+          }
+        },
+        "missing_env": [
+          "GITHUB_TOKEN"
+        ],
+        "timestamp": "2026-01-17T11:33:11.308886Z"
+      }
+    },
+    "params_hash": "44136fa355b3678a",
+    "params_keys": []
+  }
+}

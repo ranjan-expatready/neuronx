@@ -1,0 +1,21 @@
+COMMAND: npx vitest run apps/core-api/src/authz/__tests__/roles.service.spec.ts --coverage --coverage.reportsDirectory=coverage.tmp
+EXIT: 0
+VITEST SUMMARY:
+ - RolesService
+   - seedCanonicalRoles
+     - should seed roles for all tenants
+     - should skip if role already exists
+   - createRole
+     - should create custom role
+     - should throw if name is reserved
+   - getPermissionsForRoles
+     - should aggregate unique permissions
+     - should return empty array if no roles provided
+   - deleteRole
+     - should delete custom role
+     - should throw when deleting canonical role
+
+JQ NUMBER (Total Lines %): 0.83
+TOUCHED FILES:
+- apps/core-api/src/authz/roles.service.ts (Coverage: 67.66%)
+- apps/core-api/src/authz/__tests__/roles.service.spec.ts

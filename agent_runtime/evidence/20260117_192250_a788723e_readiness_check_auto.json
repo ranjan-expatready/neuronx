@@ -1,0 +1,43 @@
+{
+  "session_id": "a788723e",
+  "timestamp": "2026-01-17T19:22:50.742172",
+  "event_type": "readiness_check_auto",
+  "event_data": {
+    "overall_status": "YELLOW",
+    "checks": [
+      {
+        "name": "MCP Configuration",
+        "status": "YELLOW",
+        "detail": "MCP not configured",
+        "remediation": null
+      },
+      {
+        "name": "ContextStream",
+        "status": "YELLOW",
+        "detail": "ContextStream not enabled",
+        "remediation": null
+      },
+      {
+        "name": "Memory Directory Writable",
+        "status": "GREEN",
+        "detail": "Memory directory writable: agent_runtime/memory",
+        "remediation": null
+      }
+    ],
+    "capabilities": {
+      "mcp": {
+        "enabled": false,
+        "providers": []
+      },
+      "contextstream": {
+        "enabled": false,
+        "configured": false
+      },
+      "memory_write": {
+        "enabled": true
+      }
+    },
+    "missing_env": [],
+    "timestamp": "2026-01-17T15:22:50.741779Z"
+  }
+}

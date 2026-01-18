@@ -1,0 +1,28 @@
+{
+  "session_id": "b19cfa64",
+  "timestamp": "2026-01-17T19:21:44.951746",
+  "event_type": "task_start",
+  "event_data": {
+    "session_id": "b19cfa64",
+    "task": "Test memory storage write",
+    "mode": "normal",
+    "features": {
+      "contextstream": {
+        "enabled": false,
+        "configured": false
+      },
+      "mcp": {
+        "enabled": false,
+        "providers": []
+      },
+      "memory_write": {
+        "enabled": true
+      }
+    },
+    "readiness_summary": {
+      "overall_status": "YELLOW",
+      "missing_env_count": 0
+    },
+    "close_governance": "na:read-only"
+  }
+}

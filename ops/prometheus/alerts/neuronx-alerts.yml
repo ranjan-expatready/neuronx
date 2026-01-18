@@ -1,0 +1,194 @@
+groups:
+  - name: neuronx.outbox
+    rules:
+      - alert: OutboxBacklogHigh
+        expr: neuronx_outbox_pending_total > 1000
+        for: 10m
+        labels:
+          severity: warning
+          service: neuronx
+          component: outbox
+        annotations:
+          summary: 'High outbox backlog detected'
+          description: 'Outbox has {{ $value }} pending events, exceeding threshold of 1000'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/outbox.md#outboxbackloghigh'
+
+      - alert: OutboxDeadLettersGrowing
+        expr: increase(neuronx_outbox_dead_letter_total[15m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+          service: neuronx
+          component: outbox
+        annotations:
+          summary: 'Outbox dead letters increasing'
+          description: 'Outbox dead letter queue has grown by {{ $value }} in the last 15 minutes'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/outbox.md#outboxdeadlettersgrowing'
+
+      - alert: OutboxPublishFailureRateHigh
+        expr: rate(neuronx_outbox_publish_fail_total[5m]) / (rate(neuronx_outbox_publish_success_total[5m]) + rate(neuronx_outbox_publish_fail_total[5m])) > 0.1
+        for: 10m
+        labels:
+          severity: critical
+          service: neuronx
+          component: outbox
+        annotations:
+          summary: 'High outbox publish failure rate'
+          description: 'Outbox publish failure rate is {{ $value | humanizePercentage }} over the last 5 minutes'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/outbox.md#outboxpublishfailureratehigh'
+
+  - name: neuronx.webhooks
+    rules:
+      - alert: WebhookDeadLettersGrowing
+        expr: increase(neuronx_webhook_dead_letter_total[15m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+          service: neuronx
+          component: webhooks
+        annotations:
+          summary: 'Webhook dead letters increasing'
+          description: 'Webhook dead letter queue has grown by {{ $value }} in the last 15 minutes'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/webhooks.md#webhookdeadlettersgrowing'
+
+      - alert: WebhookFailureRateHigh
+        expr: rate(neuronx_webhook_delivery_fail_total[5m]) / (rate(neuronx_webhook_delivery_success_total[5m]) + rate(neuronx_webhook_delivery_fail_total[5m])) > 0.2
+        for: 10m
+        labels:
+          severity: critical
+          service: neuronx
+          component: webhooks
+        annotations:
+          summary: 'High webhook delivery failure rate'
+          description: 'Webhook delivery failure rate is {{ $value | humanizePercentage }} over the last 5 minutes'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/webhooks.md#webhookfailureratehigh'
+
+      - alert: WebhookLatencyP95High
+        expr: histogram_quantile(0.95, rate(neuronx_webhook_delivery_duration_ms_bucket[5m])) > 2000
+        for: 10m
+        labels:
+          severity: warning
+          service: neuronx
+          component: webhooks
+        annotations:
+          summary: 'High webhook delivery latency'
+          description: 'Webhook delivery P95 latency is {{ $value }}ms over the last 5 minutes'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/webhooks.md#webhooklatencyp95high'
+
+  - name: neuronx.sla
+    rules:
+      - alert: SlaDueBacklogHigh
+        expr: neuronx_sla_due_total > 50
+        for: 10m
+        labels:
+          severity: critical
+          service: neuronx
+          component: sla
+        annotations:
+          summary: 'High SLA due backlog'
+          description: 'SLA has {{ $value }} timers currently due for processing'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/sla.md#sladuebackloghigh'
+
+      - alert: SlaEscalationFailures
+        expr: increase(neuronx_sla_escalations_fail_total[15m]) > 0
+        for: 15m
+        labels:
+          severity: critical
+          service: neuronx
+          component: sla
+        annotations:
+          summary: 'SLA escalation failures detected'
+          description: 'SLA escalation failures have occurred {{ $value }} times in the last 15 minutes'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/sla.md#slaescalationfailures'
+
+  - name: neuronx.voice
+    rules:
+      - alert: VoiceRetryableGrowing
+        expr: neuronx_voice_failed_retryable_total > 25
+        for: 10m
+        labels:
+          severity: warning
+          service: neuronx
+          component: voice
+        annotations:
+          summary: 'Voice retryable failures growing'
+          description: 'Voice has {{ $value }} retryable failures, exceeding threshold of 25'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/voice.md#voiceretryablegrowing'
+
+      - alert: VoiceRetryStorm
+        expr: increase(neuronx_voice_retry_attempt_total[10m]) > 100
+        for: 10m
+        labels:
+          severity: critical
+          service: neuronx
+          component: voice
+        annotations:
+          summary: 'Voice retry storm detected'
+          description: 'Voice retry attempts have increased by {{ $value }} in the last 10 minutes'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/voice.md#voiceretrystorm'
+
+  - name: neuronx.authz
+    rules:
+      - alert: InvalidApiKeySpike
+        expr: increase(neuronx_auth_invalid_api_key_total[5m]) > 20
+        for: 5m
+        labels:
+          severity: warning
+          service: neuronx
+          component: authz
+        annotations:
+          summary: 'Spike in invalid API key attempts'
+          description: 'Invalid API key attempts have increased by {{ $value }} in the last 5 minutes'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/authz.md#invalidapikeyspike'
+
+      - alert: PermissionDeniedSpike
+        expr: increase(neuronx_auth_permission_denied_total[5m]) > 50
+        for: 5m
+        labels:
+          severity: critical
+          service: neuronx
+          component: authz
+        annotations:
+          summary: 'Spike in permission denied events'
+          description: 'Permission denied events have increased by {{ $value }} in the last 5 minutes'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/authz.md#permissiondeniedspike'
+
+  - name: neuronx.artifacts
+    rules:
+      - alert: StorageDeleteFailures
+        expr: increase(neuronx_storage_delete_fail_total[15m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+          service: neuronx
+          component: artifacts
+        annotations:
+          summary: 'Storage delete failures detected'
+          description: 'Storage delete operations have failed {{ $value }} times in the last 15 minutes'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/artifacts-storage.md#storagedeletefailures'
+
+  - name: neuronx.cleanup
+    rules:
+      - alert: CleanupLockSkippedOften
+        expr: increase(neuronx_cleanup_lock_skipped_total[1h]) > 2
+        for: 1h
+        labels:
+          severity: warning
+          service: neuronx
+          component: cleanup
+        annotations:
+          summary: 'Cleanup lock acquisition frequently failing'
+          description: 'Cleanup lock has been skipped {{ $value }} times in the last hour'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/cleanup.md#cleanuplockskippedoften'
+
+      - alert: CleanupErrors
+        expr: increase(neuronx_cleanup_errors_total[1h]) > 0
+        for: 1h
+        labels:
+          severity: critical
+          service: neuronx
+          component: cleanup
+        annotations:
+          summary: 'Cleanup operation errors detected'
+          description: 'Cleanup operations have failed {{ $value }} times in the last hour'
+          runbook_url: 'https://github.com/neuronx/sales-os/blob/main/ops/runbooks/cleanup.md#cleanuperrors'

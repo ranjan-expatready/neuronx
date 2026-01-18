@@ -1,0 +1,185 @@
+# Voice Orchestration Policy
+# Defines NeuronX-owned voice behavior - GHL/Twilio only execute calls
+
+enforcementMode: monitor_only # monitor_only | block
+
+# Voice Mode Selection Rules
+# Maps lead states to allowed voice modes based on risk and context
+voiceModeRules:
+  # Prospect Identification
+  prospect_identified:
+    allowedModes: ['HUMAN_ONLY', 'ASSISTED']
+    defaultMode: 'ASSISTED'
+    requiresChecklist: true
+    maxDurationMinutes: 5
+    requiredScripts: ['initial_qualification']
+
+  # Initial Contact
+  initial_contact:
+    allowedModes: ['AUTONOMOUS', 'ASSISTED', 'HUMAN_ONLY']
+    defaultMode: 'ASSISTED'
+    requiresChecklist: true
+    maxDurationMinutes: 8
+    requiredScripts: ['value_proposition', 'objection_handling']
+
+  # Qualification
+  qualified:
+    allowedModes: ['ASSISTED', 'HUMAN_ONLY']
+    defaultMode: 'ASSISTED'
+    requiresChecklist: true
+    maxDurationMinutes: 12
+    requiredScripts:
+      ['needs_analysis', 'budget_discovery', 'decision_maker_identification']
+
+  # Proposal
+  proposal_sent:
+    allowedModes: ['HUMAN_ONLY', 'ASSISTED']
+    defaultMode: 'HUMAN_ONLY'
+    requiresChecklist: true
+    maxDurationMinutes: 15
+    requiredScripts: ['proposal_followup', 'negotiation']
+
+  # Negotiation
+  negotiation:
+    allowedModes: ['HUMAN_ONLY']
+    defaultMode: 'HUMAN_ONLY'
+    requiresChecklist: true
+    maxDurationMinutes: 20
+    requiredScripts: ['negotiation', 'objection_handling', 'close_techniques']
+
+  # Verbal Commitment
+  verbal_commit:
+    allowedModes: ['HUMAN_ONLY']
+    defaultMode: 'HUMAN_ONLY'
+    requiresChecklist: true
+    maxDurationMinutes: 10
+    requiredScripts: ['commitment_confirmation', 'next_steps']
+
+  # Closed Won
+  closed_won:
+    allowedModes: ['AUTONOMOUS']
+    defaultMode: 'AUTONOMOUS'
+    requiresChecklist: false
+    maxDurationMinutes: 2
+    requiredScripts: ['onboarding_welcome']
+
+  # Closed Lost
+  closed_lost:
+    allowedModes: ['AUTONOMOUS', 'HUMAN_ONLY']
+    defaultMode: 'AUTONOMOUS'
+    requiresChecklist: false
+    maxDurationMinutes: 3
+    requiredScripts: ['gracious_loss', 'referral_request']
+
+# Risk-Based Mode Overrides
+riskOverrides:
+  high_risk:
+    allowedModes: ['HUMAN_ONLY']
+    reason: 'High-value opportunities require human oversight'
+    threshold: 50000 # Deal value threshold
+
+  low_confidence_rep:
+    allowedModes: ['ASSISTED']
+    reason: 'Low-confidence representatives must use assisted mode'
+    requiresSupervisorOverride: true
+
+  sla_pressure:
+    allowedModes: ['AUTONOMOUS', 'ASSISTED']
+    reason: 'SLA pressure allows autonomous operations for routine tasks'
+    timeWindows:
+      - start: '18:00'
+        end: '08:00'
+        allowedModes: ['AUTONOMOUS']
+
+# Script Requirements by Mode
+scriptRequirements:
+  AUTONOMOUS:
+    requiredScripts: ['acknowledgment', 'outcome_collection']
+    allowAdlib: false
+    enforceOrder: true
+    maxDeviations: 0
+
+  ASSISTED:
+    requiredScripts: ['qualification_checklist', 'objection_handling']
+    allowAdlib: true
+    enforceOrder: false
+    maxDeviations: 3
+
+  HUMAN_ONLY:
+    requiredScripts: ['outcome_logging']
+    allowAdlib: true
+    enforceOrder: false
+    maxDeviations: 10
+
+# Call Quality Thresholds
+qualityThresholds:
+  minConfidenceScore: 0.7
+  maxBackgroundNoise: 0.3
+  minSpeechClarity: 0.6
+  maxLatencyMs: 500
+
+# Retry and Escalation Rules
+retryRules:
+  maxRetries: 3
+  backoffMultiplier: 2
+  maxBackoffMinutes: 60
+  escalationTriggers:
+    - condition: '3_failed_calls'
+      action: 'supervisor_notification'
+    - condition: 'sla_at_risk'
+      action: 'manager_escalation'
+    - condition: 'high_value_deal'
+      action: 'executive_notification'
+
+# Outcome Enforcement
+outcomeRequirements:
+  requiredFields:
+    - outcome
+    - confidence_score
+    - duration_seconds
+    - script_adherence_score
+
+  allowedOutcomes:
+    - CONTACTED_SUCCESSFUL
+    - CONTACTED_UNSUCCESSFUL
+    - NO_ANSWER
+    - VOICEMAIL_LEFT
+    - WRONG_NUMBER
+    - CALL_BLOCKED
+    - LANGUAGE_BARRIER
+    - TECHNICAL_ISSUE
+
+  blockedOutcomes:
+    - DIRECT_STATE_CHANGE # Cannot directly change FSM state
+    - MANUAL_QUALIFICATION # Must use proper qualification process
+
+# Billing Integration
+billingRules:
+  billableEvents:
+    - ANSWERED_CALL
+    - VOICEMAIL_DELIVERY
+
+  nonBillableEvents:
+    - NO_ANSWER
+    - WRONG_NUMBER
+    - TECHNICAL_FAILURE
+
+  rateMultipliers:
+    AUTONOMOUS: 0.8 # Discount for autonomous calls
+    ASSISTED: 1.0 # Standard rate
+    HUMAN_ONLY: 1.2 # Premium for human-only
+
+# Compliance and Governance
+complianceRules:
+  recordingRequired: true
+  piiMaskingEnabled: true
+  auditRetentionDays: 2555 # 7 years
+  maxDailyCallsPerLead: 3
+  cooldownPeriodMinutes: 60
+
+# Emergency Overrides (Require Executive Approval)
+emergencyOverrides:
+  enabled: false
+  allowedModes: ['AUTONOMOUS', 'ASSISTED', 'HUMAN_ONLY']
+  requiresApproval: true
+  approvalTimeoutHours: 24

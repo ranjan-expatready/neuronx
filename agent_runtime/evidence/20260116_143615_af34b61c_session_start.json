@@ -1,0 +1,14 @@
+{
+  "session_id": "af34b61c",
+  "task_description": "Phase4C state test - MCP disabled",
+  "start_time": "2026-01-16T14:36:15.795082",
+  "status": "started",
+  "config": {
+    "task": "Phase4C state test - MCP disabled",
+    "mcp_call": {
+      "provider": "github",
+      "action": "list_issues",
+      "params_raw": "{}"
+    }
+  }
+}

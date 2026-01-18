@@ -1,0 +1,9 @@
+{
+  "session_id": "fd4d2b66",
+  "end_time": "2026-01-16T14:07:18.710752",
+  "duration_seconds": 0.00033,
+  "final_status": "failed",
+  "summary": {
+    "test": "mcp_no_command"
+  }
+}

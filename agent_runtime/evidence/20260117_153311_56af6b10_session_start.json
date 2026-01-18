@@ -1,0 +1,14 @@
+{
+  "session_id": "56af6b10",
+  "task_description": "Test RED readiness due to missing env",
+  "start_time": "2026-01-17T15:33:11.308719",
+  "status": "started",
+  "config": {
+    "task": "Test RED readiness due to missing env",
+    "mcp_call": {
+      "provider": "github",
+      "action": "list_issues",
+      "params_raw": "{\"limit\":1}"
+    }
+  }
+}

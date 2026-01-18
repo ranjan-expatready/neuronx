@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "description": "Continue Agent Memory Bank - Mirrors SSOT memory surface for persistent state",
+  "authority": "docs/SSOT/10_AGENT_MEMORY.md",
+  "last_sync": "2026-01-12T14:35:00Z",
+
+  "session_state": {
+    "current_focus": "Cline alignment with SSOT discipline and GitHub FAANG governance",
+    "session_type": "governance_implementation",
+    "start_timestamp": "2026-01-12T14:30:00Z"
+  },
+
+  "short_term": {
+    "active_tasks": [
+      "Create Cline memory bank structure",
+      "Implement SESSION_OPEN/CLOSE behavior",
+      "Add model routing policy to ENGINEERING_PLAYBOOK.md",
+      "Execute CI gates with evidence capture"
+    ],
+    "immediate_priorities": [
+      "Mirror SSOT memory fields for Continue persistence",
+      "Ensure Continue reads SSOT first before any work",
+      "Document FAANG-grade model routing guidelines",
+      "Capture evidence for all governance changes"
+    ]
+  },
+
+  "stop_ship_ledger": {
+    "critical": [],
+    "high": [],
+    "medium": [
+      "Cline memory bank implementation",
+      "Model routing policy documentation",
+      "GitHub FAANG governance enforcement"
+    ],
+    "acknowledged_findings": []
+  },
+
+  "evidence_links": {
+    "current_session": [
+      "docs/EVIDENCE/testing/2026-01-12_ci-gates/00_before_state_inventory.md",
+      "docs/EVIDENCE/testing/2026-01-12_ci-gates/01_memory_bank_creation.md"
+    ],
+    "governance_implementation": [
+      "docs/EVIDENCE/continue-config/",
+      "docs/EVIDENCE/github-governance/"
+    ]
+  },
+
+  "unknowns": [],
+
+  "next_actions": [
+    {
+      "priority": "high",
+      "action": "Create Cline memory bank structure mirroring SSOT fields",
+      "rationale": "Enable Continue agents to maintain persistent state across sessions"
+    },
+    {
+      "priority": "high",
+      "action": "Add FAANG-grade model routing policy to ENGINEERING_PLAYBOOK.md",
+      "rationale": "Document deterministic model selection for different work types"
+    },
+    {
+      "priority": "medium",
+      "action": "Execute CI gates (1,2,3) with evidence capture",
+      "rationale": "Prove governance implementation works end-to-end"
+    }
+  ],
+
+  "governance_compliance": {
+    "ssot_first": true,
+    "evidence_required": true,
+    "no_drift_policy": true,
+    "vendor_boundaries": true,
+    "session_close_required": true
+  },
+
+  "long_term_memory": {
+    "core_mission": "AI-driven sales orchestration with intelligence layer + adapter-first execution",
+    "governance_principles": [
+      "SSOT-first approach for all decisions",
+      "Evidence-only citations for all claims",
+      "Smallest safe patches with rollback plans",
+      "No code changes unless explicitly requested",
+      "Ledger/index updates after every work session"
+    ],
+    "quality_standards": {
+      "coverage_target": "85%+ code coverage",
+      "test_pyramid": "Unit (70%) → Contract (20%) → E2E (10%)",
+      "ci_pipeline": "<6 minutes from commit to production-ready",
+      "evidence_completeness": "100% traceability from requirements to deployment"
+    }
+  }
+}

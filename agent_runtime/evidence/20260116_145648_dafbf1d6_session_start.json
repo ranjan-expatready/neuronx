@@ -1,0 +1,9 @@
+{
+  "session_id": "dafbf1d6",
+  "task_description": "readiness_check",
+  "start_time": "2026-01-16T14:56:48.755563",
+  "status": "started",
+  "config": {
+    "mode": "readiness_only"
+  }
+}

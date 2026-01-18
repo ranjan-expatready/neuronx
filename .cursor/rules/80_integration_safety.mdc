@@ -1,0 +1,283 @@
+# Integration Safety Enforcement
+
+## Purpose
+Prevent production incidents from external integrations by enforcing secure, observable, and resilient integration patterns.
+
+## Token Security Rules
+
+### Never Log Tokens
+**❌ FORBIDDEN:** Logging access tokens, refresh tokens, or API keys
+```
+❌ console.log('API call failed', { token: accessToken });
+❌ logger.error('Auth failed', { credentials: { token } });
+```
+
+**✅ REQUIRED:** Safe logging with masking
+```
+✅ logger.error('Auth failed', { tenantId, provider: 'ghl', maskedToken: maskToken(token) });
+✅ // Use correlationId for debugging token issues
+```
+
+### Token Vault Access Only
+**❌ FORBIDDEN:** Direct token access from environment or config
+```
+❌ const token = process.env.GHL_ACCESS_TOKEN;
+❌ const token = config.ghlToken;
+```
+
+**✅ REQUIRED:** All tokens through TokenVault accessors
+```
+✅ const token = await tokenVault.getAccessToken(query);
+✅ // TokenVault handles encryption, refresh, and audit
+```
+
+### Secure Token Storage
+**✅ REQUIRED:** All tokens encrypted at rest with key rotation
+```
+✅ // Automatic via TokenVault implementation
+✅ // KEK + DEK encryption with configurable key rotation
+```
+
+## Webhook Security Rules
+
+### Signature Verification Required
+**❌ FORBIDDEN:** Processing webhooks without signature verification (except explicit dev override)
+```
+❌ // Production code without verification
+const event = await normalizer.processWebhook(payload, null, headers, tenantId);
+```
+
+**✅ REQUIRED:** Signature verification with configurable secret
+```
+✅ const normalizer = new WebhookNormalizer(eventBus, {
+  webhookSecret: config.GHL_WEBHOOK_SECRET
+});
+✅ // Dev override must be explicit and logged
+```
+
+### Replay Protection Mandatory
+**✅ REQUIRED:** All webhooks deduplicated with time-based replay protection
+```
+✅ // Automatic via WebhookReplayProtector
+✅ // 24-hour retention with webhook ID + timestamp deduplication
+```
+
+### Safe Payload Handling
+**❌ FORBIDDEN:** Storing raw vendor payloads in core database tables
+```
+❌ await prisma.event.create({
+  data: { rawGhlPayload: req.body } // NO!
+});
+```
+
+**✅ REQUIRED:** Canonical events only, vendor payloads isolated
+```
+✅ // Convert to canonical domain events
+✅ // Store raw payloads in quarantined audit tables if needed
+```
+
+## HTTP Client Rules
+
+### Resilient HTTP Only
+**❌ FORBIDDEN:** Direct fetch calls to external APIs
+```
+❌ const response = await fetch('https://api.ghl.com/contacts');
+```
+
+**✅ REQUIRED:** All external calls through hardened HTTP client
+```
+✅ const response = await httpClient.request({
+  method: 'GET',
+  url: '/contacts',
+  // Automatic retry, rate limiting, circuit breaker
+});
+```
+
+### Rate Limiting Required
+**✅ REQUIRED:** All external API calls rate limited
+```
+✅ // Automatic via HttpRateLimiter
+✅ // Configurable per provider (GHL: 100 req/min default)
+```
+
+### Circuit Breaker Protection
+**✅ REQUIRED:** All external services protected by circuit breakers
+```
+✅ // Automatic failure isolation
+✅ // Configurable thresholds (5 failures → open for 60s)
+```
+
+## Observability Rules
+
+### Correlation ID Required
+**❌ FORBIDDEN:** Operations without correlation ID propagation
+```
+❌ await ghlAdapter.createLead(request, { tenantId });
+```
+
+**✅ REQUIRED:** All operations include correlation context
+```
+✅ await ghlAdapter.createLead(request, {
+  tenantId,
+  correlationId: 'corr_123',
+  requestId: 'req_456'
+});
+```
+
+### Structured Logging Mandatory
+**❌ FORBIDDEN:** Unstructured string logging for operations
+```
+❌ console.log(`Lead ${leadId} created for tenant ${tenantId}`);
+```
+
+**✅ REQUIRED:** Structured logging with searchable fields
+```
+✅ logger.info('Lead created', {
+  tenantId,
+  leadId,
+  correlationId,
+  operation: 'ghl.createLead',
+  duration: 125
+});
+```
+
+### Sensitive Data Masking
+**✅ REQUIRED:** All sensitive data masked in logs and responses
+```
+✅ // Tokens: ****5678
+✅ // Emails: j***@example.com
+✅ // Phones: +1***4567
+```
+
+## Error Handling Rules
+
+### Canonical Error Types
+**❌ FORBIDDEN:** Throwing generic or vendor-specific errors
+```
+❌ throw new Error('GHL API timeout');
+❌ throw new GhlApiError('Contact not found', 404);
+```
+
+**✅ REQUIRED:** Canonical error types with proper classification
+```
+✅ throw new AdapterError('TIMEOUT', 'External API timeout', 504, true);
+✅ throw new RateLimitError(60); // Includes retry-after
+```
+
+### Error Context Preservation
+**✅ REQUIRED:** All errors include correlation and tenant context
+```
+✅ try {
+  await operation();
+} catch (error) {
+  logger.error('Operation failed', {
+    tenantId,
+    correlationId,
+    error: error.message,
+    code: error.code,
+    retryable: error.retryable
+  });
+  throw error;
+}
+```
+
+## Configuration Rules
+
+### Environment Validation
+**✅ REQUIRED:** All configuration validated on startup
+```
+✅ // Zod schema validation with descriptive errors
+✅ // Fail-fast on missing critical configuration
+```
+
+### Feature Flags for Safety
+**❌ FORBIDDEN:** Dangerous features enabled in production
+```
+❌ SKIP_WEBHOOK_VERIFICATION=true // Production
+❌ USE_MEMORY_STORES=true // Production
+```
+
+**✅ REQUIRED:** Development-only overrides must be explicit
+```
+✅ // Production: strict security
+✅ // Development: explicit overrides with warnings
+```
+
+## Testing Rules
+
+### Integration Tests Required
+**✅ REQUIRED:** All integration points have automated tests
+```
+✅ // OAuth flow tests
+✅ // Webhook processing tests
+✅ // Token refresh tests
+✅ // Error scenario tests
+```
+
+### Contract Tests Enforced
+**✅ REQUIRED:** Adapter interface compliance verified
+```
+✅ // Type safety tests
+✅ // Method signature tests
+✅ // Error handling tests
+```
+
+### Security Tests Mandatory
+**✅ REQUIRED:** Security boundaries tested
+```
+✅ // Token leakage prevention
+✅ // Signature validation tests
+✅ // Replay attack prevention
+```
+
+## Monitoring Rules
+
+### Health Checks Required
+**✅ REQUIRED:** All integration points have health endpoints
+```
+✅ GET /integrations/ghl/health
+✅ // Returns connection status, token validity, rate limits
+```
+
+### Metrics Collection Mandatory
+**✅ REQUIRED:** All operations emit metrics
+```
+✅ metrics.increment('http_requests_total', { provider: 'ghl', status: '200' });
+✅ metrics.histogram('http_request_duration', duration, { provider: 'ghl' });
+```
+
+### Alert Thresholds Defined
+**✅ REQUIRED:** Critical operations have alerting
+```
+✅ // Circuit breaker open >5min
+✅ // Token refresh failure rate >10%
+✅ // API error rate >15%
+```
+
+## Migration and Deployment Rules
+
+### Zero-Downtime Deployments
+**✅ REQUIRED:** Integration changes support rolling deployments
+```
+✅ // Backward compatibility during updates
+✅ // Feature flags for gradual rollouts
+✅ // Circuit breaker prevents cascade failures
+```
+
+### Rollback Capability
+**✅ REQUIRED:** All changes reversible within deployment window
+```
+✅ // Configuration rollbacks
+✅ // Feature flag rollbacks
+✅ // Token version rollbacks
+```
+
+### Incident Response Ready
+**✅ REQUIRED:** Emergency controls available
+```
+✅ // Circuit breaker manual trip/reset
+✅ // Rate limiter emergency drain
+✅ // Token emergency rotation
+```
+
+This rule enforces production-grade integration safety, preventing security incidents, data loss, and service outages from external system interactions.

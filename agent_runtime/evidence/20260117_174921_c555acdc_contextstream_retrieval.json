@@ -1,0 +1,15 @@
+{
+  "session_id": "c555acdc",
+  "timestamp": "2026-01-17T17:49:21.696449",
+  "event_type": "contextstream_retrieval",
+  "event_data": {
+    "enabled": false,
+    "configured": false,
+    "attempted": false,
+    "succeeded": false,
+    "error_message": null,
+    "retrieved_count": 0,
+    "budget_max_chars_total": 10000,
+    "budget_max_chars_per_item": 1200
+  }
+}

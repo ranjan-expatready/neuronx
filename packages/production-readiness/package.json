@@ -1,0 +1,36 @@
+{
+  "name": "@neuronx/production-readiness",
+  "version": "1.0.0",
+  "description": "Production Readiness Dashboard - Enterprise-grade tenant readiness and trust assessment",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@neuronx/domain": "workspace:*",
+    "@neuronx/ghl-boundary-enforcer": "workspace:*",
+    "@neuronx/rep-governance": "workspace:*",
+    "@neuronx/voice-orchestration": "workspace:*",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0"
+  },
+  "keywords": [
+    "neuronx",
+    "production-readiness",
+    "readiness-dashboard",
+    "tenant-readiness",
+    "trust-signals",
+    "governance"
+  ],
+  "author": "NeuronX Team",
+  "license": "UNLICENSED"
+}

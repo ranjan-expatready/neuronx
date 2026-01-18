@@ -1,0 +1,28 @@
+{
+  "session_id": "65d01da5",
+  "timestamp": "2026-01-17T17:49:42.776540",
+  "event_type": "task_start",
+  "event_data": {
+    "session_id": "65d01da5",
+    "task": "TDD NA demo",
+    "mode": "normal",
+    "features": {
+      "contextstream": {
+        "enabled": false,
+        "configured": false
+      },
+      "mcp": {
+        "enabled": false,
+        "providers": []
+      },
+      "memory_write": {
+        "enabled": false
+      }
+    },
+    "readiness_summary": {
+      "overall_status": "YELLOW",
+      "missing_env_count": 0
+    },
+    "close_governance": "na:dry-run"
+  }
+}

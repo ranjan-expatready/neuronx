@@ -1,0 +1,10 @@
+{
+  "session_id": "a4963565",
+  "timestamp": "2026-01-17T15:33:22.570822",
+  "event_type": "risk_classification",
+  "event_data": {
+    "task": "Test YELLOW readiness allowed",
+    "risk_tier": "GREEN",
+    "classification_reason": "No risk keywords detected - defaulting to Green"
+  }
+}

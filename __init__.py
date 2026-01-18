@@ -1,0 +1,1 @@
+"""Ollama Gateway for Cursor Integration"""

@@ -1,0 +1,53 @@
+{
+  "session_id": "d2739e9c",
+  "timestamp": "2026-01-16T14:54:01.463711",
+  "event_type": "readiness_check",
+  "event_data": {
+    "overall_status": "RED",
+    "checks": [
+      {
+        "name": "MCP Configuration",
+        "status": "GREEN",
+        "detail": "MCP enabled with 1 providers",
+        "remediation": null
+      },
+      {
+        "name": "MCP Provider github Command",
+        "status": "GREEN",
+        "detail": "Command found on PATH: echo",
+        "remediation": null
+      },
+      {
+        "name": "MCP Provider github Environment",
+        "status": "RED",
+        "detail": "Missing required environment variables: GITHUB_TOKEN",
+        "remediation": "Set environment variables: GITHUB_TOKEN"
+      },
+      {
+        "name": "ContextStream",
+        "status": "YELLOW",
+        "detail": "ContextStream not configured",
+        "remediation": "Set CONTEXTSTREAM_URL and CONTEXTSTREAM_API_KEY environment variables"
+      }
+    ],
+    "capabilities": {
+      "mcp": {
+        "enabled": true,
+        "providers": [
+          "github"
+        ]
+      },
+      "contextstream": {
+        "enabled": true,
+        "configured": false
+      },
+      "memory_write": {
+        "enabled": false
+      }
+    },
+    "missing_env": [
+      "GITHUB_TOKEN"
+    ],
+    "timestamp": "2026-01-16T10:54:01.463539Z"
+  }
+}

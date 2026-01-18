@@ -1,0 +1,222 @@
+---
+description: "Enforce clean vendor boundaries and prevent logic leakage into external systems"
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Vendor Boundary Policy
+
+## Purpose
+This rule enforces strict architectural boundaries between NeuronX core intelligence and external vendor platforms to prevent logic leakage and maintain platform independence.
+
+## Core Principles
+
+### Intelligence Layer Purity
+- **NeuronX Owns Business Logic**: All sales intelligence, scoring algorithms, and orchestration logic resides exclusively in NeuronX core
+- **No Business Logic in Adapters**: Adapter layers contain only protocol translation and data transformation
+- **Platform Agnosticism**: Core logic must work with any execution platform (GHL, Salesforce, custom)
+
+### Adapter-Only Pattern
+- **Adapters Are Stateless**: No persistent state or decision logic in adapter components
+- **Single Responsibility**: Adapters handle one external system integration
+- **Protocol Translation**: Convert NeuronX commands to vendor-specific API calls
+- **Error Isolation**: Vendor failures don't corrupt NeuronX business logic
+
+## Forbidden Patterns
+
+### Business Logic in Adapters
+```typescript
+// FORBIDDEN: Business logic in GoHighLevel adapter
+if (lead.score > 0.8 && lead.industry === 'tech') {
+  // Complex scoring logic in adapter - VIOLATION
+  ghl.createCampaign('high-value-tech-lead');
+}
+```
+
+```typescript
+// CORRECT: Orchestration in core, execution in adapter
+// Core: Returns execution command
+return {
+  action: 'create-campaign',
+  campaignType: 'high-value-tech-lead',
+  leadId: lead.id
+};
+// Adapter: Pure execution
+ghl.createCampaign(command.campaignType, command.leadId);
+```
+
+### Vendor-Specific Decision Logic
+```typescript
+// FORBIDDEN: GHL-specific logic in core
+if (usingGHL) {
+  // GHL-specific workflow - VIOLATION
+  triggerGHLWorkflow('custom-workflow-123');
+}
+```
+
+```typescript
+// CORRECT: Platform-agnostic commands
+const command = {
+  type: 'execute-workflow',
+  workflowId: 'nurture-sequence',
+  parameters: { leadId, priority: 'high' }
+};
+// Adapter handles platform specifics
+```
+
+### Data Model Coupling
+```typescript
+// FORBIDDEN: Direct vendor data model usage
+const ghlLead = {
+  ghl_custom_field_1: lead.companySize, // VIOLATION
+  ghl_custom_field_2: lead.industry
+};
+```
+
+```typescript
+// CORRECT: NeuronX data model with adapter mapping
+const neuronxLead = {
+  companySize: 500,
+  industry: 'technology'
+};
+// Adapter handles field mapping
+const vendorData = adapter.mapToVendor(neuronxLead);
+```
+
+## Required Patterns
+
+### Clean Interface Contracts
+```typescript
+// Core exports execution commands
+interface ExecutionCommand {
+  action: string;
+  parameters: Record<string, any>;
+  metadata: {
+    tenantId: string;
+    correlationId: string;
+  };
+}
+
+// Adapters implement execution
+interface Adapter {
+  execute(command: ExecutionCommand): Promise<ExecutionResult>;
+}
+```
+
+### Configuration-Driven Differences
+```typescript
+// ALLOWED: Configuration drives behavior differences
+const config = {
+  tenantId: 'client-a',
+  executionPlatform: 'ghl',
+  fieldMappings: {
+    companySize: 'custom_field_1',
+    industry: 'custom_field_2'
+  }
+};
+```
+
+### Error Boundary Isolation
+```typescript
+// CORRECT: Vendor errors don't affect core logic
+try {
+  await adapter.execute(command);
+} catch (vendorError) {
+  // Log vendor error, continue with fallback
+  logger.warn('Vendor execution failed', { vendorError });
+  await fallbackHandler.handle(command);
+}
+```
+
+## Enforcement Checks
+
+### Code Analysis
+- Scan for vendor-specific imports in core modules
+- Detect business logic keywords in adapter files
+- Flag direct vendor API calls outside adapters
+
+### Architecture Review
+- All external integrations must go through adapter layer
+- Core modules cannot import adapter code
+- Data transformations must be explicit and testable
+
+### Testing Requirements
+- Adapter contract tests verify interface compliance
+- Mock external services in core logic tests
+- Integration tests validate end-to-end data flow
+
+## Boundary Definitions
+
+### NeuronX Core (Business Logic)
+- Lead scoring algorithms
+- Workflow orchestration rules
+- Sales intelligence calculations
+- Process state management
+- Business validation rules
+
+### Adapter Layer (Protocol Translation)
+- API call formatting
+- Data field mapping
+- Authentication handling
+- Error response translation
+- Rate limiting and retries
+
+### External Systems (Execution)
+- User interface rendering
+- Data persistence
+- Communication delivery
+- Third-party integrations
+- Platform-specific features
+
+## Migration Guidelines
+
+### From Coupled to Clean
+1. Extract business logic from adapters to core
+2. Create execution command interfaces
+3. Implement adapter pattern
+4. Add contract tests
+5. Update architecture documentation
+
+### Platform Switching
+1. Implement new adapter for target platform
+2. Update configuration mapping
+3. Test adapter contract compliance
+4. Gradual rollout with feature flags
+5. Remove old adapter after validation
+
+## Exception Handling
+
+### Valid Exceptions
+- Performance-critical optimizations (documented and time-bound)
+- Vendor-specific required features (with abstraction plan)
+- Legacy system migrations (with remediation timeline)
+
+### Exception Requirements
+- ADR documenting business justification
+- Technical mitigation plan
+- Time-bound remediation schedule
+- Regular review checkpoints
+
+## Monitoring and Alerts
+
+### Boundary Violation Detection
+- Automated scans for forbidden patterns
+- PR reviews flag potential violations
+- Architecture health metrics
+
+### Performance Impact
+- Adapter latency monitoring
+- Error rate tracking by vendor
+- Data consistency validation
+
+## Continuous Evolution
+
+### Platform Assessment
+- Regular evaluation of vendor capabilities
+- Competitive analysis of integration options
+- Technology roadmap alignment
+
+### Architecture Refinement
+- Adapter pattern improvements
+- Interface contract evolution
+- Testing strategy enhancements

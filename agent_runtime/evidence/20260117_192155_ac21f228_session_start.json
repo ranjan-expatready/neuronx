@@ -1,0 +1,12 @@
+{
+  "session_id": "ac21f228",
+  "task_description": "readiness_check_auto",
+  "start_time": "2026-01-17T19:21:55.591036",
+  "status": "started",
+  "config": {
+    "mode": "auto",
+    "mcp_config": false,
+    "use_contextstream": false,
+    "write_memory": true
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "webhook-demo-001",
+  "tenantId": "demo-tenant",
+  "correlationId": "demo-2026-01-03",
+  "timestamp": "2026-01-03T10:00:00.000Z",
+  "type": "contact.created",
+  "payload": {
+    "contact": {
+      "id": "demo-contact-001",
+      "firstName": "Sarah",
+      "lastName": "Johnson",
+      "email": "sarah@techcorp.com",
+      "phone": "+1-555-0123",
+      "company": {
+        "name": "Tech Corp",
+        "industry": "technology",
+        "size": 150
+      },
+      "source": "website",
+      "tags": ["demo", "high-value"],
+      "customFields": {
+        "lead_score_override": null,
+        "priority_level": "high"
+      }
+    },
+    "event": {
+      "id": "evt_demo_001",
+      "type": "contact.created",
+      "createdAt": "2026-01-03T10:00:00.000Z"
+    }
+  },
+  "metadata": {
+    "webhookId": "wh_demo_001",
+    "source": "ghl_demo",
+    "version": "1.0"
+  }
+}

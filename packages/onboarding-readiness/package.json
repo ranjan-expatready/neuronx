@@ -1,0 +1,35 @@
+{
+  "name": "@neuronx/onboarding-readiness",
+  "version": "1.0.0",
+  "description": "Onboarding readiness validator for enterprise tenants",
+  "main": "dist/index.js",
+  "bin": {
+    "check-readiness": "./bin/check-readiness.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.0.0",
+    "commander": "^11.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0"
+  },
+  "keywords": [
+    "neuronx",
+    "onboarding",
+    "readiness",
+    "validation"
+  ],
+  "author": "NeuronX Team",
+  "license": "UNLICENSED"
+}

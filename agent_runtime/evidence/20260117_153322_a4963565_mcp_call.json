@@ -1,0 +1,40 @@
+{
+  "session_id": "a4963565",
+  "timestamp": "2026-01-17T15:33:22.597088",
+  "event_type": "mcp_call",
+  "event_data": {
+    "provider": "github",
+    "action": "list_issues",
+    "ok": true,
+    "error": null,
+    "meta": {
+      "provider": "github",
+      "action": "list_issues",
+      "server_mode": "stdio",
+      "server_available": true,
+      "token_present": true,
+      "command_configured": true,
+      "command": "python3",
+      "repository": "owner/repo",
+      "params_keys": [
+        "limit"
+      ],
+      "command_available": true,
+      "elapsed_ms": 25,
+      "exit_code": 0,
+      "stdout_len": 37,
+      "stderr_len": 0,
+      "checks": {
+        "mcp_enabled": true,
+        "provider_enabled": true,
+        "action_allowed": true,
+        "risk_tier_allowed": true,
+        "role_allowed": true
+      }
+    },
+    "params_hash": "156fedef9af97685",
+    "params_keys": [
+      "limit"
+    ]
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "pkgs": {
+    "@neuronx/org-authority": "packages/decision-explainability/node_modules/@neuronx/org-authority/package.json",
+    "@neuronx/playbook-engine": "packages/playbook-intelligence/node_modules/@neuronx/playbook-governance/node_modules/@neuronx/playbook-engine/package.json",
+    "@neuronx/execution-authority": "packages/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/package.json",
+    "@neuronx/pipeline": "packages/playbook-intelligence/node_modules/@neuronx/pipeline/package.json",
+    "@neuronx/decision-engine": "packages/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/package.json",
+    "@neuronx/playbook-governance": "packages/playbook-intelligence/node_modules/@neuronx/playbook-governance/package.json",
+    "@neuronx/decision-explainability": "packages/decision-explainability/package.json",
+    "@neuronx/ghl-drift": "packages/ghl-drift/package.json",
+    "@neuronx/ghl-snapshots": "apps/executive-ui/node_modules/@neuronx/ui-sdk/node_modules/@neuronx/production-readiness/node_modules/@neuronx/ghl-boundary-enforcer/node_modules/@neuronx/ghl-snapshots/package.json",
+    "@neuronx/billing-entitlements": "apps/executive-ui/node_modules/@neuronx/ui-sdk/node_modules/@neuronx/production-readiness/node_modules/@neuronx/ghl-boundary-enforcer/node_modules/@neuronx/ghl-snapshots/node_modules/@neuronx/billing-entitlements/package.json",
+    "@neuronx/ghl-read-adapter": "packages/ghl-read-adapter/package.json",
+    "@neuronx/adapters-ghl": "packages/adapters-ghl/package.json",
+    "@neuronx/observability": "packages/observability/package.json",
+    "@neuronx/domain": "apps/executive-ui/node_modules/@neuronx/ui-sdk/node_modules/@neuronx/production-readiness/node_modules/@neuronx/rep-governance/node_modules/@neuronx/domain/package.json",
+    "@neuronx/config": "packages/config/package.json",
+    "@neuronx/tenancy": "apps/executive-ui/node_modules/@neuronx/ui-sdk/node_modules/@neuronx/production-readiness/node_modules/@neuronx/ghl-boundary-enforcer/node_modules/@neuronx/tenancy/package.json",
+    "@neuronx/contracts": "apps/executive-ui/node_modules/@neuronx/ui-sdk/node_modules/@neuronx/production-readiness/node_modules/@neuronx/ghl-boundary-enforcer/node_modules/@neuronx/tenancy/node_modules/@neuronx/contracts/package.json",
+    "@neuronx/ghl-auth": "packages/integration/ghl-auth/package.json",
+    "@neuronx/http": "packages/integration/http/package.json",
+    "@neuronx/voice-orchestration": "apps/executive-ui/node_modules/@neuronx/ui-sdk/node_modules/@neuronx/production-readiness/node_modules/@neuronx/voice-orchestration/package.json",
+    "@neuronx/execution-framework": "apps/executive-ui/node_modules/@neuronx/ui-sdk/node_modules/@neuronx/production-readiness/node_modules/@neuronx/voice-orchestration/node_modules/@neuronx/execution-framework/package.json",
+    "@neuronx/execution-adapters": "packages/execution-adapters/package.json",
+    "@neuronx/ghl-boundary-enforcer": "apps/executive-ui/node_modules/@neuronx/ui-sdk/node_modules/@neuronx/production-readiness/node_modules/@neuronx/ghl-boundary-enforcer/package.json",
+    "@neuronx/voice-twilio": "packages/adapters/voice-twilio/package.json",
+    "@neuronx/adapters-ghl-billing": "packages/adapters/ghl-billing/package.json",
+    "@neuronx/onboarding-readiness": "packages/onboarding-readiness/package.json",
+    "@neuronx/adapter-sdk": "packages/adapter-sdk/package.json",
+    "@neuronx/eventing": "packages/eventing/package.json",
+    "@neuronx/scorecard-engine": "packages/scorecard-engine/package.json",
+    "@neuronx/production-readiness": "apps/executive-ui/node_modules/@neuronx/ui-sdk/node_modules/@neuronx/production-readiness/package.json",
+    "@neuronx/rep-governance": "apps/executive-ui/node_modules/@neuronx/ui-sdk/node_modules/@neuronx/production-readiness/node_modules/@neuronx/rep-governance/package.json",
+    "@neuronx/uat-harness": "packages/uat-harness/package.json",
+    "@neuronx/ui-design-system": "apps/executive-ui/node_modules/@neuronx/ui-design-system/package.json",
+    "@neuronx/ui-sdk": "apps/executive-ui/node_modules/@neuronx/ui-sdk/package.json",
+    "@neuronx/playbook-intelligence": "packages/playbook-intelligence/package.json",
+    "@neuronx/control-plane-api": "apps/control-plane-api/package.json",
+    "@neuronx/operator-ui": "apps/operator-ui/package.json",
+    "@neuronx/adapters-ghl-webhook": "apps/adapters/ghl-webhook/package.json",
+    "@neuronx/manager-ui": "apps/manager-ui/package.json",
+    "@neuronx/core-api": "apps/core-api/package.json",
+    "@neuronx/executive-ui": "apps/executive-ui/package.json",
+    "@neuronx/customer-trust-portal": "apps/customer-trust-portal/package.json"
+  },
+  "deps": {
+    "@neuronx/org-authority": [],
+    "@neuronx/playbook-engine": [],
+    "@neuronx/execution-authority": [],
+    "@neuronx/pipeline": [],
+    "@neuronx/decision-engine": ["@neuronx/playbook-engine"],
+    "@neuronx/playbook-governance": [],
+    "@neuronx/decision-explainability": [
+      "@neuronx/billing-entitlements",
+      "@neuronx/ghl-drift",
+      "@neuronx/org-authority"
+    ],
+    "@neuronx/ghl-drift": ["@neuronx/ghl-snapshots"],
+    "@neuronx/ghl-snapshots": ["@neuronx/billing-entitlements"],
+    "@neuronx/billing-entitlements": [],
+    "@neuronx/ghl-read-adapter": [
+      "@neuronx/adapters-ghl",
+      "@neuronx/observability"
+    ],
+    "@neuronx/adapters-ghl": ["@neuronx/domain", "@neuronx/observability"],
+    "@neuronx/observability": [],
+    "@neuronx/domain": [],
+    "@neuronx/config": [],
+    "@neuronx/tenancy": ["@neuronx/contracts"],
+    "@neuronx/contracts": [],
+    "@neuronx/ghl-auth": [],
+    "@neuronx/http": [],
+    "@neuronx/voice-orchestration": [
+      "@neuronx/domain",
+      "@neuronx/execution-framework"
+    ],
+    "@neuronx/execution-framework": [],
+    "@neuronx/execution-adapters": [],
+    "@neuronx/ghl-boundary-enforcer": [
+      "@neuronx/ghl-snapshots",
+      "@neuronx/tenancy"
+    ],
+    "@neuronx/voice-twilio": [
+      "@neuronx/decision-engine",
+      "@neuronx/pipeline",
+      "@neuronx/playbook-engine"
+    ],
+    "@neuronx/adapters-ghl-billing": ["@neuronx/billing-entitlements"],
+    "@neuronx/onboarding-readiness": [],
+    "@neuronx/adapter-sdk": [
+      "@neuronx/contracts",
+      "@neuronx/eventing",
+      "@neuronx/tenancy"
+    ],
+    "@neuronx/eventing": ["@neuronx/contracts"],
+    "@neuronx/scorecard-engine": [],
+    "@neuronx/production-readiness": [
+      "@neuronx/domain",
+      "@neuronx/ghl-boundary-enforcer",
+      "@neuronx/rep-governance",
+      "@neuronx/voice-orchestration"
+    ],
+    "@neuronx/rep-governance": ["@neuronx/domain"],
+    "@neuronx/uat-harness": [],
+    "@neuronx/ui-design-system": [],
+    "@neuronx/ui-sdk": ["@neuronx/production-readiness"],
+    "@neuronx/playbook-intelligence": [
+      "@neuronx/pipeline",
+      "@neuronx/playbook-engine",
+      "@neuronx/playbook-governance"
+    ],
+    "@neuronx/control-plane-api": [],
+    "@neuronx/operator-ui": ["@neuronx/ui-design-system", "@neuronx/ui-sdk"],
+    "@neuronx/adapters-ghl-webhook": [
+      "@neuronx/adapter-sdk",
+      "@neuronx/eventing",
+      "@neuronx/tenancy"
+    ],
+    "@neuronx/manager-ui": ["@neuronx/ui-design-system", "@neuronx/ui-sdk"],
+    "@neuronx/core-api": [],
+    "@neuronx/executive-ui": ["@neuronx/ui-design-system", "@neuronx/ui-sdk"],
+    "@neuronx/customer-trust-portal": []
+  }
+}

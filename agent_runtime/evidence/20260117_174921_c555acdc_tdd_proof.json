@@ -1,0 +1,14 @@
+{
+  "session_id": "c555acdc",
+  "timestamp": "2026-01-17T17:49:21.773649",
+  "event_type": "tdd_proof",
+  "event_data": {
+    "proof_type": "tests-added",
+    "ok": true,
+    "missing_items": [],
+    "test_commands_seen": [],
+    "test_files_changed": [
+      "apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts"
+    ]
+  }
+}
