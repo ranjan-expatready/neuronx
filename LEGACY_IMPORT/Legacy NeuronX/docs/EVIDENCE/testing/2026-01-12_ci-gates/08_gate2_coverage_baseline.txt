@@ -1,6 +1,0 @@
-Baseline Coverage for apps/core-api (2026-01-12):
-Line Coverage: 11.61%
-Exit Code: 1 (due to threshold mismatch)
-
-Verification command:
-pnpm -w test:coverage ; jq '.total.lines.pct' coverage/coverage-summary.json

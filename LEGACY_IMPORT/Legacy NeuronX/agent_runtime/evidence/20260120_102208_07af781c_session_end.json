@@ -1,9 +1,0 @@
-{
-  "session_id": "07af781c",
-  "end_time": "2026-01-20T10:22:08.794499",
-  "duration_seconds": 0.000628,
-  "final_status": "blocked",
-  "summary": {
-    "reason": "AUTO-MCP DISABLED: Kill switch active via NEURONX_AUTO_MCP_ENABLED=false"
-  }
-}

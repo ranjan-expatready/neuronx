@@ -1,8 +1,0 @@
-packages/decision-engine/package.json:2:  "name": "@neuronx/decision-engine",
-packages/decision-engine/package.json:15:    "@neuronx/execution-authority": "workspace:*",
-packages/decision-explainability/package.json:14:    "@neuronx/decision-engine": "workspace:*",
-packages/decision-explainability/package.json:15:    "@neuronx/execution-authority": "workspace:*",
-packages/adapters/voice-twilio/package.json:21:    "@neuronx/decision-engine": "workspace:*",
-packages/org-authority/package.json:20:    "@neuronx/execution-authority": "workspace:*",
-packages/org-authority/package.json:22:    "@neuronx/decision-engine": "workspace:*"
-packages/execution-authority/package.json:2:  "name": "@neuronx/execution-authority",

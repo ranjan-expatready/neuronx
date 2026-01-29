@@ -1,2 +1,0 @@
-packages/adapters/webhooks/__tests__/webhook-signature-verifier.unit.spec.ts
-packages/adapters/webhooks/index.ts

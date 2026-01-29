@@ -1,5 +1,0 @@
-Generated: 2026-01-11T15:30:00Z
-Mission: Continue capability proof - Write verification
-Status: SUCCESS
-
-Continue can write evidence files and run shell commands.

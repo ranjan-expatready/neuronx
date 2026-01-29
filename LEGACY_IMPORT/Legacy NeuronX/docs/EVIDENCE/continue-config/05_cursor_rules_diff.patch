@@ -1,7 +1,0 @@
-CURSOR RULES CHANGES:
-- Added Continue Model Routing Policy section
-- Documented GLM-4.7 for audits/CI/repo-wide reasoning
-- Documented DeepSeek-V3.2 for daily coding/fixes/unit tests
-- Documented Qwen3 Coder 480B for heavy refactoring/large patches
-- Documented Nemotron 3 Nano for autocomplete
-- Added model capabilities matrix
