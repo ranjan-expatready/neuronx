@@ -1,0 +1,354 @@
+name: trae-review
+
+# Trae Review Validator — Mandatory External Review Enforcement
+# This workflow validates that Trae has reviewed T1-T4 changes before allowing merge.
+# Trae is a read-only external security and policy reviewer for high-risk changes.
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+    branches: [main]
+
+jobs:
+  trae-review-validator:
+    name: Validate Trae Review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Get Changed Files
+        id: changed-files
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            const files = pr.data.map(f => f.filename).join('\n');
+            console.log('Changed files:', pr.data.length, 'files');
+            return files;
+
+      - name: Run Trae Review Validator
+        id: trae-validation
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_DESCRIPTION: ${{ github.event.pull_request.body || github.event.head_commit.message }}
+          PR_LABELS: $${{ join(github.event.pull_request.labels.*.name, ',') }}
+          GITHUB_BASE_REF: ${{ github.event.base_ref || github.event.pull_request.base.ref || 'main' }}
+          TRAE_ARTIFACT_DIR: COCKPIT/artifacts/TRAE_REVIEW
+          CHANGED_FILES: ${{ steps.changed-files.outputs.result }}
+        run: |
+          echo "🤖 Running Trae Review Validator"
+          echo "Event: pull_request"
+          echo "PR Number: $PR_NUMBER"
+          echo "PR Title: $PR_TITLE"
+          echo "Base Branch: $GITHUB_BASE_REF"
+          echo "Labels: $PR_LABELS"
+          echo "Changed Files: $CHANGED_FILES"
+          echo ""
+
+          # Skip on push events (shouldn't happen for trigger, but defensive)
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "ℹ️  Skipping Trae validator on non-PR events"
+            echo "✅ Trae validation passed (skipped)"
+            exit 0
+          fi
+
+          # Export CHANGED_FILES for Python script
+          export CHANGED_FILES="$CHANGED_FILES"
+
+          # Write changed files to a temp file for Python to read
+          echo "$CHANGED_FILES" > /tmp/changed_files.txt
+
+          python - << 'PYEOF' "$CHANGED_FILES"
+          import os
+          import sys
+          import re
+          import subprocess
+          from pathlib import Path
+          from datetime import datetime, timedelta
+
+          # Pass CHANGED_FILES via sys.argv since heredoc doesn't inherit env properly
+          if len(sys.argv) > 1:
+              os.environ['CHANGED_FILES'] = sys.argv[1]
+          else:
+              # Fallback: try reading from temp file
+              temp_file = Path("/tmp/changed_files.txt")
+              if temp_file.exists():
+                  os.environ['CHANGED_FILES'] = temp_file.read_text().strip()
+
+          # Configuration
+          REPO_ROOT = Path(os.getenv("GITHUB_WORKSPACE", "."))
+          TRAE_ARTIFACT_DIR = REPO_ROOT / "COCKPIT" / "artifacts" / "TRAE_REVIEW"
+          PROTECTED_PATHS = ["GOVERNANCE", "AGENTS", "COCKPIT", ".github/workflows", "STATE"]
+
+          # Get PR metadata
+          pr_number = os.getenv("PR_NUMBER", "")
+          pr_labels = os.getenv("PR_LABELS", "")
+          pr_description = os.getenv("PR_DESCRIPTION", "")
+          changed_files_env = os.getenv("CHANGED_FILES", "")
+
+          # Get changed files from GitHub API (passed via env var)
+          def get_changed_files():
+              try:
+                  if changed_files_env:
+                      files = [Path(f.strip()) for f in changed_files_env.splitlines() if f.strip()]
+                      return files
+                  # Fallback: try git diff
+                  base_ref = os.getenv("GITHUB_BASE_REF", "main")
+                  result = subprocess.run(
+                      ["git", "diff", "--name-only", f"{base_ref}...HEAD"],
+                      capture_output=True,
+                      text=True,
+                      cwd=REPO_ROOT,
+                      check=True
+                  )
+                  files = [Path(f.strip()) for f in result.stdout.splitlines() if f.strip()]
+                  return files
+              except subprocess.CalledProcessError:
+                  return []
+
+          changed_files = get_changed_files()
+
+          # Determine if Trae review is required
+          def requires_trae_review():
+              if not changed_files:
+                  return False
+
+              # Skip Trae review for artifact-only changes (COCKPIT/artifacts/ only)
+              all_are_artifacts = all(
+                  str(f).startswith("COCKPIT/artifacts/")
+                  for f in changed_files
+              )
+              if all_are_artifacts:
+                  return False
+
+              # Check protected paths
+              touches_protected = any(
+                  any(p in str(f) for p in PROTECTED_PATHS)
+                  for f in changed_files
+              )
+
+              # Check T1/T2 labels
+              has_t1_label = any(l in pr_labels.lower() for l in ["tier-1", "critical", "t1"])
+              has_t2_label = any(l in pr_labels.lower() for l in ["tier-2", "high-risk", "t2"])
+
+              # Check PR description for risk tier
+              desc_lower = pr_description.lower()
+              tier_from_desc = "tier 1" in desc_lower or "t1" in desc_lower or "critical" in desc_lower
+              tier_from_desc = tier_from_desc or ("tier 2" in desc_lower or "t2" in desc_lower or "high risk" in desc_lower)
+
+              return touches_protected or has_t1_label or has_t2_label or tier_from_desc
+
+          # Check for emergency override
+          def has_emergency_override():
+              desc_lower = pr_description.lower()
+              return "emergency" in desc_lower and "override" in desc_lower
+
+          # Find Trae artifact for this PR
+          def find_trae_artifact(pr_num):
+              if not TRAE_ARTIFACT_DIR.exists():
+                  return None
+
+              # Look for artifact matching PR number
+              for artifact_file in TRAE_ARTIFACT_DIR.glob(f"TRAE-*-{pr_num}.yml"):
+                  return artifact_file
+
+              return None
+
+          # Parse YAML artifact (simple parser for version field only)
+          def parse_artifact_verdict(artifact_path):
+              try:
+                  with open(artifact_path) as f:
+                      content = f.read()
+
+                  # Extract verdict using regex
+                  verdict_match = re.search(r'^verdict:\s*["\']?([^"\'\s]+)["\']?', content, re.MULTILINE)
+                  created_match = re.search(r'^created_at:\s*["\']?([^"\']+)["\']?', content, re.MULTILINE)
+
+                  verdict = verdict_match.group(1) if verdict_match else None
+                  created_at = created_match.group(1) if created_match else None
+
+                  return verdict, created_at
+              except Exception as e:
+                  print(f"Error parsing artifact: {e}")
+                  return None, None
+
+          # Validate artifact expiry (< 7 days old)
+          def is_artifact_stale(created_at_str):
+              try:
+                  # Parse timestamp: "2026-01-25 10:30 UTC"
+                  created_at = datetime.strptime(created_at_str, "%Y-%m-%d %H:%M UTC")
+                  expiry_date = datetime.utcnow() - timedelta(days=7)
+
+                  return created_at < expiry_date
+              except Exception:
+                  # If we can't parse, consider it valid (conservative)
+                  return False
+
+          # Main validation logic
+          print("=" * 60)
+          print("TRAE REVIEW VALIDATOR")
+          print("=" * 60)
+
+          requires_review = requires_trae_review()
+          emergency_override = has_emergency_override()
+
+          print(f"Changed files: {len(changed_files)}")
+          print(f"Trae review required: {requires_review}")
+          print(f"Emergency override: {emergency_override}")
+          print()
+
+          if not requires_review:
+              print("✅ Trae review not required for this PR")
+              print("   No T1-T4 changes detected")
+              sys.exit(0)
+
+          if emergency_override:
+              print("⚠️  Emergency override detected")
+              print("   Post-merge review will be required")
+              sys.exit(0)
+
+          # Trae review is required - find artifact
+          artifact_path = find_trae_artifact(pr_number)
+
+          if not artifact_path:
+              print("❌ Trae Review: FAILED")
+              print("   No TRAE_REVIEW artifact found for this PR")
+              print()
+              print("   To fix:")
+              print("   1. Invoke Trae review for this PR")
+              print("   2. Create TRAE_REVIEW artifact in COCKPIT/artifacts/TRAE_REVIEW/")
+              print("   3. Ensure artifact name matches: TRAE-{YYYYMMDD}-{PR_NUMBER}.yml")
+              print("   4. Ensure verdict is 'APPROVE'")
+              sys.exit(1)
+
+          print(f"Found artifact: {artifact_path.name}")
+
+          # Parse and validate artifact
+          verdict, created_at = parse_artifact_verdict(artifact_path)
+
+          if not verdict:
+              print("❌ Trae Review: FAILED")
+              print("   Could not parse artifact (no verdict found)")
+              sys.exit(1)
+
+          print(f"Artifact verdict: {verdict}")
+
+          if verdict not in ["APPROVE", "EMERGENCY_OVERRIDE"]:
+              print(f"❌ Trae Review: FAILED")
+              print(f"   Verdict is '{verdict}', require 'APPROVE'")
+              print()
+              print("   To fix:")
+              print("   1. Address Trae's findings in the artifact")
+              print("   2. Re-request Trae review")
+              print("   3. Update artifact with new verdict")
+              sys.exit(1)
+
+          # Check expiry
+          if created_at and is_artifact_stale(created_at):
+              print(f"❌ Trae Review: FAILED")
+              print(f"   Artifact created on {created_at} is stale (> 7 days)")
+              print()
+              print("   To fix:")
+              print("   1. Re-request Trae review for this PR")
+              print("   2. Update artifact with fresh review")
+              sys.exit(1)
+
+          # All checks passed
+          print()
+          print("=" * 60)
+          print("✅ Trae Review: PASSED")
+          print("=" * 60)
+          print(f"Verdict: {verdict}")
+          if created_at:
+              print(f"Created: {created_at}")
+          print()
+          PYEOF
+
+      - name: Comment validation result on PR
+        if: always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const PR_NUMBER = '${{ github.event.number }}';
+
+            // Determine if Trae review was required
+            const changedFiles = '${{ steps.trae-validation.outcome }}';
+            const outcome = '${{ steps.trae-validation.outcome }}';
+
+            let comment = '## 🔒 Trae Review Validation\n\n';
+
+            if (outcome === 'success') {
+              comment += '✅ **PASSED**\n\n';
+              comment += 'Trae review completed successfully. ';
+              comment += 'This PR is authorized for merge (pending other checks).\n';
+            } else {
+              comment += '❌ **FAILED**\n\n';
+              comment += 'This PR requires Trae review before merge.\n\n';
+              comment += '### To Fix:\n';
+              comment += '1. Review the Trae review requirements in [AGENTS/TRAE.md](../AGENTS/TRAE.md)\n';
+              comment += '2. Follow the invocation protocol in [RUNBOOKS/trae-review.md](../RUNBOOKS/trae-review.md)\n';
+              comment += '3. Create a TRAE_REVIEW artifact in `COCKPIT/artifacts/TRAE_REVIEW/`\n';
+              comment += '4. Ensure artifact verdict is `APPROVE`\n';
+              comment += '\nSee the Trae Review Validator job output for details.\n';
+            }
+
+            // Find existing Trae review comment
+            github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            }).then(({ data: comments }) => {
+              const traebotComment = comments.find(comment =>
+                comment.user.type === 'Bot' &&
+                comment.body.includes('Trae Review Validation')
+              );
+
+              if (traebotComment) {
+                // Update existing comment
+                github.rest.issues.updateComment({
+                  comment_id: traebotComment.id,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: comment
+                });
+              } else {
+                // Create new comment
+                github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: comment
+                });
+              }
+            });
+
+      - name: Fail if Trae review required and not present
+        if: steps.trae-validation.outcome == 'failure'
+        run: |
+          echo "❌ Trae review validation failed"
+          echo "PR cannot merge without Trae approval for T1-T4 changes"
+          exit 1
+
+      - name: Mark as passed
+        if: steps.trae-validation.outcome == 'success'
+        run: echo "✅ Trae review validation passed"

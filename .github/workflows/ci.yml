@@ -1,0 +1,283 @@
+name: CI
+
+# Trigger on push and pull request events
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+# Concurrency: Cancel in-progress runs for same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ========================
+  # CODE QUALITY CHECKS
+  # ========================
+  lint:
+    name: Linting and Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python (if Python project)
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # NOTE: Install your linting tools here
+      # - name: Install dependencies
+      #   run: |
+      #     pip install flake8 black isort mypy black
+
+      # - name: Run flake8 (linting)
+      #   run: flake8 app/ --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      # - name: Run black (formatting check)
+      #   run: black --check app/
+
+      # - name: Run isort (import sorting check)
+      #   run: isort --check-only app/
+
+      # - name: Run mypy (type checking)
+      #   run: mypy app/
+
+      # Placeholder for framework initialization
+      - name: Placeholder (No actual code to lint yet)
+        run: echo "Framework initialization - no Python code to lint yet"
+
+  # ========================
+  # UNIT TESTS
+  # ========================
+  test-unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # Install pytest for governance tests
+      - name: Install pytest
+        run: |
+          pip install pytest
+
+      - name: Run governance validator tests
+        run: |
+          # Run PLAN structure unit tests
+          python -m pytest tests/test_governance_plan_structure.py -v
+
+      # Coverage Reporting Placeholder (see GOVERNANCE/QUALITY_GATES.md for Staged Coverage Policy)
+      - name: Coverage Reporting Placeholder
+        run: |
+          echo "=============================================="
+          echo "Coverage Reporting - Staged Quality Gates"
+          echo "=============================================="
+          echo ""
+          echo "Current Stage: Stage 0 (Tests required for new features)"
+          echo "Coverage Requirement: None (CI green sufficient)"
+          echo "Next Stage: Stage 1 (70% coverage floor)"
+          echo ""
+          echo "To enable coverage reporting:"
+          echo "1. Install coverage tools (pytest-cov for Python, jest for JavaScript, etc.)"
+          echo "2. Uncomment coverage test step above"
+          echo "3. Set coverage threshold (70% for Stage 1, 80% for Stage 2)"
+          echo "4. Upload coverage to Codecov or similar service"
+          echo ""
+          echo "See GOVERNANCE/QUALITY_GATES.md for complete staged coverage policy"
+          echo "=============================================="
+
+      # Placeholder for APP tests
+      - name: Placeholder for APP unit tests
+        run: |
+          echo "APP unit tests will run here when APP/ is populated"
+
+      # - name: Upload coverage to Codecov (optional)
+      #   uses: codecov/codecov-action@v3
+      #   with:
+      #     file: ./coverage.xml
+      #     flags: unittests
+      #     name: codecov-umbrella
+      #     fail_ci_if_error: false  # Don't fail CI if upload fails
+
+  # ========================
+  # INTEGRATION TESTS
+  # ========================
+  test-integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [test-unit]
+    services:
+      # Example: Postgres database for integration tests
+      # postgres:
+      #   image: postgres:15
+      #   env:
+      #     POSTGRES_USER: test
+      #     POSTGRES_PASSWORD: test
+      #     POSTGRES_DB: test_db
+      #   options: >-
+      #     --health-cmd pg_isready
+      #     --health-interval 10s
+      #     --health-timeout 5s
+      #     --health-retries 5
+      #   ports:
+      #     - 5432:5432
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/test_db
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python (if Python project)
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # NOTE: Run integration tests here
+      # - name: Install dependencies
+      #   run: |
+      #     pip install -r requirements.txt
+      #     pip install pytest
+
+      # - name: Run integration tests
+      #   run: pytest tests/integration/ -v
+
+      # Placeholder for framework initialization
+      - name: Placeholder (No integration tests yet)
+        run: |
+          echo "Framework initialization - no integration tests yet"
+          echo "When APP/ has integration tests, they will run here"
+
+  # ========================
+  # SECURITY SCANS
+  # ========================
+  security:
+    name: Security Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Example: Check for hardcoded secrets
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     scan-type: 'fs'
+      #     scan-ref: '.'
+      #     format: 'sarif'
+      #     output: 'trivy-results.sarif'
+
+      # - name: Upload Trivy results to GitHub Security
+      #   uses: github/codeql-action/upload-sarif@v2
+      #   if: always()
+      #   with:
+      #     sarif_file: 'trivy-results.sarif'
+
+      # Example: Check for secrets using Gitleaks
+      # - name: Run Gitleaks
+      #   uses: gitleaks/gitleaks-action@v2
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Placeholder for framework initialization
+      - name: Placeholder (Security checks to be configured)
+        run: |
+          echo "Framework initialization - security scanning to be configured"
+          echo "Configure: Trivy, Gitleaks, Snyk, or other security tools"
+
+      # Note: Actual secret scanning would be configured here with security tools
+
+  # ========================
+  # BUILD VERIFICATION
+  # ========================
+  build:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    needs: [lint, test-unit, test-integration, security]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python (if Python project)
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # NOTE: Build your application here
+      # - name: Install dependencies
+      #   run: |
+      #     pip install -r requirements.txt
+      #     pip install build
+
+      # - name: Build application
+      #   run: python -m build
+
+      # - name: Verify build artifacts
+      #   run: ls -la dist/
+
+      # Placeholder for framework initialization
+      - name: Placeholder (Build step to be configured)
+        run: |
+          echo "Framework initialization - build step to be configured"
+          echo "When APP/ has code, configure build process here"
+
+      # Verify framework is self-documenting
+      - name: Verify framework completeness
+        run: |
+          echo "Verifying framework structure..."
+          [ -f FRAMEWORK_REQUIREMENTS.md ] || exit 1
+          [ -f GOVERNANCE/GUARDRAILS.md ] || exit 1
+          [ -f GOVERNANCE/DEFINITION_OF_DONE.md ] || exit 1
+          [ -f GOVERNANCE/RISK_TIERS.md ] || exit 1
+          [ -f GOVERNANCE/COST_POLICY.md ] || exit 1
+          [ -f AGENTS/ROLES.md ] || exit 1
+          [ -f AGENTS/CONTRACTS.md ] || exit 1
+          [ -f AGENTS/BEST_PRACTICES.md ] || exit 1
+          [ -f AGENTS/PROMPT_TEMPLATES.md ] || exit 1
+          [ -f FRAMEWORK_KNOWLEDGE/autonomy_principles.md ] || exit 1
+          [ -f FRAMEWORK_KNOWLEDGE/product_best_practices.md ] || exit 1
+          [ -f FRAMEWORK_KNOWLEDGE/engineering_standards.md ] || exit 1
+          [ -f FRAMEWORK_KNOWLEDGE/testing_strategy.md ] || exit 1
+          [ -f FRAMEWORK_KNOWLEDGE/deployment_philosophy.md ] || exit 1
+          [ -f README.md ] || exit 1
+          echo "All framework files present ✓"
+
+  # ========================
+  # SUMMARY
+  # ========================
+  summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    needs: [lint, test-unit, test-integration, security, build]
+    if: always()
+    steps:
+      - name: CI Status
+        run: |
+          echo "===================="
+          echo "CI Pipeline Summary"
+          echo "===================="
+          echo "Linting: ${{ needs.lint.result }}"
+          echo "Unit Tests: ${{ needs.test-unit.result }}"
+          echo "Integration Tests: ${{ needs.test-integration.result }}"
+          echo "Security: ${{ needs.security.result }}"
+          echo "Build: ${{ needs.build.result }}"
+          echo "===================="
+
+      - name: Fail on any failed job
+        if: needs.lint.result == 'failure' || needs.test-unit.result == 'failure' || needs.test-integration.result == 'failure' || needs.security.result == 'failure' || needs.build.result == 'failure'
+        run: |
+          echo "❌ CI FAILED - One or more jobs failed"
+          exit 1
+
+      - name: CI Passed
+        if: success()
+        run: |
+          echo "✅ All CI checks passed"
+          echo "Ready for merge to main (with deployment approval)"

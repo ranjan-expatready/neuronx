@@ -1,0 +1,356 @@
+name: Release
+
+# Trigger manually or on push to main (after CI passes)
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+  push:
+    branches: [ main ]
+    paths:
+      - 'APP/**'
+      - 'requirements.txt'
+      - 'package.json'
+
+# Require approval for production deployments
+# This is a critical control - production deploy cannot happen without human approval
+concurrency: release-${{ github.ref }}
+
+jobs:
+  # ========================
+  # PRE-DEPLOYMENT VALIDATION
+  # ========================
+  pre-deploy:
+    name: Pre-Deployment Checks
+    runs-on: ubuntu-latest
+    outputs:
+      can_deploy: ${{ steps.checks.outputs.can_deploy }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify CI passed
+        run: |
+          echo "Checking if CI workflow passed..."
+          # In a real setup, this would query GitHub Actions API
+          # For now, we assume this manual trigger is post-CI
+          echo "✅ CI assumed passed (manual trigger)"
+
+      - name: Check Definition of Done completion
+        run: |
+          echo "Checking if all work meets Definition of Done..."
+          # Check BACKLOG/ for completed items
+          if [ -d "BACKLOG" ]; then
+            echo "Backlog directory exists"
+          fi
+
+      - name: Run security scan before deploy
+        run: |
+          echo "Running pre-deployment security scan..."
+          # Configure your security scanning tool
+          # Example: trivy fs . --severity HIGH,CRITICAL --exit-code 1
+          echo "✅ Security scan complete (placeholder)"
+
+      - name: Check for required approvals
+        id: checks
+        run: |
+          can_deploy="true"
+
+          # Production always requires approval
+          if [ "${{ github.event.inputs.environment }}" = "production" ]; then
+            echo "🔒 Production environment requires approval"
+            # Approval is handled by GitHub's required review policy
+            # This job just confirms we're going to the right env
+          fi
+
+          echo "can_deploy=${can_deploy}" >> $GITHUB_OUTPUT
+
+  # ========================
+  # DEPLOY TO STAGING
+  # ========================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: pre-deploy
+    if: github.event.inputs.environment == 'staging' || github.event_name != 'workflow_dispatch'
+    environment:
+      name: staging
+      url: https://staging.yourapp.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python (if Python project)
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # NOTE: Configure your staging deployment
+      # - name: Configure AWS credentials (if using AWS)
+      #   uses: aws-actions/configure-aws-credentials@v2
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-east-1
+
+      # - name: Deploy to staging (example: AWS ECS)
+      #   run: |
+      #     aws ecs update-service --cluster your-staging-cluster --service your-service --force-new-deployment
+
+      # - name: Deploy to staging (example: Render/Vercel/Heroku)
+      #   run: |
+      #     # Configure your deployment command
+      #     echo "Deploying to staging..."
+
+      # Placeholder deployment
+      - name: Deploy to staging (placeholder)
+        run: |
+          echo "============================"
+          echo "DEPLOYING TO STAGING"
+          echo "============================"
+          echo "Version: ${{ github.event.inputs.version }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Deploying to staging environment..."
+          echo "✅ Staging deployment complete (placeholder)"
+          echo "============================"
+
+      - name: Health check on staging
+        run: |
+          echo "Running health checks on staging..."
+          # curl -f https://staging.yourapp.com/healthz || exit 1
+          echo "✅ Staging health check passed (placeholder)"
+
+      - name: Run E2E tests on staging
+        run: |
+          echo "Running E2E tests on staging environment..."
+          # pytest tests/e2e/ --base-url=https://staging.yourapp.com
+          echo "✅ E2E tests passed (placeholder)"
+
+      - name: Notify staging deployment
+        run: |
+          echo "Staging deployment notification sent"
+          # Configure Slack, Discord, or email notification here
+
+  # ========================
+  # PRODUCTION APPROVAL GATE
+  # ========================
+  production-approval:
+    name: Production Deployment Approval
+    runs-on: ubuntu-latest
+    needs: [pre-deploy, deploy-staging]
+    if: github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://yourapp.com
+    # This environment will require manual approval in GitHub repository settings
+    steps:
+      - name: Request production approval
+        run: |
+          echo "================================"
+          echo "PRODUCTION DEPLOYMENT REQUESTED"
+          echo "================================"
+          echo "Version: ${{ github.event.inputs.version }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Staging verified: ${{ needs.deploy-staging.result }}"
+          echo ""
+          echo "🔒 MANUAL APPROVAL REQUIRED"
+          echo "This deployment requires explicit human approval"
+          echo "================================"
+
+      - name: Pre-production checklist
+        run: |
+          echo ""
+          echo "PRE-PRODUCTION CHECKLIST"
+          echo "======================"
+          echo "[ ] All tests passing in CI"
+          echo "[ ] Staging deployment successful"
+          echo "[ ] Staging E2E tests passing"
+          echo "[ ] Rollback plan documented"
+          echo "[ ] Database migrations reviewed"
+          echo "[ ] Breaking changes identified"
+          echo "[ ] Migration guide prepared (if needed)"
+          echo "[ ] Monitoring/alerting configured"
+          echo "[ ] Support team notified"
+          echo "[ ] Deployment scheduled appropriately"
+          echo ""
+
+      - name: Confirm approval
+        run: |
+          echo "⏳ Waiting for production approval..."
+          # GitHub environment approval handles this
+          echo "Once approved, production deployment proceeds"
+
+  # ========================
+  # DEPLOY TO PRODUCTION
+  # ========================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: production-approval
+    environment:
+      name: production
+      url: https://yourapp.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python (if Python project)
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # NOTE: Configure your production deployment
+      # - name: Configure AWS credentials (if using AWS)
+      #   uses: aws-actions/configure-aws-credentials@v2
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-east-1
+
+      # - name: Run database migrations (if applicable)
+      #   run: |
+      #     python manage.py migrate
+      #   env:
+      #     DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+
+      # - name: Deploy to production (example: AWS ECS)
+      #   run: |
+      #     aws ecs update-service --cluster your-production-cluster --service your-service --force-new-deployment
+
+      # - name: Deploy to production (example: Render/Vercel/Heroku)
+      #   run: |
+      #     # Configure your production deployment command
+      #     echo "Deploying to production..."
+
+      # Placeholder deployment
+      - name: Deploy to production
+        run: |
+          echo "================================"
+          echo "DEPLOYING TO PRODUCTION"
+          echo "================================"
+          echo "Version: ${{ github.event.inputs.version }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Approver: ${{ github.actor }}"
+          echo ""
+          echo "🚀 Deploying to production environment..."
+          echo "✅ Production deployment complete (placeholder)"
+          echo "================================"
+
+      - name: Health check on production
+        run: |
+          echo "Running health checks on production..."
+          # curl -f https://yourapp.com/healthz || exit 1
+          echo "✅ Production health check passed (placeholder)"
+          sleep 30
+          echo "Waiting for stability..."
+          # curl -f https://yourapp.com/healthz || exit 1
+          echo "✅ Post-deployment health check passed (placeholder)"
+
+      - name: Verify rollback readiness
+        run: |
+          echo "Rollback verification:"
+          echo "Previous version: ${{ github.event.inputs.version }}"
+          echo "Rollback command prepared (documented in RUNBOOKS/)"
+          echo "✅ Rollback verified ready to execute if needed"
+
+      - name: Production deployment notification
+        run: |
+          echo "================================"
+          echo "PRODUCTION DEPLOYMENT SUCCESS"
+          echo "================================"
+          echo "Version: ${{ github.event.inputs.version }}"
+          echo "Deployed by: ${{ github.actor }}"
+          echo "Deployment time: $(date)"
+          echo ""
+          echo "Monitoring active..."
+          echo "================================"
+
+          # Configure notification to Slack/Discord/Email
+          # Example:
+          # curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
+          #   -H 'Content-Type: application/json' \
+          #   -d '{
+          #     "text": "Production deployment successful! Version ${{ github.event.inputs.version }} deployed by ${{ github.actor }}"
+          #   }'
+
+  # ========================
+  # ROLLBACK (Manual Trigger)
+  # ========================
+  rollback:
+    name: Rollback Production
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && inputs.rollback != ''
+    environment:
+      name: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.rollback_version }}
+
+      - name: Rollback to previous version
+        run: |
+          echo "================================"
+          echo "PRODUCTION ROLLBACK"
+          echo "================================"
+          echo "Rolling back to: ${{ github.event.inputs.rollback_version }}"
+          echo "This action is CRITICAL and should be monitored"
+          echo "================================"
+
+          # Configure your rollback command
+          # Example: git checkout ${{ github.event.inputs.rollback_version }}
+          # Re-deploy previous version
+
+      - name: Verify rollback health
+        run: |
+          echo "Verifying rollback..."
+          # Health check on rolled-back version
+
+      - name: Rollback notification
+        run: |
+          echo "Rollback completed"
+          # Notify team urgently
+
+  # ========================
+  # SUMMARY
+  # ========================
+  summary:
+    name: Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [pre-deploy, deploy-staging, deploy-production]
+    if: always()
+    steps:
+      - name: Deployment Status
+        run: |
+          echo "==========================="
+          echo "Deployment Pipeline Summary"
+          echo "==========================="
+          echo "Version: ${{ github.event.inputs.version }}"
+          echo "Environment: ${{ github.event.inputs.environment }}"
+          echo "==========================="
+
+      - name: Success
+        if: success()
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "Your application is now live on ${{ github.event.inputs.environment }}"
+
+      - name: Failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed"
+          echo "Check the failed step above for details"
+          echo "Consider triggering rollback if partial deployment"

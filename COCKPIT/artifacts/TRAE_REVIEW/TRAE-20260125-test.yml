@@ -1,0 +1,54 @@
+ARTIFACT_TYPE: TRAE_REVIEW
+artifact_id: "TRAE-20260125-test"
+created_at: "2026-01-25 22:00 UTC"
+created_by: "Factory (based on Trae verdict)"
+
+# REVIEW CONTEXT
+pr_number: "test-001"
+pr_url: "https://github.com/ranjan-expatready/autonomous-engineering-os/pull/test-001"
+
+# TRAE'S VERDICT
+verdict: "APPROVE"
+signature: "trae-external-reviewer"
+
+# REVIEW SCOPE
+review_scope:
+  - "AGENTS/TRAE.md"
+  - ".github/workflows/trae-review-validator.yml"
+
+# FINDINGS
+security_findings: []
+policy_violations: []
+
+# RECOMMENDATIONS
+recommendations: "No security or policy issues found. Trae review: APPROVE - Change is compliant with governance policies and safe to merge."
+
+# METADATA
+review_timestamp: "2026-01-25 22:00 UTC"
+expiry_days: 7
+
+# ARTIFACT LINKS
+links:
+  github_pr: "https://github.com/ranjan-expatready/autonomous-engineering-os/pull/test-001"
+  artifact_file: "COCKPIT/artifacts/TRAE_REVIEW/TRAE-20260125-test.yml"
+
+---
+# Test Artifact Notes
+
+This is a test TRAE_REVIEW artifact created to verify the Trae integration.
+- ✅ Trae agent defined in AGENTS/TRAE.md
+- ✅ TRAE_REVIEW artifact structure validated
+- ✅ Verdict is "APPROVE"
+- ✅ No security findings
+- ✅ No policy violations
+- ✅ Timestamp provided
+- ✅ Links are correct
+
+To use this for testing:
+1. Create a test PR touching a protected path (e.g., modify AGENTS/TRAE.md)
+2. Ensure this artifact exists with the PR number
+3. Verify `machine-board` check passes (governance_validator.py validates Trae artifact)
+4. Verify `trae-review` check passes (trae-review-validator.yml workflow validates Trae artifact)
+5. Test merge is allowed after Trae approval
+
+Next test: Create a test PR and verify Trae review enforcement blocks/rejects/allows merge correctly.

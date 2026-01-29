@@ -1,0 +1,39 @@
+{
+  "results": [
+    {
+      "name": "Secret Detection",
+      "passed": true,
+      "message": ""
+    },
+    {
+      "name": "Protected Path Artifacts",
+      "passed": false,
+      "message": "Missing: PLAN section, VERIFICATION section, STATE file updates"
+    },
+    {
+      "name": "STATE File Updates",
+      "passed": false,
+      "message": "No STATE files in PR (required unless BACKLOG-only)"
+    },
+    {
+      "name": "Risk Tier Requirements",
+      "passed": true,
+      "message": "No T1/T2 risk tier detected"
+    },
+    {
+      "name": "Trae Review",
+      "passed": false,
+      "message": "No TRAE_REVIEW artifact found for PR #"
+    },
+    {
+      "name": "Framework Validations",
+      "passed": true,
+      "message": "All framework checks passed"
+    },
+    {
+      "name": "PLAN Structure",
+      "passed": false,
+      "message": "No PLAN artifact found - required for T1+ or protected paths"
+    }
+  ]
+}
