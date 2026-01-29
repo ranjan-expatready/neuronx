@@ -1,0 +1,4 @@
+packages:
+  - 'APP/services/*'
+  - 'APP/web/*'
+  - 'APP/libs/*'
