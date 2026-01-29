@@ -1,0 +1,43 @@
+PHASE 3 - WORKSPACE & SYMLINK HEALTH CHECK
+
+pnpm-workspace.yaml:
+packages:
+  - 'packages/*'
+  - 'apps/*'
+
+pnpm -w list --depth 2:
+[TRUNCATED - very long output showing all workspace packages and dependencies]
+
+pnpm -w why vitest:
+Legend: production dependency, optional only, dev only
+
+sales-os@0.1.0 /Users/ranjansingh/Desktop/NeuronX
+
+devDependencies:
+@vitest/coverage-v8 2.1.9
+└── vitest 2.1.9 peer
+vitest 2.1.9
+
+ls -la node_modules/.pnpm | head -60:
+total 808
+drwxr-xr-x  1125 ranjansingh  staff   36000 Jan 10 17:02 .
+drwxr-xr-x    38 ranjansingh  staff    1216 Jan 10 17:02 ..
+drwxr-xr-x     3 ranjansingh  staff      96 Jan 10 17:02 @adobe+css-tools@4.4.4
+drwxr-xr-x     3 ranjansingh  staff      96 Jan 10 17:02 @alloc+quick-lru@5.2.0
+drwxr-xr-x     3 ranjansingh  staff      96 Jan 10 17:02 @ampproject+remapping@2.3.0
+[TRUNCATED - many package directories in .pnpm store]
+
+find node_modules -maxdepth 4 -type l | head -50:
+[TRUNCATED - command timed out]
+
+node -e check:
+node_modules exists
+
+ANALYSIS:
+- Workspace config looks correct: packages/*, apps/*
+- Vitest is properly installed as devDependency
+- .pnpm store has many packages (1125 directories)
+- node_modules exists
+- Symlink check timed out (likely due to circular dependencies causing infinite traversal)
+
+ROOT CAUSE IDENTIFIED: Option B - Self-referential dependency between @neuronx/decision-engine and @neuronx/execution-authority packages creating circular workspace links.

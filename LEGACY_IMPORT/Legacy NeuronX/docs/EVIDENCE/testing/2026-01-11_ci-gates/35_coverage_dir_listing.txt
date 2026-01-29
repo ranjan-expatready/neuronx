@@ -1,0 +1,4 @@
+total 0
+drwxr-xr-x   3 ranjansingh  staff    96 Jan 11 17:23 .
+drwxr-xr-x@ 49 ranjansingh  staff  1568 Jan 11 17:23 ..
+drwxr-xr-x   2 ranjansingh  staff    64 Jan 11 17:23 .tmp

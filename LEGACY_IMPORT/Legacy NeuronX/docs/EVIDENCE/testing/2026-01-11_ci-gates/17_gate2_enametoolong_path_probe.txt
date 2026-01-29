@@ -1,0 +1,14 @@
+PHASE 2 - IDENTIFY THE ACTUAL TOO-LONG PATH
+
+The log already contains the offending path (no need for NODE_OPTIONS trace rerun):
+
+EXACT OFFENDING PATH:
+/Users/ranjansingh/Desktop/NeuronX/packages/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/node_modules/@neuronx/decision-engine_node_modules/@neuronx/execution-authority_node_modules/@neuronx/decision-engine_node_modules/@neuronx/execution-authority_node_modules/@neuronx/decision-engine_node_modules/@neuronx/execution-authority_node_modules/@neuronx/decision-engine_node_modules/@neuronx/execution-authority_node_modules/@neuronx/decision-engine_node_modules/@neuronx/decision-engine_node_modules/@neuronx/execution-authority_node_modules/@neuronx/decision-engine_node_modules/@neuronx/execution-authority_node_modules/@neuronx/decision-engine_node_modules/@neuronx/execution-authority_node_modules/@neuronx/decision-engine_node_modules
+
+PATH ANALYSIS:
+- Starts in: packages/decision-engine/node_modules/
+- Alternating packages: @neuronx/execution-authority ↔ @neuronx/decision-engine
+- Pattern: .../execution-authority/node_modules/@neuronx/decision-engine/node_modules/@neuronx/execution-authority/...
+- Depth: At least 25+ levels deep (filesystem limit exceeded)
+
+ROOT CAUSE: Circular workspace dependency between packages causing pnpm to create infinite nested node_modules structure.

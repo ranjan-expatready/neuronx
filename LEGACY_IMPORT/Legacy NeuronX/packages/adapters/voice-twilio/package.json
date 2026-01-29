@@ -1,0 +1,21 @@
+{
+  "name": "@neuronx/voice-twilio",
+  "version": "1.0.0",
+  "description": "Twilio voice execution adapter for NeuronX - authoritative voice execution with decision enforcement",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage"
+  },
+  "dependencies": {
+    "@neuronx/decision-engine": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "@types/node": "^20.0.0"
+  }
+}

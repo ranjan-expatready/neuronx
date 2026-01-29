@@ -1,0 +1,21 @@
+{
+  "name": "@neuronx/execution-adapters",
+  "version": "1.0.0",
+  "description": "Adapter-first execution layer for NeuronX - ensures NeuronX decides, adapters only execute",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
+  }
+}

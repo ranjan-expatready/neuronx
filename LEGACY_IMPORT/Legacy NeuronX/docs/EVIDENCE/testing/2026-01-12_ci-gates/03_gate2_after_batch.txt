@@ -1,0 +1,13 @@
+COMMAND: pnpm -w test:coverage
+EXIT: 0
+JQ NUMBER (Total Lines %): 18.72
+TIMESTAMP: 2026-01-12T18:52:00Z
+SUMMARY:
+- Baseline: 13.7%
+- New: 18.72% (+5.02%)
+- Files Tested:
+  - entitlement.service.ts
+  - roles.service.ts
+  - voice.service.ts
+  - usage.service.ts
+  - webhook.service.ts

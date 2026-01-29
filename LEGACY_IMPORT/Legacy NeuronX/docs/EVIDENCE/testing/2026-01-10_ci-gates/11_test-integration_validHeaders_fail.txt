@@ -1,0 +1,1360 @@
+
+> sales-os@0.1.0 test:integration /Users/ranjansingh/Desktop/NeuronX
+> jest apps/core-api/src/rate-limit/__tests__/rate-limit.guard.spec.ts && jest apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts && jest apps/core-api/src/rate-limit/__tests__/rate-limit.redis.store.spec.ts && jest apps/core-api/src/rate-limit/__tests__/rate-limit.store.integration.spec.ts
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "tenant-a",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "tenant-b",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "tenant-a",
+  "scope": "api",
+  "routeKey": "api/leads/{id}",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "tenant-b",
+  "scope": "api",
+  "routeKey": "api/leads/{id}",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "tenant-1",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "tenant-1",
+  "scope": "webhook",
+  "routeKey": "integrations/ghl/webhooks",
+  "method": "POST",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "admin-tenant",
+  "scope": "admin",
+  "routeKey": "admin/users",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM    WARN [RateLimitGuard] Rate limit blocked
+[Nest] 7225  - 01/10/2026, 7:17:01 PM    WARN [RateLimitGuard] Object:
+{
+  "allowed": false,
+  "tenantId": "tenant-1",
+  "scope": "webhook",
+  "routeKey": "webhooks/stripe",
+  "method": "POST",
+  "remaining": 0,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  },
+  "retryAfter": 60,
+  "reason": "rate_limit_exceeded"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Rate limiting error
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Object:
+{
+  "error": "Rate limit exceeded",
+  "url": "/webhooks/stripe",
+  "method": "POST",
+  "stack": "HttpException: Rate limit exceeded\n    at RateLimitGuard.handleRateLimitViolation (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/rate-limit.guard.ts:268:11)\n    at RateLimitGuard.canActivate (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/rate-limit.guard.ts:72:21)\n    at Object.<anonymous> (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/__tests__/rate-limit.guard.spec.ts:195:7)"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "tenant-1",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 95,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 20,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 19,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 18,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 17,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 16,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 15,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 14,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 13,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 12,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 11,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 10,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 9,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 8,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 7,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 6,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 5,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 4,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 3,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 2,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 1,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 0,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": -1,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": -2,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": -3,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": -4,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 19,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 18,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 17,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 16,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 15,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 14,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 13,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 12,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 11,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 10,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 9,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 8,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 7,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 6,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 5,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 4,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 3,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 2,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 1,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 0,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM    WARN [RateLimitGuard] Rate limit blocked
+[Nest] 7225  - 01/10/2026, 7:17:01 PM    WARN [RateLimitGuard] Object:
+{
+  "allowed": false,
+  "tenantId": "burst-exceed-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 0,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  },
+  "retryAfter": 60,
+  "reason": "rate_limit_exceeded"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Rate limiting error
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Object:
+{
+  "error": "Rate limit exceeded",
+  "url": "/api/leads",
+  "method": "GET",
+  "stack": "HttpException: Rate limit exceeded\n    at RateLimitGuard.handleRateLimitViolation (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/rate-limit.guard.ts:268:11)\n    at RateLimitGuard.canActivate (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/rate-limit.guard.ts:72:21)\n    at Object.<anonymous> (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/__tests__/rate-limit.guard.spec.ts:262:7)"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM    WARN [RateLimitGuard] Rate limit blocked
+[Nest] 7225  - 01/10/2026, 7:17:01 PM    WARN [RateLimitGuard] Object:
+{
+  "allowed": false,
+  "tenantId": "rate-limited-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "POST",
+  "remaining": 0,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  },
+  "retryAfter": 120,
+  "reason": "rate_limit_exceeded"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Rate limiting error
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Object:
+{
+  "error": "Rate limit exceeded",
+  "url": "/api/leads",
+  "method": "POST",
+  "stack": "HttpException: Rate limit exceeded\n    at RateLimitGuard.handleRateLimitViolation (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/rate-limit.guard.ts:268:11)\n    at RateLimitGuard.canActivate (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/rate-limit.guard.ts:72:21)\n    at Object.<anonymous> (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/__tests__/rate-limit.guard.spec.ts:294:7)"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "success-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 95,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Rate limiting error
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Object:
+{
+  "error": "Policy service error",
+  "url": "/api/leads",
+  "method": "GET",
+  "stack": "Error: Policy service error\n    at Object.<anonymous> (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/__tests__/rate-limit.guard.spec.ts:331:66)\n    at Promise.then.completed (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusTest (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:316:40)\n    at _runTest (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:252:3)\n    at _runTestsForDescribeBlock (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:126:9)\n    at _runTestsForDescribeBlock (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:121:9)\n    at _runTestsForDescribeBlock (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:121:9)\n    at run (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/run.js:71:3)\n    at runAndTransformResultsToJestFormat (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at jestAdapter (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-circus@29.7.0/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at runTestInternal (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:367:16)\n    at runTest (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/jest-runner@29.7.0/node_modules/jest-runner/build/runTest.js:444:34)"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM    WARN [RateLimitGuard] Rate limit blocked
+[Nest] 7225  - 01/10/2026, 7:17:01 PM    WARN [RateLimitGuard] Object:
+{
+  "allowed": false,
+  "tenantId": "unknown",
+  "scope": "admin",
+  "routeKey": "admin/dashboard",
+  "method": "GET",
+  "remaining": 0,
+  "tenantConfidence": "low",
+  "policy": {
+    "limitPerMinute": 10,
+    "burst": 2
+  },
+  "retryAfter": 60,
+  "reason": "rate_limit_exceeded"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Rate limiting error
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Object:
+{
+  "error": "Rate limit exceeded",
+  "url": "/admin/dashboard",
+  "method": "GET",
+  "stack": "HttpException: Rate limit exceeded\n    at RateLimitGuard.handleRateLimitViolation (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/rate-limit.guard.ts:268:11)\n    at RateLimitGuard.canActivate (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/rate-limit.guard.ts:72:21)\n    at Object.<anonymous> (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/__tests__/rate-limit.guard.spec.ts:359:7)"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "webhook-tenant",
+  "scope": "webhook",
+  "routeKey": "integrations/ghl/webhooks",
+  "method": "POST",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "stripe-tenant",
+  "scope": "webhook",
+  "routeKey": "webhooks/stripe",
+  "method": "POST",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM    WARN [RateLimitGuard] Rate limit blocked
+[Nest] 7225  - 01/10/2026, 7:17:01 PM    WARN [RateLimitGuard] Object:
+{
+  "allowed": false,
+  "tenantId": "compromised-tenant",
+  "scope": "webhook",
+  "routeKey": "webhooks/stripe",
+  "method": "POST",
+  "remaining": 0,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  },
+  "retryAfter": 300,
+  "reason": "rate_limit_exceeded"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Rate limiting error
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   ERROR [RateLimitGuard] Object:
+{
+  "error": "Rate limit exceeded",
+  "url": "/webhooks/stripe",
+  "method": "POST",
+  "stack": "HttpException: Rate limit exceeded\n    at RateLimitGuard.handleRateLimitViolation (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/rate-limit.guard.ts:268:11)\n    at RateLimitGuard.canActivate (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/rate-limit.guard.ts:72:21)\n    at Object.<anonymous> (/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/rate-limit/__tests__/rate-limit.guard.spec.ts:436:7)"
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "test",
+  "scope": "api",
+  "routeKey": "api/leads/{id}",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "test",
+  "scope": "api",
+  "routeKey": "api/leads/{id}",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "test",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "POST",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "enterprise-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 10000,
+    "burst": 2000
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "free-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 10
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "unknown",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "low",
+  "policy": {
+    "limitPerMinute": 10,
+    "burst": 2
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "webhook-tenant",
+  "scope": "webhook",
+  "routeKey": "integrations/ghl/webhooks",
+  "method": "POST",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Rate limit allowed
+[Nest] 7225  - 01/10/2026, 7:17:01 PM   DEBUG [RateLimitGuard] Object:
+{
+  "allowed": true,
+  "tenantId": "api-tenant",
+  "scope": "api",
+  "routeKey": "api/leads",
+  "method": "GET",
+  "remaining": 99,
+  "tenantConfidence": "high",
+  "policy": {
+    "limitPerMinute": 100,
+    "burst": 20
+  }
+}
+
+PASS apps/core-api/src/rate-limit/__tests__/rate-limit.guard.spec.ts
+  RateLimitGuard - FAANG-grade Rate Limiting
+    Tenant Isolation - Rate Limit Separation
+      ✓ should apply different rate limits for different tenants (4 ms)
+      ✓ should maintain tenant isolation even with same route patterns (1 ms)
+    Scope Separation - API vs Webhook Isolation
+      ✓ should apply different scopes for API vs webhook requests (2 ms)
+      ✓ should apply admin scope for admin endpoints (1 ms)
+      ✓ should not allow webhook scope to affect API limits (11 ms)
+    Burst Behavior - Token Bucket Algorithm
+      ✓ should allow burst requests up to burst limit (6 ms)
+      ✓ should block requests after burst limit is exceeded (5 ms)
+    Retry-After Response - Proper HTTP Headers
+      ✓ should set proper retry-after headers when rate limited (4 ms)
+      ✓ should include rate limit headers on successful requests (1 ms)
+    Fail-Open vs Fail-Closed Semantics
+      ✓ should fail_closed for API requests when rate limiting fails (2 ms)
+      ✓ should fail_closed for admin endpoints with unknown tenant (1 ms)
+      ✓ should never block health check endpoints
+    Webhook Flow Ordering - Security First
+      ✓ should apply rate limiting to webhook endpoints
+      ✓ should include provider ID in webhook rate limit keys (1 ms)
+      ✓ should handle invalid signature followed by rate limiting
+    Route Key Generation - Endpoint Grouping
+      ✓ should group similar API endpoints together
+      ✓ should exclude health endpoints from rate limiting (1 ms)
+    Entitlement-Aware Policies
+      ✓ should apply different policies based on tenant tier
+      ✓ should apply conservative policies for unknown tenants (1 ms)
+    Global Disable Functionality
+      ✓ should bypass rate limiting when globally disabled
+    Webhook Security Ordering - Signature Before Rate Limit
+      ✓ should not apply rate limiting to webhook endpoints (guard bypassed)
+      ✓ should still apply rate limiting to API endpoints
+
+Test Suites: 1 passed, 1 total
+Tests:       22 passed, 22 total
+Snapshots:   0 total
+Time:        0.547 s, estimated 1 s
+Ran all test suites matching /apps\/core-api\/src\/rate-limit\/__tests__\/rate-limit.guard.spec.ts/i.
+FAIL apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts
+  Webhook Security Ordering - Signature Before Rate Limit
+    GHL Webhook Controller Ordering
+      ✕ should reject invalid signature before rate limiting is called (6 ms)
+      ✕ should call rate limiting after valid signature verification (2 ms)
+      ✕ should reject rate limited requests after valid signature (2 ms)
+      ✕ should process business logic only after signature + rate limit pass (1 ms)
+    Payment Webhook Controller Ordering
+      ✕ should reject invalid signature before rate limiting is called (2 ms)
+      ✕ should call rate limiting after valid signature verification (1 ms)
+      ✕ should reject rate limited requests after valid signature (1 ms)
+    Security Guarantees
+      ✕ should prevent unauthenticated spam from consuming rate limit quota (1 ms)
+      ✕ should only consume rate limit quota for authenticated requests (1 ms)
+
+  ● Webhook Security Ordering - Signature Before Rate Limit › GHL Webhook Controller Ordering › should reject invalid signature before rate limiting is called
+
+    TypeError: ghlController.processWebhook is not a function
+
+      143 |
+      144 |       await expect(
+    > 145 |         ghlController.processWebhook(
+          |                       ^
+      146 |           { event: 'contact.created' },
+      147 |           invalidSignatureHeaders,
+      148 |           mockRequest as any
+
+      at Object.<anonymous> (apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts:145:23)
+
+  ● Webhook Security Ordering - Signature Before Rate Limit › GHL Webhook Controller Ordering › should call rate limiting after valid signature verification
+
+    TypeError: ghlController.processWebhook is not a function
+
+      161 |       mockRateLimitService.enforceWebhookRateLimit.mockResolvedValueOnce(undefined);
+      162 |
+    > 163 |       const result = await ghlController.processWebhook(
+          |                                          ^
+      164 |         { event: 'contact.created' },
+      165 |         validHeaders,
+      166 |         mockRequest as any
+
+      at Object.<anonymous> (apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts:163:42)
+
+  ● Webhook Security Ordering - Signature Before Rate Limit › GHL Webhook Controller Ordering › should reject rate limited requests after valid signature
+
+    TypeError: ghlController.processWebhook is not a function
+
+      189 |
+      190 |       await expect(
+    > 191 |         ghlController.processWebhook(
+          |                       ^
+      192 |           { event: 'contact.created' },
+      193 |           validHeaders,
+      194 |           mockRequest as any
+
+      at Object.<anonymous> (apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts:191:23)
+
+  ● Webhook Security Ordering - Signature Before Rate Limit › GHL Webhook Controller Ordering › should process business logic only after signature + rate limit pass
+
+    TypeError: ghlController.processWebhook is not a function
+
+      210 |       mockRateLimitService.enforceWebhookRateLimit.mockResolvedValueOnce(undefined);
+      211 |
+    > 212 |       const result = await ghlController.processWebhook(
+          |                                          ^
+      213 |         { event: 'contact.created' },
+      214 |         validHeaders,
+      215 |         mockRequest as any
+
+      at Object.<anonymous> (apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts:212:42)
+
+  ● Webhook Security Ordering - Signature Before Rate Limit › Payment Webhook Controller Ordering › should reject invalid signature before rate limiting is called
+
+    TypeError: paymentController.handleStripeWebhook is not a function
+
+      248 |
+      249 |       await expect(
+    > 250 |         paymentController.handleStripeWebhook(
+          |                           ^
+      251 |           { type: 'checkout.session.completed' },
+      252 |           'invalid-signature',
+      253 |           'payment-tenant',
+
+      at Object.<anonymous> (apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts:250:27)
+
+  ● Webhook Security Ordering - Signature Before Rate Limit › Payment Webhook Controller Ordering › should call rate limiting after valid signature verification
+
+    TypeError: paymentController.handleStripeWebhook is not a function
+
+      270 |       controller.paymentService = { verifyPaymentFromWebhook: jest.fn().mockResolvedValue({}) };
+      271 |
+    > 272 |       const result = await paymentController.handleStripeWebhook(
+          |                                              ^
+      273 |         { type: 'checkout.session.completed' },
+      274 |         'valid-signature',
+      275 |         'payment-tenant',
+
+      at Object.<anonymous> (apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts:272:46)
+
+  ● Webhook Security Ordering - Signature Before Rate Limit › Payment Webhook Controller Ordering › should reject rate limited requests after valid signature
+
+    TypeError: paymentController.handleStripeWebhook is not a function
+
+      304 |
+      305 |       await expect(
+    > 306 |         paymentController.handleStripeWebhook(
+          |                           ^
+      307 |           { type: 'checkout.session.completed' },
+      308 |           'valid-signature',
+      309 |           'payment-tenant',
+
+      at Object.<anonymous> (apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts:306:27)
+
+  ● Webhook Security Ordering - Signature Before Rate Limit › Security Guarantees › should prevent unauthenticated spam from consuming rate limit quota
+
+    ReferenceError: validHeaders is not defined
+
+      333 |         await ghlController.processWebhook(
+      334 |           { event: 'contact.created' },
+    > 335 |           { ...validHeaders, 'x-webhook-signature': 'invalid' },
+          |                ^
+      336 |           mockRes,
+      337 |           mockRequest as any
+      338 |         );
+
+      at Object.<anonymous> (apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts:335:16)
+
+  ● Webhook Security Ordering - Signature Before Rate Limit › Security Guarantees › should only consume rate limit quota for authenticated requests
+
+    ReferenceError: validHeaders is not defined
+
+      358 |       await ghlController.processWebhook(
+      359 |         { event: 'contact.created' },
+    > 360 |         { ...validHeaders, 'x-webhook-signature': 'invalid' },
+          |              ^
+      361 |         mockRes,
+      362 |         mockRequest as any
+      363 |       );
+
+      at Object.<anonymous> (apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts:360:14)
+
+Test Suites: 1 failed, 1 total
+Tests:       9 failed, 9 total
+Snapshots:   0 total
+Time:        0.502 s, estimated 1 s
+Ran all test suites matching /apps\/core-api\/src\/rate-limit\/__tests__\/webhook-ordering.spec.ts/i.
+ ELIFECYCLE  Command failed with exit code 1.
+0

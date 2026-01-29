@@ -1,0 +1,34 @@
+{
+  "name": "@neuronx/ui-sdk",
+  "version": "1.0.0",
+  "description": "UI SDK for NeuronX - Governance Layer & Action Dispatch",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0"
+  },
+  "keywords": [
+    "neuronx",
+    "ui-sdk",
+    "governance",
+    "action-dispatch",
+    "frontend"
+  ],
+  "author": "NeuronX Team",
+  "license": "UNLICENSED"
+}

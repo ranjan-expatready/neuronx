@@ -1,0 +1,15 @@
+{
+  "total": {
+    "lines": { "total": 326, "covered": 297, "skipped": 0, "pct": 91.1 },
+    "statements": { "total": 326, "covered": 297, "skipped": 0, "pct": 91.1 },
+    "functions": { "total": 20, "covered": 15, "skipped": 0, "pct": 75 },
+    "branches": { "total": 63, "covered": 63, "skipped": 0, "pct": 100 },
+    "branchesTrue": { "total": 0, "covered": 0, "skipped": 0, "pct": "Unknown" }
+  },
+  "/Users/ranjansingh/Desktop/NeuronX/apps/core-api/src/config/config.schema.ts": {
+    "lines": { "total": 326, "covered": 297, "skipped": 0, "pct": 91.1 },
+    "functions": { "total": 20, "covered": 15, "skipped": 0, "pct": 75 },
+    "statements": { "total": 326, "covered": 297, "skipped": 0, "pct": 91.1 },
+    "branches": { "total": 63, "covered": 63, "skipped": 0, "pct": 100 }
+  }
+}

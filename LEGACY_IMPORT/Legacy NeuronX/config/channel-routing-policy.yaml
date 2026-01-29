@@ -1,0 +1,61 @@
+# Channel Routing Policy Configuration - WI-043: Channel Routing Policy Configuration
+# Extracted from hardcoded routing logic in DeterministicChannelRouter
+
+# Default channel priority order (highest to lowest)
+channelPriorityOrder:
+  - voice
+  - sms
+  - whatsapp
+  - email
+  - calendar
+
+# Risk-based channel constraints (overrides for specific risk levels)
+riskChannelConstraints:
+  critical: email # Critical risk AI actions routed to email for human review
+  # high, medium, low: use default priority order
+
+# Deal value routing (higher value deals get better channels)
+dealValueRouting:
+  - minValue: 50000
+    preferredChannel: whatsapp
+    reason: 'High-value prospects contacted via WhatsApp'
+  # Lower value deals use default priority order
+
+# SLA urgency overrides (urgent items get faster channels)
+slaUrgencyOverrides:
+  - urgency: urgent
+    commandTypes: ['SEND_MESSAGE']
+    preferredChannel: sms
+    reason: 'Urgent messages sent via SMS'
+
+# Retry-based fallbacks (after failures, fallback to more reliable channels)
+retryFallbacks:
+  - maxRetries: 3
+    fallbackChannel: email
+    reason: 'Excessive retries require human intervention via email'
+
+# Human-only channel enforcement (certain actions require human channels)
+humanOnlyChannels: []
+  # Currently empty - no human-only channel requirements
+
+# Risk score thresholds for routing logic
+riskScoreThresholds:
+  critical: 80
+  high: 60
+  medium: 40
+  low: 0
+
+# Command fallback routing (when no rules match)
+commandFallbacks:
+  - commandType: 'EXECUTE_CONTACT'
+    fallbackChannel: voice
+    reason: 'Default contact execution via voice'
+  - commandType: 'SEND_MESSAGE'
+    fallbackChannel: email
+    reason: 'Default message sending via email'
+  - commandType: 'SCHEDULE_MEETING'
+    fallbackChannel: calendar
+    reason: 'Default meeting scheduling via calendar'
+  - commandType: 'FOLLOW_UP'
+    fallbackChannel: email
+    reason: 'Default follow-up via email'

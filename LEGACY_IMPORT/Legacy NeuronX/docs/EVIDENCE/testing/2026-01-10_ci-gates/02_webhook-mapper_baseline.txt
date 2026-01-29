@@ -1,0 +1,29 @@
+# Jest Module Mapper Baseline - Before Fix
+
+## Current Jest moduleNameMapper Configuration
+**File:** `apps/core-api/package.json` lines 74-76
+```
+"moduleNameMapper": {
+  "^@neuronx/(.*)$": "<rootDir>/../../packages/$1/src/index.ts"
+}
+```
+
+## Failing Import in Test File
+**File:** `apps/core-api/src/rate-limit/__tests__/webhook-ordering.spec.ts` line 17
+```
+jest.mock('@neuronx/adapters/webhooks', () => ({
+```
+
+## Mapper Resolution Logic
+- `@neuronx/adapters/webhooks` matches pattern `^@neuronx/(.*)$`
+- `$1` captures `adapters/webhooks`
+- Maps to: `<rootDir>/../../packages/adapters/webhooks/src/index.ts`
+- **Expected file:** `packages/adapters/webhooks/src/index.ts`
+
+## Error Message
+```
+Could not locate module @neuronx/adapters/webhooks mapped as:
+packages/$1/src/index.ts.
+```
+
+**Issue:** The mapper expects `packages/adapters/webhooks/src/index.ts` to exist, but this file does not exist in the repository.

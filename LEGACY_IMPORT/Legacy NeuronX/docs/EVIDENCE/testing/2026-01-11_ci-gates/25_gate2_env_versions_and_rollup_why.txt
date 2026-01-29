@@ -1,0 +1,20 @@
+PHASE 2 - CURRENT NODE/PNPM/VITEST/V8 ENV
+
+Node version: v23.11.0
+Pnpm version: 9.0.0
+Vitest version: vitest/2.1.9 darwin-arm64 node-v23.11.0
+
+Rollup why:
+rollup 4.55.1 is installed via vite 5.4.21 (peer dependency of vitest)
+
+@rollup/rollup-darwin-arm64 why:
+@rollup/rollup-darwin-arm64 4.55.1 is installed (this is the correct arch for our system)
+
+@rollup/rollup-darwin-x64 why:
+@rollup/rollup-darwin-x64 4.55.1 skipped (expected, we're on arm64 not x64)
+
+ANALYSIS:
+- Node v23.11.0 is non-LTS, known for native module compatibility issues
+- Rollup native binaries are installed but Node 23.x has module resolution bugs
+- The error message explicitly mentions "npm has a bug related to optional dependencies"
+- This is a Node version compatibility issue, not a missing dependency issue

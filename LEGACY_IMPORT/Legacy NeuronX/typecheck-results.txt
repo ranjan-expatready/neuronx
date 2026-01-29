@@ -1,0 +1,403 @@
+ WARN  Unsupported engine: wanted: {"node":">=22 <23"} (current: {"node":"v23.11.0","pnpm":"9.0.0"})
+
+> sales-os@0.1.0 typecheck /Users/ranjansingh/Desktop/NeuronX
+> tsc --noEmit
+
+apps/core-api/src/cipher/cipher.service.ts(44,32): error TS6138: Property '_configService' is declared but its value is never read.
+apps/core-api/src/config/config.loader.ts(30,13): error TS6138: Property '_templateRepository' is declared but its value is never read.
+apps/core-api/src/config/config.loader.ts(127,27): error TS2339: Property 'validateOrThrow' does not exist on type 'ConfigValidator'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(12,24): error TS6133: 'PrismaTenantEntitlement' is declared but its value is never read.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(17,3): error TS2305: Module '"./entitlement.types"' has no exported member 'TierTransitionRequest'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(18,3): error TS2305: Module '"./entitlement.types"' has no exported member 'TierTransitionResult'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(19,3): error TS6133: 'UsageTracking' is declared but its value is never read.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(20,3): error TS6133: 'EntitlementViolation' is declared but its value is never read.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(21,3): error TS2305: Module '"./entitlement.types"' has no exported member 'EntitlementOverride'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(22,3): error TS2305: Module '"./entitlement.types"' has no exported member 'ScheduledAction'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(144,5): error TS6133: 'correlationId' is declared but its value is never read.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(327,13): error TS2322: Type '{ tenantId: string; tenantEntitlementId: string; correlationId: string | undefined; }' is not assignable to type '(Without<ScheduledActionCreateInput, ScheduledActionUncheckedCreateInput> & ScheduledActionUncheckedCreateInput) | (Without<...> & ScheduledActionCreateInput)'.
+  Type '{ tenantId: string; tenantEntitlementId: string; correlationId: string | undefined; }' is not assignable to type 'Without<ScheduledActionCreateInput, ScheduledActionUncheckedCreateInput> & ScheduledActionUncheckedCreateInput'.
+    Type '{ tenantId: string; tenantEntitlementId: string; correlationId: string | undefined; }' is missing the following properties from type 'ScheduledActionUncheckedCreateInput': actionType, payload, executeAt
+apps/core-api/src/config/entitlements/entitlement.repository.ts(398,27): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(548,18): error TS2353: Object literal may only specify known properties, and 'monthly' does not exist in type '{ monthlyLimit: number; burstLimit: number; perMinuteLimit: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(551,18): error TS2353: Object literal may only specify known properties, and 'minutes' does not exist in type '{ monthlyMinutes: number; maxConcurrentCalls: number; recordingRetentionDays: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(552,16): error TS2353: Object literal may only specify known properties, and 'monthly' does not exist in type '{ monthlyLimit: number; perMinuteLimit: number; burstAllowance: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(556,9): error TS2353: Object literal may only specify known properties, and 'pricing' does not exist in type 'TierMetadata'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(600,18): error TS2353: Object literal may only specify known properties, and 'monthly' does not exist in type '{ monthlyLimit: number; burstLimit: number; perMinuteLimit: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(603,18): error TS2353: Object literal may only specify known properties, and 'minutes' does not exist in type '{ monthlyMinutes: number; maxConcurrentCalls: number; recordingRetentionDays: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(604,16): error TS2353: Object literal may only specify known properties, and 'monthly' does not exist in type '{ monthlyLimit: number; perMinuteLimit: number; burstAllowance: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(608,9): error TS2353: Object literal may only specify known properties, and 'pricing' does not exist in type 'TierMetadata'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(652,18): error TS2353: Object literal may only specify known properties, and 'monthly' does not exist in type '{ monthlyLimit: number; burstLimit: number; perMinuteLimit: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(655,18): error TS2353: Object literal may only specify known properties, and 'minutes' does not exist in type '{ monthlyMinutes: number; maxConcurrentCalls: number; recordingRetentionDays: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(656,16): error TS2353: Object literal may only specify known properties, and 'monthly' does not exist in type '{ monthlyLimit: number; perMinuteLimit: number; burstAllowance: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(660,9): error TS2353: Object literal may only specify known properties, and 'pricing' does not exist in type 'TierMetadata'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(704,18): error TS2353: Object literal may only specify known properties, and 'monthly' does not exist in type '{ monthlyLimit: number; burstLimit: number; perMinuteLimit: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(707,18): error TS2353: Object literal may only specify known properties, and 'minutes' does not exist in type '{ monthlyMinutes: number; maxConcurrentCalls: number; recordingRetentionDays: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(708,16): error TS2353: Object literal may only specify known properties, and 'monthly' does not exist in type '{ monthlyLimit: number; perMinuteLimit: number; burstAllowance: number; }'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(712,9): error TS2353: Object literal may only specify known properties, and 'pricing' does not exist in type 'TierMetadata'.
+apps/core-api/src/config/entitlements/entitlement.repository.ts(742,7): error TS2353: Object literal may only specify known properties, and 'effectiveAt' does not exist in type 'TenantEntitlement'.
+apps/core-api/src/config/entitlements/entitlement.service.ts(223,31): error TS2551: Property 'usageTracking' does not exist on type 'EntitlementService'. Did you mean 'getUsageTracking'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(226,42): error TS2339: Property 'monthlyLimit' does not exist on type '{ monthlyLimit: number; burstLimit: number; perMinuteLimit: number; } | { monthlyLimit: number; perMinuteLimit: number; burstAllowance: number; } | { maxMembers: number; maxConcurrentUsers: number; maxTeams: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'monthlyLimit' does not exist on type '{ maxMembers: number; maxConcurrentUsers: number; maxTeams: number; }'.
+apps/core-api/src/config/entitlements/entitlement.service.ts(260,27): error TS2551: Property 'usageTracking' does not exist on type 'EntitlementService'. Did you mean 'getUsageTracking'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(277,10): error TS2551: Property 'usageTracking' does not exist on type 'EntitlementService'. Did you mean 'getUsageTracking'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(286,17): error TS6133: 'key' is declared but its value is never read.
+apps/core-api/src/config/entitlements/entitlement.service.ts(286,37): error TS2551: Property 'usageTracking' does not exist on type 'EntitlementService'. Did you mean 'getUsageTracking'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(314,10): error TS2551: Property 'violations' does not exist on type 'EntitlementService'. Did you mean 'getViolations'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(333,17): error TS2551: Property 'violations' does not exist on type 'EntitlementService'. Did you mean 'getViolations'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(333,35): error TS7006: Parameter 'v' implicitly has an 'any' type.
+apps/core-api/src/config/entitlements/entitlement.service.ts(343,62): error TS6133: 'context' is declared but its value is never read.
+apps/core-api/src/config/entitlements/entitlement.service.ts(401,14): error TS2551: Property 'tenantEntitlements' does not exist on type 'EntitlementService'. Did you mean 'getTenantEntitlement'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(470,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/config/entitlements/entitlement.service.ts(475,18): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/config/entitlements/entitlement.service.ts(515,12): error TS2551: Property 'scheduledActions' does not exist on type 'EntitlementService'. Did you mean 'getScheduledActions'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(560,10): error TS2551: Property 'scheduledActions' does not exist on type 'EntitlementService'. Did you mean 'getScheduledActions'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(646,42): error TS2551: Property 'scheduledActions' does not exist on type 'EntitlementService'. Did you mean 'getScheduledActions'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(659,10): error TS2551: Property 'scheduledActions' does not exist on type 'EntitlementService'. Did you mean 'getScheduledActions'?
+apps/core-api/src/config/entitlements/entitlement.service.ts(665,11): error TS6133: 'initializeTiers' is declared but its value is never read.
+apps/core-api/src/config/entitlements/entitlement.service.ts(666,29): error TS2339: Property 'builtinTiers' does not exist on type 'EntitlementService'.
+apps/core-api/src/config/entitlements/entitlement.service.ts(667,12): error TS2339: Property 'tiers' does not exist on type 'EntitlementService'.
+apps/core-api/src/config/entitlements/entitlement.service.ts(670,27): error TS2339: Property 'builtinTiers' does not exist on type 'EntitlementService'.
+apps/core-api/src/config/entitlements/entitlement.service.ts(875,11): error TS6133: 'createEnterpriseTier' is declared but its value is never read.
+apps/core-api/src/config/entitlements/tier.lifecycle.ts(9,3): error TS6133: 'EntitlementTier' is declared but its value is never read.
+apps/core-api/src/config/entitlements/tier.lifecycle.ts(11,3): error TS6133: 'UsageTracking' is declared but its value is never read.
+apps/core-api/src/config/feature-flags.service.ts(30,22): error TS6138: Property 'config' is declared but its value is never read.
+apps/core-api/src/config/postgres-config.repository.ts(13,3): error TS2305: Module '"./config.types"' has no exported member 'EffectiveConfiguration'.
+apps/core-api/src/config/postgres-config.repository.ts(18,36): error TS2307: Cannot find module '../entitlements/entitlement.service' or its corresponding type declarations.
+apps/core-api/src/config/postgres-config.repository.ts(54,22): error TS6138: Property 'prisma' is declared but its value is never read.
+apps/core-api/src/config/postgres-config.repository.ts(121,21): error TS2339: Property 'actorId' does not exist on type 'TenantContext'.
+apps/core-api/src/config/postgres-config.repository.ts(122,21): error TS2339: Property 'correlationId' does not exist on type 'TenantContext'.
+apps/core-api/src/config/postgres-config.repository.ts(138,5): error TS6133: 'configId' is declared but its value is never read.
+apps/core-api/src/config/postgres-config.repository.ts(192,5): error TS6133: 'configId' is declared but its value is never read.
+apps/core-api/src/config/postgres-config.repository.ts(193,5): error TS6133: 'version' is declared but its value is never read.
+apps/core-api/src/config/postgres-config.repository.ts(194,5): error TS6133: 'tenantContext' is declared but its value is never read.
+apps/core-api/src/config/postgres-config.repository.ts(207,5): error TS6133: 'configId' is declared but its value is never read.
+apps/core-api/src/config/postgres-config.repository.ts(221,5): error TS6133: 'configId' is declared but its value is never read.
+apps/core-api/src/config/postgres-config.repository.ts(284,35): error TS2339: Property 'templateVersion' does not exist on type 'TenantConfigurationAttachment'.
+apps/core-api/src/config/readiness-guard.service.ts(8,30): error TS6133: 'Inject' is declared but its value is never read.
+apps/core-api/src/config/readiness-guard.service.ts(30,51): error TS2341: Property 'checkDatabase' is private and only accessible within class 'ReadinessService'.
+apps/core-api/src/config/readiness-guard.service.ts(35,26): error TS2339: Property 'error' does not exist on type 'ComponentHealth'.
+apps/core-api/src/config/readiness-guard.service.ts(42,58): error TS2339: Property 'checkStorageProvider' does not exist on type 'ReadinessService'.
+apps/core-api/src/config/readiness-guard.service.ts(55,58): error TS2339: Property 'checkSecretsProvider' does not exist on type 'ReadinessService'.
+apps/core-api/src/config/templates/template.repository.ts(14,3): error TS2305: Module '"../config.types"' has no exported member 'ConfigurationTemplate'.
+apps/core-api/src/config/templates/template.repository.ts(15,3): error TS2305: Module '"../config.types"' has no exported member 'TemplateConstraints'.
+apps/core-api/src/config/templates/template.repository.ts(15,3): error TS6133: 'TemplateConstraints' is declared but its value is never read.
+apps/core-api/src/config/templates/template.repository.ts(16,3): error TS2305: Module '"../config.types"' has no exported member 'TemplateVersion'.
+apps/core-api/src/config/tenant-config.repository.ts(12,3): error TS2305: Module '"./config.types"' has no exported member 'TenantConfigOverride'.
+apps/core-api/src/config/tenant-config.repository.ts(13,3): error TS2305: Module '"./config.types"' has no exported member 'EffectiveConfiguration'.
+apps/core-api/src/config/tenant-config.repository.ts(18,20): error TS6133: 'logger' is declared but its value is never read.
+apps/core-api/src/config/tenant-config.repository.ts(40,7): error TS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.
+apps/core-api/src/config/tenant-config.repository.ts(44,7): error TS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.
+apps/core-api/src/config/tenant-config.repository.ts(81,7): error TS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.
+apps/core-api/src/config/tenant-config.repository.ts(84,7): error TS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.
+apps/core-api/src/eventing/durable-event-publisher.ts(8,30): error TS6133: 'Inject' is declared but its value is never read.
+apps/core-api/src/eventing/durable-event-publisher.ts(97,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/eventing/eventing.module.ts(3,34): error TS2307: Cannot find module '@neuronx/eventing' or its corresponding type declarations.
+apps/core-api/src/eventing/eventing.module.ts(4,26): error TS2307: Cannot find module '@neuronx/eventing' or its corresponding type declarations.
+apps/core-api/src/eventing/index.ts(2,26): error TS2307: Cannot find module '@neuronx/eventing' or its corresponding type declarations.
+apps/core-api/src/eventing/outbox-dispatcher.ts(9,16): error TS6133: 'CronExpression' is declared but its value is never read.
+apps/core-api/src/eventing/outbox.repository.ts(184,18): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type 'OutboxEventOrderByWithRelationInput | OutboxEventOrderByWithRelationInput[]'.
+apps/core-api/src/eventing/outbox.repository.ts(199,18): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type 'OutboxEventOrderByWithRelationInput | OutboxEventOrderByWithRelationInput[]'.
+apps/core-api/src/integrations/ghl/ghl-auth.controller.ts(12,46): error TS2307: Cannot find module '@neuronx/ghl-auth' or its corresponding type declarations.
+apps/core-api/src/integrations/ghl/ghl-auth.controller.ts(13,24): error TS2307: Cannot find module '@neuronx/config' or its corresponding type declarations.
+apps/core-api/src/integrations/ghl/ghl-auth.controller.ts(29,17): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+apps/core-api/src/integrations/ghl/ghl-auth.controller.ts(73,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-auth.controller.ts(74,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-auth.controller.ts(79,18): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-auth.controller.ts(93,17): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+apps/core-api/src/integrations/ghl/ghl-auth.controller.ts(200,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-auth.controller.ts(201,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-health.controller.ts(4,28): error TS2307: Cannot find module '@neuronx/token-vault' or its corresponding type declarations.
+apps/core-api/src/integrations/ghl/ghl-health.controller.ts(5,24): error TS2307: Cannot find module '@neuronx/config' or its corresponding type declarations.
+apps/core-api/src/integrations/ghl/ghl-health.controller.ts(55,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-health.controller.ts(56,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-health.controller.ts(63,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-health.controller.ts(107,49): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-health.controller.ts(131,47): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-webhook.controller.ts(14,35): error TS2307: Cannot find module '@neuronx/webhooks' or its corresponding type declarations.
+apps/core-api/src/integrations/ghl/ghl-webhook.controller.ts(15,24): error TS2307: Cannot find module '@neuronx/config' or its corresponding type declarations.
+apps/core-api/src/integrations/ghl/ghl-webhook.controller.ts(16,34): error TS2307: Cannot find module '../rate-limit/rate-limit.service' or its corresponding type declarations.
+apps/core-api/src/integrations/ghl/ghl-webhook.controller.ts(37,17): error TS1272: A type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+apps/core-api/src/integrations/ghl/ghl-webhook.controller.ts(153,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/integrations/ghl/ghl-webhook.controller.ts(154,16): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/observability/metrics.ts(14,8): error TS2307: Cannot find module 'prom-client' or its corresponding type declarations.
+apps/core-api/src/observability/readiness.service.ts(8,31): error TS2307: Cannot find module '../secrets/secrets.service' or its corresponding type declarations.
+apps/core-api/src/sales/advanced-scoring.service.ts(5,1): error TS6192: All imports in import declaration are unused.
+apps/core-api/src/sales/advanced-scoring.service.ts(43,22): error TS6138: Property 'configService' is declared but its value is never read.
+apps/core-api/src/sales/advanced-scoring.service.ts(259,18): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/sales/advanced-scoring.service.ts(442,18): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/usage/usage.repository.ts(30,26): error TS2339: Property 'actorId' does not exist on type 'UsageEvent'.
+apps/core-api/src/usage/usage.repository.ts(34,33): error TS2339: Property 'idempotencyKey' does not exist on type 'UsageEvent'.
+apps/core-api/src/usage/usage.repository.ts(91,7): error TS2339: Property 'correlationId' does not exist on type 'UsageQueryOptions'.
+apps/core-api/src/usage/usage.repository.ts(140,7): error TS2339: Property 'periodType' does not exist on type 'Omit<UsageAggregate, "id" | "createdAt" | "updatedAt">'.
+apps/core-api/src/usage/usage.repository.ts(143,7): error TS2339: Property 'metric' does not exist on type 'Omit<UsageAggregate, "id" | "createdAt" | "updatedAt">'.
+apps/core-api/src/usage/usage.repository.ts(144,7): error TS2339: Property 'totalQuantity' does not exist on type 'Omit<UsageAggregate, "id" | "createdAt" | "updatedAt">'.
+apps/core-api/src/usage/usage.repository.ts(146,7): error TS2339: Property 'computedAt' does not exist on type 'Omit<UsageAggregate, "id" | "createdAt" | "updatedAt">'.
+apps/core-api/src/usage/usage.repository.ts(147,7): error TS2339: Property 'sourceHash' does not exist on type 'Omit<UsageAggregate, "id" | "createdAt" | "updatedAt">'.
+apps/core-api/src/usage/usage.repository.ts(277,13): error TS2353: Object literal may only specify known properties, and 'periodType' does not exist in type 'Omit<UsageAggregate, "id" | "createdAt" | "updatedAt">'.
+apps/core-api/src/usage/usage.repository.ts(335,5): error TS2322: Type '{ tenantId: string; metric: string; totalQuantity: number; eventCount: number; computedAt: string; sourceHash: string; }[]' is not assignable to type 'Omit<UsageAggregate, "id" | "createdAt" | "updatedAt" | "periodStart" | "periodEnd" | "periodType">[]'.
+  Type '{ tenantId: string; metric: string; totalQuantity: number; eventCount: number; computedAt: string; sourceHash: string; }' is missing the following properties from type 'Omit<UsageAggregate, "id" | "createdAt" | "updatedAt" | "periodStart" | "periodEnd" | "periodType">': metrics, period, lastUpdated
+apps/core-api/src/usage/usage.repository.ts(505,7): error TS2353: Object literal may only specify known properties, and 'actorId' does not exist in type 'UsageEvent'.
+apps/core-api/src/usage/usage.repository.ts(512,7): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type 'UsageAggregate'.
+apps/core-api/src/usage/usage.service.ts(13,3): error TS6133: 'UsageThreshold' is declared but its value is never read.
+apps/core-api/src/usage/usage.service.ts(83,57): error TS18046: 'eventError' is of type 'unknown'.
+apps/core-api/src/usage/usage.service.ts(98,58): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/usage/usage.service.ts(134,48): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/usage/usage.service.ts(143,47): error TS18046: 'error' is of type 'unknown'.
+apps/core-api/src/usage/usage.service.ts(184,17): error TS2339: Property 'aggregates' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(194,46): error TS2339: Property 'aggregates' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(195,22): error TS18046: 'agg' is of type 'unknown'.
+apps/core-api/src/usage/usage.service.ts(196,23): error TS18046: 'b' is of type 'unknown'.
+apps/core-api/src/usage/usage.service.ts(196,46): error TS18046: 'a' is of type 'unknown'.
+apps/core-api/src/usage/usage.service.ts(199,5): error TS2322: Type 'unknown[]' is not assignable to type 'UsageAggregate[]'.
+  Type 'unknown' is not assignable to type 'UsageAggregate'.
+apps/core-api/src/usage/usage.service.ts(247,7): error TS18004: No value exists in scope for the shorthand property 'totalEvents'. Either declare one or provide an initializer.
+apps/core-api/src/usage/usage.service.ts(248,24): error TS2304: Cannot find name 'aggregates'.
+apps/core-api/src/usage/usage.service.ts(320,10): error TS2339: Property 'reports' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(347,32): error TS2339: Property 'rawEvents' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(348,7): error TS7006: Parameter 'event' implicitly has an 'any' type.
+apps/core-api/src/usage/usage.service.ts(427,26): error TS2339: Property 'aggregates' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(436,37): error TS2345: Argument of type 'UsageAggregate | undefined' is not assignable to parameter of type 'UsageAggregate'.
+  Type 'undefined' is not assignable to type 'UsageAggregate'.
+apps/core-api/src/usage/usage.service.ts(440,28): error TS18048: 'aggregate' is possibly 'undefined'.
+apps/core-api/src/usage/usage.service.ts(441,7): error TS18048: 'aggregate' is possibly 'undefined'.
+apps/core-api/src/usage/usage.service.ts(442,7): error TS18048: 'aggregate' is possibly 'undefined'.
+apps/core-api/src/usage/usage.service.ts(443,7): error TS18048: 'aggregate' is possibly 'undefined'.
+apps/core-api/src/usage/usage.service.ts(448,12): error TS2339: Property 'aggregates' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(458,11): error TS6133: 'cleanupOldEvents' is declared but its value is never read.
+apps/core-api/src/usage/usage.service.ts(462,31): error TS2339: Property 'rawEvents' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(463,10): error TS2339: Property 'rawEvents' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(463,27): error TS2339: Property 'rawEvents' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(464,7): error TS7006: Parameter 'event' implicitly has an 'any' type.
+apps/core-api/src/usage/usage.service.ts(467,46): error TS2339: Property 'rawEvents' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(509,10): error TS2339: Property 'rawEvents' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(510,10): error TS2339: Property 'aggregates' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(511,10): error TS2339: Property 'thresholds' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(512,10): error TS2339: Property 'reports' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(526,31): error TS2339: Property 'rawEvents' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(527,8): error TS7006: Parameter 'a' implicitly has an 'any' type.
+apps/core-api/src/usage/usage.service.ts(527,11): error TS7006: Parameter 'b' implicitly has an 'any' type.
+apps/core-api/src/usage/usage.service.ts(532,25): error TS2339: Property 'rawEvents' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(533,29): error TS2339: Property 'aggregates' does not exist on type 'UsageService'.
+apps/core-api/src/usage/usage.service.ts(534,26): error TS2339: Property 'reports' does not exist on type 'UsageService'.
+tests/contract/ghl-adapter.contract.spec.ts(15,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(19,7): error TS6133: 'eventBus' is declared but its value is never read.
+tests/contract/ghl-adapter.contract.spec.ts(22,14): error TS2708: Cannot use namespace 'jest' as a value.
+tests/contract/ghl-adapter.contract.spec.ts(25,3): error TS2304: Cannot find name 'beforeEach'.
+tests/contract/ghl-adapter.contract.spec.ts(46,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(47,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(48,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(48,32): error TS2339: Property 'handleWebhook' does not exist on type 'GhlWebhookController'.
+tests/contract/ghl-adapter.contract.spec.ts(49,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(49,39): error TS2339: Property 'handleWebhook' does not exist on type 'GhlWebhookController'.
+tests/contract/ghl-adapter.contract.spec.ts(52,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(84,46): error TS2339: Property 'handleWebhook' does not exist on type 'GhlWebhookController'.
+tests/contract/ghl-adapter.contract.spec.ts(89,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(92,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(121,31): error TS2339: Property 'handleWebhook' does not exist on type 'GhlWebhookController'.
+tests/contract/ghl-adapter.contract.spec.ts(124,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(127,24): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(128,20): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(131,15): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(142,22): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(143,22): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(148,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(162,13): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(163,27): error TS2339: Property 'handleWebhook' does not exist on type 'GhlWebhookController'.
+tests/contract/ghl-adapter.contract.spec.ts(167,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(184,47): error TS2339: Property 'handleWebhook' does not exist on type 'GhlWebhookController'.
+tests/contract/ghl-adapter.contract.spec.ts(188,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(191,13): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(192,27): error TS2339: Property 'handleWebhook' does not exist on type 'GhlWebhookController'.
+tests/contract/ghl-adapter.contract.spec.ts(197,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(198,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(199,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(199,29): error TS2339: Property 'initiateOAuth' does not exist on type 'GhlAuthController'.
+tests/contract/ghl-adapter.contract.spec.ts(200,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(200,29): error TS2339: Property 'handleCallback' does not exist on type 'GhlAuthController'.
+tests/contract/ghl-adapter.contract.spec.ts(201,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(201,36): error TS2339: Property 'initiateOAuth' does not exist on type 'GhlAuthController'.
+tests/contract/ghl-adapter.contract.spec.ts(202,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(202,36): error TS2339: Property 'handleCallback' does not exist on type 'GhlAuthController'.
+tests/contract/ghl-adapter.contract.spec.ts(205,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(206,43): error TS2339: Property 'initiateOAuth' does not exist on type 'GhlAuthController'.
+tests/contract/ghl-adapter.contract.spec.ts(208,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(209,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(210,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(211,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(212,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(213,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(214,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(215,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(216,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(219,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(225,43): error TS2339: Property 'handleCallback' does not exist on type 'GhlAuthController'.
+tests/contract/ghl-adapter.contract.spec.ts(230,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(231,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(233,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(234,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(237,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(243,13): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(244,24): error TS2339: Property 'handleCallback' does not exist on type 'GhlAuthController'.
+tests/contract/ghl-adapter.contract.spec.ts(248,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(254,43): error TS2339: Property 'handleCallback' does not exist on type 'GhlAuthController'.
+tests/contract/ghl-adapter.contract.spec.ts(259,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(260,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(261,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(265,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(266,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(267,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(268,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(271,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(274,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(275,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(276,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(277,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(278,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(281,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(281,21): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(282,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(282,21): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(283,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(283,21): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(286,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(290,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(290,21): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(291,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(291,21): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(292,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(292,21): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(295,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(295,28): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(296,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(296,28): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(297,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(298,16): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(302,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(306,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(306,21): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(307,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(307,21): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(308,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(308,21): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(309,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(309,21): error TS2339: Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; } | { ...; }'.
+  Property 'services' does not exist on type '{ status: string; timestamp: string; integration: string; version: string; environment: any; checks: { configuration: { status: string; message: string; missing: string[]; } | { status: string; message: string; missing?: undefined; }; tokenVault: { ...; }; webhookVerification: { ...; }; }; }'.
+tests/contract/ghl-adapter.contract.spec.ts(313,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(314,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(357,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(358,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(359,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(360,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(361,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(362,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(363,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(366,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(400,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(401,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(402,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(403,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(404,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(407,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/contract/ghl-adapter.contract.spec.ts(433,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(434,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(435,7): error TS2304: Cannot find name 'expect'.
+tests/contract/ghl-adapter.contract.spec.ts(436,7): error TS2304: Cannot find name 'expect'.
+tests/e2e/helpers/env-helper.ts(86,60): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/env-helper.ts(102,60): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(90,11): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(input: string | URL | Request, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Object literal may only specify known properties, and 'timeout' does not exist in type 'RequestInit'.
+  Overload 2 of 2, '(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Object literal may only specify known properties, and 'timeout' does not exist in type 'RequestInit'.
+tests/e2e/helpers/journey-test-helper.ts(98,51): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(137,59): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(170,53): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(183,53): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(206,51): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(323,31): error TS2576: Property 'getApiBaseUrl' does not exist on type 'EnvHelper'. Did you mean to access the static member 'EnvHelper.getApiBaseUrl' instead?
+tests/e2e/helpers/journey-test-helper.ts(331,13): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(332,13): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(333,13): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(335,65): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(343,31): error TS2576: Property 'getApiBaseUrl' does not exist on type 'EnvHelper'. Did you mean to access the static member 'EnvHelper.getApiBaseUrl' instead?
+tests/e2e/helpers/journey-test-helper.ts(351,13): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(352,13): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(353,13): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(355,65): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(363,31): error TS2576: Property 'getApiBaseUrl' does not exist on type 'EnvHelper'. Did you mean to access the static member 'EnvHelper.getApiBaseUrl' instead?
+tests/e2e/helpers/journey-test-helper.ts(368,13): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(369,13): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(370,13): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(372,65): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/journey-test-helper.ts(383,59): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/test-data-helper.ts(248,56): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/helpers/test-data-helper.ts(254,48): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/setup/global-setup.ts(3,28): error TS6133: 'config' is declared but its value is never read.
+tests/e2e/setup/global-setup.ts(8,9): error TS6133: 'page' is declared but its value is never read.
+tests/e2e/setup/global-teardown.ts(3,31): error TS6133: 'config' is declared but its value is never read.
+tests/e2e/specs/global-setup.ts(3,28): error TS6133: 'config' is declared but its value is never read.
+tests/e2e/specs/global-setup.ts(8,9): error TS6133: 'page' is declared but its value is never read.
+tests/e2e/specs/global-teardown.ts(3,31): error TS6133: 'config' is declared but its value is never read.
+tests/e2e/specs/journey-proof-pack.spec.ts(63,32): error TS2339: Property 'createGhlSnapshot' does not exist on type 'JourneyTestHelper'.
+tests/e2e/specs/journey-proof-pack.spec.ts(79,14): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/specs/journey-proof-pack.spec.ts(80,59): error TS18046: 'error' is of type 'unknown'.
+tests/e2e/specs/journey-proof-pack.spec.ts(87,32): error TS2339: Property 'getGhlDataFreshness' does not exist on type 'JourneyTestHelper'.
+tests/e2e/specs/journey-proof-pack.spec.ts(102,7): error TS6133: 'API_BASE_URL' is declared but its value is never read.
+tests/e2e/specs/journey-proof-pack.spec.ts(471,74): error TS6133: 'browser' is declared but its value is never read.
+tests/e2e/specs/oauth-flow.spec.ts(4,61): error TS6133: 'context' is declared but its value is never read.
+tests/e2e/specs/smoke-test.spec.ts(71,12): error TS18047: 'authToken' is possibly 'null'.
+tests/unit/advanced-scoring.service.spec.ts(3,31): error TS2307: Cannot find module '@nestjs/config' or its corresponding type declarations.
+tests/unit/advanced-scoring.service.spec.ts(6,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/unit/advanced-scoring.service.spec.ts(11,16): error TS2708: Cannot use namespace 'jest' as a value.
+tests/unit/advanced-scoring.service.spec.ts(12,20): error TS2708: Cannot use namespace 'jest' as a value.
+tests/unit/advanced-scoring.service.spec.ts(22,10): error TS2708: Cannot use namespace 'jest' as a value.
+tests/unit/advanced-scoring.service.spec.ts(25,3): error TS2304: Cannot find name 'beforeEach'.
+tests/unit/advanced-scoring.service.spec.ts(44,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/unit/advanced-scoring.service.spec.ts(45,5): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(48,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/unit/advanced-scoring.service.spec.ts(49,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/unit/advanced-scoring.service.spec.ts(67,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(68,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(69,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(70,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(71,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(72,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(73,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(74,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(75,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(78,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/unit/advanced-scoring.service.spec.ts(107,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(112,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/unit/advanced-scoring.service.spec.ts(130,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(131,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(132,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(133,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(136,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/unit/advanced-scoring.service.spec.ts(154,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(158,15): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(161,26): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(162,23): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(164,20): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(169,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/unit/advanced-scoring.service.spec.ts(189,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(190,7): error TS2304: Cannot find name 'expect'.
+tests/unit/advanced-scoring.service.spec.ts(194,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/unit/advanced-scoring.service.spec.ts(195,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/unit/advanced-scoring.service.spec.ts(226,7): error TS2304: Cannot find name 'expect'.
+ ELIFECYCLE  Command failed with exit code 2.

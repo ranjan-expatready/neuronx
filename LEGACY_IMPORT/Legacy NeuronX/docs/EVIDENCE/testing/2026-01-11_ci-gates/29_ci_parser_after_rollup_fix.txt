@@ -1,0 +1,17 @@
+PHASE 7 - CI PARSER COMPATIBILITY (EXPECTED)
+
+EXPECTED CI PARSING AFTER FIX:
+- grep approach (ci.yml): grep "lines" coverage/coverage-summary.json | grep -o '[0-9]+\.[0-9]+'
+  - Expected: Returns coverage percentage (e.g., "18.57")
+- jq approach (pr-quality-checks.yml): jq '.total.lines.pct' coverage/coverage-summary.json
+  - Expected: Returns coverage percentage (e.g., 18.57)
+
+BOTH SHOULD WORK because:
+1. coverage/coverage-summary.json will exist
+2. JSON structure will contain total.lines.pct field
+3. Both parsing methods are designed for this exact structure
+
+CURRENT STATUS:
+- Cannot test locally due to Node version
+- CI workflows updated to use Node 22 (compatible)
+- Parser logic is unchanged and should work with generated coverage files

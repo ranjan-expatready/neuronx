@@ -1,0 +1,1497 @@
+// Prisma schema for NeuronX Core API
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// TENANCY MODEL
+// ============================================================================
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspaces Workspace[]
+  events      Event[]
+  configs     Config[]
+  auditLog    AuditLog[]
+  tokenCredentials TokenCredential[]
+
+  @@map("tenants")
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events   Event[]
+  configs  Config[]
+  auditLog AuditLog[]
+
+  @@index([tenantId])
+  @@map("workspaces")
+}
+
+// ============================================================================
+// EVENT SOURCING MODEL
+// ============================================================================
+
+model Event {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workspaceId String?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  type        String   // domain.entity.action
+  data        Json     // Event payload
+  metadata    Json?    // Correlation IDs, timestamps, etc.
+
+  createdAt   DateTime @default(now())
+
+  @@index([tenantId, type])
+  @@index([tenantId, createdAt])
+  @@index([tenantId, workspaceId])
+  @@map("events")
+}
+
+// Outbox pattern for reliable event publishing
+model EventOutbox {
+  id            String   @id @default(cuid())
+  tenantId      String
+  eventType     String
+  eventData     Json
+  status        String   @default("pending") // pending, published, failed
+  publishedAt   DateTime?
+  retryCount    Int      @default(0)
+  error         String?
+  createdAt     DateTime @default(now())
+
+  @@index([tenantId, status])
+  @@index([status, createdAt])
+  @@map("event_outbox")
+}
+
+// ============================================================================
+// CONFIGURATION MODEL - WI-012: Configuration Persistence
+// ============================================================================
+
+model ConfigurationTemplate {
+  id                String   @id @default(cuid())
+  templateId        String   @unique // Business ID (e.g., 'sales-os-standard')
+
+  // Template metadata
+  name              String
+  description       String
+  category          String   // 'sales', 'marketing', 'support', 'enterprise'
+  isActive          Boolean  @default(true)
+
+  // Template definition
+  baseConfig        Json     // Base configuration structure
+  constraints       Json     // Template constraints (allowed fields, ranges, etc.)
+
+  // Versioning
+  version           String   @default("1.0.0") // Semantic version
+  previousVersion   String?
+
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenantAttachments TenantConfigAttachment[]
+
+  @@unique([templateId, version])
+  @@index([category])
+  @@index([isActive])
+  @@map("configuration_templates")
+}
+
+model TenantConfigAttachment {
+  id                String   @id @default(cuid())
+  tenantId          String   @unique // One attachment per tenant
+
+  templateId        String
+  template          ConfigurationTemplate @relation(fields: [templateId], references: [templateId])
+
+  entitlementTierId String?  // Must match tenant's entitlement tier
+
+  // Status
+  status            String   @default("active") // 'active', 'detached', 'suspended'
+
+  // Timestamps
+  attachedAt        DateTime @default(now())
+  detachedAt        DateTime?
+  updatedAt         DateTime @updatedAt
+
+  // Audit
+  attachedBy        String?
+  detachedBy        String?
+
+  // Relations
+  tenantConfigOverrides TenantConfigOverride[]
+
+  @@index([templateId])
+  @@index([entitlementTierId])
+  @@index([status])
+  @@map("tenant_config_attachments")
+}
+
+model TenantConfigOverride {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  // Override definition
+  version           String   @default("1.0.0") // Semantic version for overrides
+  overrides         Json     // Override object (field paths -> values)
+
+  // Metadata
+  description       String?
+
+  // Relations
+  attachment        TenantConfigAttachment @relation(fields: [tenantConfigAttachmentId], references: [tenantId])
+  tenantConfigAttachmentId String
+
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  updatedBy         String?
+  correlationId     String?
+
+  @@index([tenantId])
+  @@index([tenantConfigAttachmentId])
+  @@index([version])
+  @@map("tenant_config_overrides")
+}
+
+// Optional: Effective config cache for performance
+model EffectiveConfigCache {
+  id                String   @id @default(cuid())
+  tenantId          String   @unique
+
+  // Cache data
+  configHash        String   // Hash of effective config for change detection
+  effectiveConfig   Json     // Computed effective configuration
+  computedAt        DateTime @default(now())
+
+  // Metadata
+  templateId        String?
+  templateVersion   String?
+  entitlementTierId String?
+  overrideVersion   String?
+
+  // Cache management
+  expiresAt         DateTime?
+  hitCount          Int      @default(0)
+
+  @@index([configHash])
+  @@index([expiresAt])
+  @@map("effective_config_cache")
+}
+
+// Keep existing simple config table for backward compatibility during migration
+model Config {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workspaceId String?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  key         String   // Configuration key (dot notation)
+  value       Json     // Configuration value
+  version     Int      @default(1)
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([tenantId, workspaceId, key, version])
+  @@index([tenantId, workspaceId, key])
+  @@index([tenantId, isActive])
+  @@map("configs")
+}
+
+// ============================================================================
+// USAGE MODEL - WI-009: Usage Persistence
+// ============================================================================
+
+model UsageEvent {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Event details
+  eventId           String   @unique // Business ID for correlation
+  metric            String   // Usage metric (controlled vocabulary)
+  quantity          Int      // Usage quantity (always positive)
+  occurredAt        DateTime // When usage occurred
+
+  // Actor and correlation
+  actorId           String?  // Who performed the action
+  sourceService     String   // Which service generated this event
+  correlationId     String   // Request correlation ID
+
+  // Classification and metadata
+  classification    String   @default("NON_BILLABLE") // BILLABLE | NON_BILLABLE | INFO
+  idempotencyKey    String?  // For deduplication
+  metadata          Json?    // Additional structured data
+
+  // Audit
+  createdAt         DateTime @default(now())
+
+  // Constraints for deduplication
+  @@unique([tenantId, idempotencyKey]) // Prevent duplicate events
+  @@unique([tenantId, correlationId, metric, occurredAt]) // Business uniqueness
+
+  // Indexes for query performance
+  @@index([tenantId, occurredAt(sort: Desc)])
+  @@index([tenantId, metric, occurredAt(sort: Desc)])
+  @@index([tenantId, correlationId])
+  @@index([occurredAt]) // For time-range queries
+  @@index([classification])
+  @@map("usage_events")
+
+  // Partitioning guidance (for TimescaleDB if enabled):
+  // CREATE TABLE usage_events_y2024m01 PARTITION OF usage_events
+  // FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
+}
+
+model UsageAggregate {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Aggregation details
+  periodType        String   // 'daily' | 'weekly' | 'monthly'
+  periodStart       DateTime // Start of aggregation period
+  periodEnd         DateTime // End of aggregation period
+  metric            String   // Usage metric
+
+  // Computed values
+  totalQuantity     Int      // Sum of quantities in period
+  eventCount        Int      // Number of events aggregated
+
+  // Computation metadata
+  computedAt        DateTime @default(now())
+  sourceHash        String   // Hash of source events for change detection
+
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Uniqueness constraint
+  @@unique([tenantId, periodType, periodStart, metric])
+
+  // Indexes for query performance
+  @@index([tenantId, periodStart(sort: Desc)])
+  @@index([tenantId, metric, periodStart(sort: Desc)])
+  @@index([periodType, periodStart])
+  @@index([computedAt])
+  @@map("usage_aggregates")
+}
+
+// ============================================================================
+// ENTITLEMENT MODEL - WI-010: Entitlement Persistence
+// ============================================================================
+
+model EntitlementTier {
+  id                String   @id @default(cuid())
+  tierId            String   @unique // Business ID
+
+  // Tier metadata
+  name              String
+  description       String
+  category          String   // 'free', 'paid', 'enterprise'
+  isActive          Boolean  @default(true)
+
+  // Feature entitlements (stored as JSONB for flexibility)
+  features          Json     // FeatureEntitlements structure
+  limits            Json     // UsageLimits structure
+  metadata          Json     // TierMetadata structure
+
+  // Lifecycle
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenantEntitlements TenantEntitlement[]
+  fromTransitions    TierTransition[] @relation("FromTier")
+  toTransitions      TierTransition[] @relation("ToTier")
+
+  @@index([category])
+  @@index([isActive])
+  @@map("entitlement_tiers")
+}
+
+model TenantEntitlement {
+  id                String   @id @default(cuid())
+  tenantId          String   @unique // One entitlement per tenant
+
+  tierId            String
+  tier              EntitlementTier @relation(fields: [tierId], references: [tierId])
+
+  // Status and timing
+  status            String   @default("active") // 'active', 'suspended', 'expired'
+  effectiveAt       DateTime @default(now())
+  expiresAt         DateTime?
+
+  // Feature disablement flags (for downgrade grace periods)
+  voiceDisabled     Boolean  @default(false)
+  slaFrozen         Boolean  @default(false)
+  escalationFrozen  Boolean  @default(false)
+  routingDegraded   Boolean  @default(false)
+
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  fromTransitions   TierTransition[] @relation("FromTenant")
+  toTransitions     TierTransition[] @relation("ToTenant")
+  scheduledActions  ScheduledAction[]
+  entitlementOverrides EntitlementOverride[]
+
+  @@index([tierId])
+  @@index([status])
+  @@index([effectiveAt])
+  @@index([expiresAt])
+  @@map("tenant_entitlements")
+}
+
+model TierTransition {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  fromTierId        String?
+  fromTier          EntitlementTier? @relation("FromTier", fields: [fromTierId], references: [tierId])
+
+  toTierId          String
+  toTier            EntitlementTier @relation("ToTier", fields: [toTierId], references: [tierId])
+
+  // Transition metadata
+  transitionType    String   // 'upgrade', 'downgrade', 'lateral', 'suspension', 'expiry', 'reactivation'
+  reason            String?
+  requestedBy       String?
+  requestedAt       DateTime @default(now())
+
+  // Timing
+  effectiveAt       DateTime // When transition takes effect
+  graceEndsAt       DateTime? // When grace period ends (for downgrades)
+
+  // Status
+  status            String   @default("pending") // 'pending', 'effective', 'cancelled', 'expired'
+
+  // Relations
+  tenantEntitlement TenantEntitlement? @relation("FromTenant", fields: [fromTenantId], references: [tenantId])
+  fromTenantId      String?
+
+  tenantEntitlementTo TenantEntitlement? @relation("ToTenant", fields: [toTenantId], references: [tenantId])
+  toTenantId        String?
+
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([transitionType])
+  @@index([status])
+  @@index([effectiveAt])
+  @@index([graceEndsAt])
+  @@map("tier_transitions")
+}
+
+model ScheduledAction {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  // Action definition
+  actionType        String   // 'apply_downgrade', 'voice_disable', 'sla_freeze', etc.
+  payload           Json     // Action-specific data
+
+  // Scheduling
+  executeAt         DateTime // When to execute
+  status            String   @default("pending") // 'pending', 'executing', 'completed', 'failed', 'cancelled'
+
+  // Execution tracking
+  executedAt        DateTime?
+  errorMessage      String?
+  retryCount        Int      @default(0)
+
+  // Relations
+  tenantEntitlement TenantEntitlement @relation(fields: [tenantEntitlementId], references: [tenantId])
+  tenantEntitlementId String
+
+  // Correlation and audit
+  correlationId     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([actionType])
+  @@index([status])
+  @@index([executeAt])
+  @@map("scheduled_actions")
+}
+
+model EntitlementOverride {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  // Override definition
+  entitlementType   String   // 'leads', 'scoring', 'routing', 'voice', 'api'
+  originalLimit     Int      // Original tier limit
+  overrideLimit     Int      // Temporary override limit
+
+  // Justification and approval
+  overrideReason    String   // 'emergency', 'incident', 'compliance'
+  overrideBy        String   // Admin actor who approved
+  overrideAt        DateTime @default(now())
+
+  // Expiration
+  expiresAt         DateTime // Automatic expiry
+  expiredAt         DateTime?
+  expiryReason      String?
+
+  // Relations
+  tenantEntitlement TenantEntitlement @relation(fields: [tenantEntitlementId], references: [tenantId])
+  tenantEntitlementId String
+
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([entitlementType])
+  @@index([expiresAt])
+  @@index([overrideBy])
+  @@map("entitlement_overrides")
+}
+
+// ============================================================================
+// AUDIT MODEL
+// ============================================================================
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workspaceId String?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  actorId     String   // Who performed the action
+  actorType   String   // USER, SYSTEM, API
+  action      String   // CREATE, UPDATE, DELETE, etc.
+  resource    String   // leads, workflows, configs, etc.
+  resourceId  String?  // ID of affected resource
+
+  oldValues   Json?    // Previous state
+  newValues   Json?    // New state
+  changes     Json?    // Specific field changes
+
+  ipAddress   String?
+  userAgent   String?
+  metadata    Json?    // Additional context
+
+  createdAt   DateTime @default(now())
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, actorId])
+  @@index([tenantId, resource, resourceId])
+  @@map("audit_log")
+}
+
+
+
+// ============================================================================
+// BUSINESS ENTITIES (Minimal for now)
+// ============================================================================
+
+model Lead {
+  id          String   @id @default(cuid())
+  tenantId    String
+  externalId  String?  // ID from external system (GHL, etc.)
+  email       String?
+  firstName   String?
+  lastName    String?
+  company     String?
+  score       Float?
+  status      String   @default("new")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([tenantId, externalId])
+  @@index([tenantId, email])
+  @@index([tenantId, score])
+  @@map("leads")
+}
+
+// ============================================================================
+// PAYMENT MODEL - WI-011: Payment Persistence
+// ============================================================================
+
+model PaymentRecord {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  // Payment details
+  paymentId         String   @unique // Business ID
+  amount            Int      // Amount in cents
+  currency          String   // ISO 4217 currency code
+  source            String   // Source identifier (opportunity ID, etc.)
+
+  // Status and verification
+  status            String   @default("INITIATED") // INITIATED, PAID, FAILED, REFUNDED
+  initiatedAt       DateTime @default(now())
+
+  verifiedAt        DateTime?
+  verifiedBy        String?  // Actor who verified payment
+  verificationMethod String? // How payment was verified (webhook, manual, etc.)
+
+  // External provider data
+  providerId        String?  // Payment provider (stripe, paypal, etc.)
+  providerEventId   String?  // Provider's event/transaction ID
+
+  // Audit and correlation
+  correlationId     String?  // Request correlation ID
+  version           Int      @default(1) // Optimistic locking
+
+  // Flexible metadata
+  metadata          Json?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([tenantId, paymentId])
+  @@unique([tenantId, providerId, providerEventId]) // Prevent duplicate provider events
+  @@index([tenantId, status])
+  @@index([tenantId, source])
+  @@index([tenantId, correlationId])
+  @@index([status, createdAt])
+  @@map("payment_records")
+}
+
+// ============================================================================
+// TOKEN VAULT MODEL
+// ============================================================================
+
+model TokenCredential {
+  id                     String   @id @default(cuid())
+  tenantId               String
+  tenant                 Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  provider               String   // 'ghl', 'salesforce', etc.
+  environment            String   // 'dev', 'stage', 'prod'
+  locationId             String?  // Provider-specific location/account ID
+
+  // Encrypted token data
+  encryptedAccessToken   String   // AES-256-GCM encrypted
+  encryptedRefreshToken  String   // AES-256-GCM encrypted
+  encryptedDek           String   // Encrypted data encryption key
+
+  // Metadata
+  scope                  String[] // PostgreSQL text array of OAuth scopes
+  expiresAt              DateTime
+  lastRefreshed          DateTime
+  keyId                  String   // Encryption key version
+
+  // Audit
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  createdBy              String?
+  lastRotatedBy          String?
+
+  @@unique([tenantId, provider, environment, locationId])
+  @@index([tenantId])
+  @@index([expiresAt])
+  @@index([keyId])
+  @@map("token_credentials")
+}
+
+// ============================================================================
+// EVENT OUTBOX MODEL - WI-014: Durable Event Streaming
+// ============================================================================
+
+model OutboxEvent {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Event details
+  eventId           String   @unique // Business ID for correlation
+  eventType         String   // Event type (e.g., 'payment.paid')
+  payload           Json     // Event payload
+  correlationId     String?  // Request correlation ID
+
+  // Idempotency and deduplication
+  idempotencyKey    String?  // For deduplication
+  @@unique([tenantId, idempotencyKey]) // Prevent duplicate events when key provided
+
+  // Processing state
+  status            String   @default("PENDING") // PENDING | PUBLISHED | FAILED
+  attempts          Int      @default(0)
+  nextAttemptAt     DateTime @default(now())
+  lastError         String?
+
+  // Metadata
+  sourceService     String   // Which service created this event
+  createdAt         DateTime @default(now())
+  publishedAt       DateTime?
+
+  // Indexes for efficient processing
+  @@index([status, nextAttemptAt]) // Dispatcher queries pending events
+  @@index([tenantId, createdAt(sort: Desc)]) // Tenant event history
+  @@index([eventType]) // Event type filtering
+  @@index([correlationId]) // Correlation tracing
+  @@map("outbox_events")
+}
+
+// ============================================================================
+// VOICE ATTEMPT MODEL - WI-013: Voice State Persistence
+// ============================================================================
+
+model VoiceAttempt {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Business identifiers
+  attemptId         String   @unique // Business ID for correlation
+  leadId            String   // Lead/opportunity this attempt is for
+  intentType        String   // Voice action type (outbound_call, inbound_response, etc.)
+
+  // Status and lifecycle
+  status            String   @default("INITIATED") // INITIATED | AUTHORIZED | EXECUTING | COMPLETED | FAILED | CANCELLED
+
+  // Authorization gates (NeuronX-owned, not provider-settable)
+  authorizedAt      DateTime? // When NeuronX authorized this attempt
+  consentRef        String?   // Reference to consent record
+  paymentRef        String?   // Reference to payment record
+  caseRef           String?   // Reference to case record (only set on CaseOpened)
+
+  // Idempotency and correlation
+  correlationId     String   // Request correlation ID
+  idempotencyKey    String?  // For attempt creation idempotency
+
+  // Provider execution details
+  provider          String   // Voice provider (twilio, ghl, etc.)
+  providerCallId    String?  // Provider's call/attempt ID
+  providerStatus    String?  // Provider-reported status
+  durationSec       Int?     // Call duration in seconds
+  recordingUrl      String?  // Recording URL if available
+  transcriptRef     String?  // Reference to transcript storage
+
+  // Retry logic (NeuronX-controlled)
+  attempts          Int      @default(0)
+  maxRetries        Int      @default(3)
+  nextAttemptAt     DateTime @default(now())
+  lastError         String?
+
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Constraints for idempotency and deduplication
+  @@unique([tenantId, idempotencyKey]) // Prevent duplicate attempt creation
+  @@unique([tenantId, provider, providerCallId]) // Webhook deduplication
+
+  // Indexes for efficient querying
+  @@index([tenantId, leadId, createdAt(sort: Desc)]) // Lead attempt history
+  @@index([status, nextAttemptAt]) // Retry queue processing
+  @@index([tenantId, correlationId]) // Correlation tracing
+  @@index([provider, providerStatus]) // Provider status queries
+  @@map("voice_attempts")
+}
+
+model VoiceExecutionEvent {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Relationships
+  attemptId         String   // Voice attempt this event relates to
+
+  // Event details
+  eventType         String   // Event type (attempt.started, attempt.completed, etc.)
+  occurredAt        DateTime // When this event occurred
+  payloadJson       Json     // Event payload data
+
+  // Correlation and idempotency
+  correlationId     String?  // Request correlation ID
+  idempotencyKey    String?  // For event deduplication
+
+  // Audit
+  createdAt         DateTime @default(now())
+
+  // Constraints
+  @@unique([tenantId, idempotencyKey]) // Prevent duplicate events
+
+  // Indexes
+  @@index([tenantId, attemptId]) // Attempt event history
+  @@index([tenantId, eventType]) // Event type filtering
+  @@index([tenantId, occurredAt]) // Time-based queries
+  @@index([correlationId]) // Correlation tracing
+  @@map("voice_execution_events")
+}
+
+// ============================================================================
+// SECRETS MANAGEMENT - WI-019: Secrets & Encryption Foundation
+// ============================================================================
+
+model SecretRecord {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Secret identity
+  name              String   // e.g., "webhook-endpoint-ep123"
+  version           Int      // Version number (1, 2, 3...)
+
+  // Encryption (for DB provider)
+  ciphertext        String?  // Base64-encoded encrypted secret (null for external providers)
+  nonce             String?  // Base64-encoded nonce for AES-GCM (null for external providers)
+  keyVersion        String?  // Master key version for rotation tracking
+
+  // Status lifecycle
+  status            String   @default("ACTIVE") // ACTIVE | PREVIOUS | RETIRED
+
+  // Audit
+  createdAt         DateTime @default(now())
+  rotatedAt         DateTime?
+  retiredAt         DateTime?
+
+  // Constraints
+  @@unique([tenantId, name, status]) // Only one ACTIVE/PREVIOUS per name
+  @@unique([tenantId, name, version]) // Version uniqueness
+
+  // Indexes
+  @@index([tenantId, name]) // Secret lookup
+  @@index([tenantId, status]) // Active secrets listing
+  @@index([status, createdAt]) // Cleanup queries
+  @@map("secret_records")
+}
+
+// ============================================================================
+// ACCESS CONTROL & API KEY GOVERNANCE - WI-022: Access Control & API Key Governance
+// ============================================================================
+
+model ApiKeyRecord {
+  id                      String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId                String
+
+  // Key metadata
+  name                    String   @db.VarChar(100)
+  digest                  String   @unique // sha256(rawKey) hex - for fast lookup
+  previousDigest          String?  // For rotation overlap window
+  previousDigestExpiresAt DateTime?
+
+  // Status and lifecycle
+  status                  String   // ACTIVE | REVOKED
+  fingerprint             String   @db.VarChar(16) // First 8 chars of sha256 for UI display
+
+  // Authorization
+  roleIds                 String[] // References Role.id - preferred approach
+  permissions             String[] // Explicit permissions (optional override)
+
+  // Security references
+  secretRef               String   // SecretService reference for key material
+
+  // Audit timestamps
+  lastUsedAt              DateTime?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  revokedAt               DateTime?
+
+  // Indexes
+  @@index([tenantId, status])
+  @@index([tenantId, createdAt(sort: Desc)])
+  @@map("api_key_records")
+}
+
+model Role {
+  id          String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId    String
+
+  // Role definition
+  name        String   @db.VarChar(50)
+  permissions String[] // Permission strings
+
+  // Metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Constraints
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("roles")
+}
+
+
+
+// ============================================================================
+// OBJECT STORAGE & ARTIFACT MANAGEMENT - WI-021: Object Storage & Artifact Management
+// ============================================================================
+
+model ArtifactRecord {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Object metadata
+  objectKey         String   // Full S3 key including tenant prefix
+  type              String   // voice-recording | voice-transcript | export-csv | export-pdf | invoice-pdf | document
+
+  // File metadata
+  size              Int      // Size in bytes
+  contentType       String   // MIME type
+  checksum          String   // SHA256 hash for integrity
+
+  // Additional metadata (no PII)
+  metadata          Json     // Key-value pairs for artifact-specific data
+
+  // Lifecycle
+  createdAt         DateTime @default(now())
+  expiresAt         DateTime? // For temporary artifacts
+  deletedAt         DateTime? // Soft delete
+
+  // Constraints
+  @@unique([tenantId, objectKey]) // One artifact per tenant+key
+  @@index([tenantId, type]) // Type-based queries
+  @@index([tenantId, createdAt(sort: Desc)]) // Recent artifacts
+  @@index([expiresAt]) // Cleanup queries
+  @@map("artifact_records")
+}
+
+// ============================================================================
+// WEBHOOK DELIVERY MODEL - WI-018: Outbound Webhook Delivery System
+// ============================================================================
+
+model WebhookEndpoint {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Endpoint configuration
+  name              String   // Human-readable name
+  url               String   // HTTPS URL for webhook delivery
+
+  // Secret management (WI-019: replaces plaintext secret)
+  secretRef         String?  // Reference to secret store (e.g., "db:tenant-a:webhook-endpoint-ep123:1")
+  previousSecretRef String?  // Previous version during rotation overlap
+  secretProvider    String   @default("db") // db | aws | gcp | dev
+  secretUpdatedAt   DateTime @default(now())
+
+  // Legacy field (migration only - will be removed)
+  secret            String?  // PLAINTEXT - DEPRECATED - DO NOT USE IN PRODUCTION
+
+  // Delivery configuration
+  enabled           Boolean  @default(true)
+  eventTypes        String[] // Allowed event types (JSON array)
+  timeoutMs         Int      @default(5000) // HTTP timeout
+  maxAttempts       Int      @default(10)  // Max delivery attempts
+  backoffBaseSeconds Int     @default(30) // Base backoff time
+
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Constraints
+  @@unique([tenantId, url]) // One endpoint per URL per tenant
+
+  // Indexes
+  @@index([tenantId, enabled]) // Active endpoints lookup
+  @@index([tenantId]) // Tenant endpoints
+  @@map("webhook_endpoints")
+}
+
+model WebhookDelivery {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Relationships
+  endpointId        String   // Webhook endpoint
+  outboxEventId     String   // Outbox event being delivered
+
+  // Delivery metadata
+  outboxEventType   String   // Denormalized event type
+  correlationId     String?  // Request correlation ID
+
+  // Delivery state
+  status            String   @default("PENDING") // PENDING | SENDING | DELIVERED | FAILED | DEAD_LETTER
+  attempts          Int      @default(0)
+  nextAttemptAt     DateTime @default(now())
+  lastError         String?
+
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Constraints
+  @@unique([tenantId, endpointId, outboxEventId]) // One delivery per event+endpoint
+
+  // Indexes
+  @@index([status, nextAttemptAt]) // Delivery processing queue
+  @@index([tenantId, createdAt(sort: Desc)]) // Tenant delivery history
+  @@index([endpointId]) // Endpoint deliveries
+  @@index([outboxEventId]) // Event deliveries
+  @@map("webhook_deliveries")
+}
+
+model WebhookAttempt {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Relationships
+  deliveryId        String   // Webhook delivery
+
+  // Attempt metadata
+  attemptNumber     Int      // Sequential attempt number
+  requestTimestamp  DateTime // When attempt was made
+
+  // HTTP response details
+  responseStatus    Int?     // HTTP status code
+  responseBodySnippet String? // First 2KB of response (for debugging)
+  durationMs        Int?     // Request duration
+  errorMessage      String?  // Error message if failed
+
+  // Audit
+  createdAt         DateTime @default(now())
+
+  // Constraints
+  @@unique([tenantId, deliveryId, attemptNumber]) // One attempt per delivery+number
+
+  // Indexes
+  @@index([tenantId, createdAt(sort: Desc)]) // Tenant attempt history
+  @@index([deliveryId]) // Delivery attempts
+  @@map("webhook_attempts")
+}
+
+// ============================================================================
+// SLA TIMER MODEL - WI-017: SLA Timer Persistence
+// ============================================================================
+
+model SlaTimer {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // SLA relationship
+  leadId            String   // Lead this timer is for
+  slaContractId     String   // Reference to SLA configuration
+
+  // Timing
+  startedAt         DateTime // When timer was started
+  dueAt             DateTime // When SLA is due (startedAt + slaWindowMinutes)
+
+  // Status and processing
+  status            String   @default("ACTIVE") // ACTIVE | DUE | ESCALATED | CANCELLED | COMPLETED
+  processingStatus  String   @default("PENDING") // PENDING | PROCESSING | COMPLETED | FAILED
+
+  // Idempotency and correlation
+  correlationId     String   // Request correlation ID
+  idempotencyKey    String?  // For timer creation idempotency
+
+  // SLA configuration snapshot (for audit)
+  slaWindowMinutes  Int      // SLA duration in minutes
+  escalationSteps   Json     // Escalation configuration snapshot
+
+  // Processing metadata
+  attempts          Int      @default(0)
+  lastAttemptAt     DateTime?
+  nextAttemptAt     DateTime @default(now())
+  lastError         String?
+
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Constraints for idempotency
+  @@unique([tenantId, idempotencyKey]) // Prevent duplicate timer creation
+  @@unique([tenantId, leadId, slaContractId, startedAt]) // Business uniqueness
+
+  // Indexes for efficient querying
+  @@index([tenantId, dueAt]) // Timer execution (most critical)
+  @@index([tenantId, leadId]) // Lead lookup
+  @@index([status, processingStatus]) // Status filtering
+  @@index([processingStatus, nextAttemptAt]) // Processing queue
+  @@index([correlationId]) // Correlation tracing
+  @@map("sla_timers")
+
+  // Relations
+  escalationEvents  SlaEscalationEvent[]
+}
+
+model SlaEscalationEvent {
+  id                String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId          String
+
+  // Relationships
+  leadId            String   // Lead being escalated
+  timerId           String   // SLA timer that triggered this
+  timer             SlaTimer @relation(fields: [timerId], references: [id])
+
+  // Escalation details
+  escalationStep    Int      // Which escalation step (1, 2, 3, etc.)
+  executedAt        DateTime // When escalation was executed
+  outcome           String   // SUCCESS | FAILED | SKIPPED
+
+  // Escalation configuration snapshot
+  escalationConfig  Json     // What was executed
+
+  // Processing details
+  correlationId     String   // Request correlation ID
+  errorMessage      String?  // If outcome is FAILED
+
+  // Idempotency
+  idempotencyKey    String   // timerId + escalationStep
+
+  // Audit
+  createdAt         DateTime @default(now())
+
+  // Constraints
+  @@unique([tenantId, timerId, escalationStep]) // One execution per timer + step
+  @@unique([tenantId, idempotencyKey]) // Idempotency key uniqueness
+
+  // Indexes
+  @@index([tenantId, leadId]) // Lead-based queries
+  @@index([tenantId, timerId]) // Timer-based queries
+  @@index([tenantId, executedAt]) // Time-based queries
+  @@index([outcome]) // Outcome filtering
+  @@map("sla_escalation_events")
+}
+
+// ============================================================================
+// EXECUTION AUTHORITY MODEL (WI-034)
+// ============================================================================
+
+model ExecutionToken {
+  // Primary identifier (opaque, random)
+  tokenId         String   @id
+
+  // Tenant isolation
+  tenantId        String
+
+  // Opportunity context
+  opportunityId   String
+
+  // Security scope restrictions
+  actorType       String   // AI | HUMAN | HYBRID
+  mode            String   // AUTONOMOUS | ASSISTED | APPROVAL_REQUIRED
+  channelScope    String   // voice | sms | email | whatsapp | calendar
+  commandType     String   // ExecutionCommand.commandType
+
+  // Security metadata
+  correlationId   String
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  createdBy       String
+
+  // Usage tracking
+  usedAt          DateTime?
+  usedBy          String?
+  revokedAt       DateTime?
+  revokedBy       String?
+
+  // Optional metadata (low-cardinality)
+  metadata        Json?
+
+  // Constraints
+  @@unique([tenantId, correlationId, commandType]) // One token per correlation + command
+  @@index([tenantId, expiresAt]) // Expiry cleanup
+  @@index([tenantId, opportunityId]) // Opportunity lookups
+  @@index([correlationId]) // Correlation tracing
+  @@map("execution_tokens")
+}
+
+model IdempotencyRecord {
+  // Composite key: tenantId:endpoint:idempotencyKey
+  idempotencyKey  String   @id
+
+  // Tenant isolation
+  tenantId        String
+
+  // Request context
+  endpoint        String
+  tokenId         String?  // Optional link to execution token
+
+  // Response data
+  response        Json     // Stored response for idempotency
+  statusCode      Int
+
+  // Timing
+  createdAt       DateTime @default(now())
+  expiresAt       DateTime
+
+  // Constraints
+  @@index([tenantId, expiresAt]) // Cleanup queries
+  @@map("idempotency_records")
+}
+
+// ============================================================================
+// OPPORTUNITY MODEL (WI-037: Opportunity → Team Binding)
+// ============================================================================
+
+model Opportunity {
+  // Primary identifiers
+  id          String   @id @default(cuid())
+  tenantId    String
+  externalId  String?  // ID from external system (GHL, etc.)
+
+  // Core opportunity data
+  leadId      String
+  name        String
+  description String?
+  value       Float?
+  currency    String?  @default("USD")
+  stage       String   @default("prospect_identified")
+
+  // Pipeline context
+  pipelineId  String?
+  locationId  String?  // GHL location ID for team binding (WI-038)
+  assignedTo  String?
+
+  // TEAM BINDING (WI-037)
+  agencyId    String?  // Links to Agency model
+  teamId      String?  // Links to Team model
+
+  // Metadata
+  customFields Json?
+  tags         String[]
+
+  // Status tracking
+  status       String   @default("active") // active, won, lost, paused
+  isActive     Boolean  @default(true)
+
+  // Audit
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdBy    String?
+  updatedBy    String?
+
+  // Relations
+  agency       Agency?  @relation(fields: [agencyId], references: [id])
+  team         Team?    @relation(fields: [teamId], references: [id])
+
+  // Constraints
+  @@unique([tenantId, externalId]) // External ID uniqueness per tenant
+  @@index([tenantId, teamId, updatedAt]) // Work queue filtering
+  @@index([tenantId, agencyId, updatedAt]) // Agency-level queries
+  @@index([tenantId, stage]) // Stage-based queries
+  @@index([tenantId, assignedTo]) // Assignment queries
+  @@index([tenantId, locationId]) // Backfill queries
+  @@map("opportunities")
+}
+
+// ============================================================================
+// ORGANIZATION INTEGRATION MAPPING (WI-037)
+// ============================================================================
+
+// ============================================================================
+// BILLING & ENTITLEMENTS (WI-040)
+// ============================================================================
+
+
+
+model UsageMeter {
+  tenantId      String
+  period        String   // YYYY-MM format
+  type          String   // EXECUTION | VOICE_MINUTE | EXPERIMENT
+  totalQuantity Float     @default(0)
+  lastUpdated   DateTime  @updatedAt
+
+  // Composite primary key
+  @@id([tenantId, period, type])
+  @@index([tenantId, period])
+  @@map("usage_meters")
+}
+
+// ============================================================================
+// BILLING STATE (WI-041: GHL Billing Sync)
+// ============================================================================
+
+model TenantBillingState {
+  tenantId          String   @id
+  billingStatus     String   // ACTIVE | GRACE | BLOCKED
+  statusReason      String?
+  statusUpdatedAt   DateTime
+  planTier          String   // FREE | PRO | ENTERPRISE
+  planTierReason    String?
+  planTierUpdatedAt DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("tenant_billing_states")
+}
+
+model OrgIntegrationMapping {
+  // Composite key: tenantId + provider + locationId
+  id          String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId    String
+
+  // Provider identification
+  provider    String   // 'ghl', 'salesforce', etc.
+  locationId  String   // GHL location ID, Salesforce account ID, etc.
+
+  // Mapping targets
+  agencyId    String?  // Maps to Agency
+  teamId      String   // Maps to Team (required for team binding)
+
+  // Metadata
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String
+
+  // Relations
+  agency      Agency?  @relation(fields: [agencyId], references: [id])
+  team        Team     @relation(fields: [teamId], references: [id])
+
+  // Constraints
+  @@unique([tenantId, provider, locationId]) // One mapping per provider+location
+  @@index([tenantId, provider]) // Provider queries
+  @@index([teamId]) // Team lookups
+  @@map("org_integration_mappings")
+}
+
+// ============================================================================
+// GHL BOUNDARY VIOLATION MODEL (WI-029: GHL Boundary Enforcement)
+// ============================================================================
+
+model GhlViolation {
+  // Primary identifier (immutable)
+  id          String   @id @default(cuid())
+
+  // Tenant isolation
+  tenantId    String
+
+  // Snapshot context
+  snapshotId  String
+
+  // Violation identity
+  violationId String   @unique // Unique identifier for this violation instance
+  violationType String // LOGIC_IN_WORKFLOW, UNAPPROVED_STAGE_TRANSITION, etc.
+
+  // Severity and classification
+  severity    String   // LOW, MEDIUM, HIGH, CRITICAL
+
+  // Entity context
+  entityType  String   // workflow, pipeline, ai_worker, calendar, webhook, etc.
+  entityId    String   // ID of the violating entity
+  path        String   // diffPath-like pointer (e.g., "workflows.123.triggers.0.conditions.1")
+
+  // Evidence (immutable JSON)
+  evidence    Json     // before/after or offending node data
+
+  // Policy context
+  policyVersion String // Version of policy that detected this violation
+
+  // Correlation and audit
+  correlationId String
+  createdAt   DateTime @default(now())
+
+  // Optional metadata
+  metadata    Json?    // Additional context, tags, etc.
+
+  // Constraints and indexes (IMMUTABLE - no updates/deletes allowed)
+  @@unique([tenantId, violationId]) // Prevent duplicate violations
+  @@index([tenantId, snapshotId]) // Query violations by snapshot
+  @@index([tenantId, violationType]) // Query by violation type
+  @@index([tenantId, severity]) // Query by severity
+  @@index([tenantId, entityType, entityId]) // Query violations for specific entity
+  @@index([tenantId, createdAt(sort: Desc)]) // Recent violations
+  @@index([correlationId]) // Correlation tracing
+  @@map("ghl_violations")
+}
+
+// ============================================================================
+// VOICE ORCHESTRATION MODEL (WI-030)
+// ============================================================================
+
+model VoiceSession {
+  // Primary identifiers
+  sessionId       String   @id @default(cuid())
+  tenantId        String
+
+  // Business context
+  leadId          String
+  opportunityId   String?
+
+  // Session metadata
+  stateAtCall     String   // FSM state when call initiated
+  selectedVoiceMode String // AUTONOMOUS, ASSISTED, HUMAN_ONLY
+
+  // Execution details
+  scriptId        String?
+  actor           String   // AI, HUMAN, HYBRID
+  direction       String   // OUTBOUND, INBOUND
+
+  // Timing
+  startedAt       DateTime @default(now())
+  endedAt         DateTime?
+  durationSeconds Int?
+
+  // Voice quality metrics (JSON for flexibility)
+  qualityMetrics  Json?
+
+  // Outcome (ENUM - no direct FSM changes allowed)
+  outcome         String   // VoiceOutcome enum values
+  outcomeConfidence Float?
+
+  // Required logging
+  notes           String?
+  checklistCompleted Boolean @default(false)
+  checklistItems  String[] // JSON array of checklist items
+
+  // Policy compliance
+  policyVersion   String
+  enforcementMode String   // monitor_only | block
+
+  // Correlation and audit
+  correlationId   String
+  executionTokenId String?
+
+  // Billing integration
+  billable        Boolean  @default(true)
+  billingCategory String?
+
+  // Compliance
+  recordingUrl    String?
+  complianceFlags String[] // JSON array of compliance flags
+
+  // Metadata
+  metadata        Json?
+
+  // Constraints (IMMUTABLE - no updates allowed after creation)
+  @@unique([tenantId, sessionId]) // Prevent duplicate sessions
+  @@index([tenantId, leadId]) // Lead-based queries
+  @@index([tenantId, outcome]) // Outcome-based queries
+  @@index([tenantId, selectedVoiceMode]) // Mode-based queries
+  @@index([tenantId, startedAt(sort: Desc)]) // Recent sessions
+  @@index([correlationId]) // Correlation tracing
+  @@map("voice_sessions")
+}
+
+// ============================================================================
+// RELATIONS FOR TEAM BINDING
+// ============================================================================
+
+// ============================================================================
+// ENTERPRISE MODEL
+// ============================================================================
+
+model Enterprise {
+  id          String   @id @default(cuid())
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  agencies    Agency[]
+
+  @@map("enterprises")
+}
+
+model Agency {
+  id          String   @id @default(cuid())
+  tenantId    String
+  enterpriseId String
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  enterprise  Enterprise    @relation(fields: [enterpriseId], references: [id])
+  teams       Team[]
+  opportunities Opportunity[]
+  orgMappings OrgIntegrationMapping[]
+
+  // Constraints
+  @@unique([tenantId, name])
+  @@index([tenantId, enterpriseId])
+  @@map("agencies")
+}
+
+model Team {
+  id          String   @id @default(cuid())
+  tenantId    String
+  agencyId    String
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  agency      Agency         @relation(fields: [agencyId], references: [id])
+  opportunities Opportunity[]
+  mappings    OrgIntegrationMapping[]
+
+  // Constraints
+  @@unique([tenantId, name])
+  @@index([tenantId, agencyId])
+  @@map("teams")
+}
+
+// ============================================================================
+// GHL SNAPSHOTS MODEL - WI-049: GHL Snapshot Ingestion
+// ============================================================================
+
+model GhlSnapshot {
+  id              String   @id @default(cuid())
+  snapshotId      String   @unique // Business ID
+  tenantId        String
+  ghlAccountId    String
+  snapshotType    String   // locations, pipelines, workflows, etc.
+
+  // Snapshot metadata
+  capturedAt      DateTime
+  version         String   // Schema version
+  status          String   // success, partial_failure, failed
+  recordCount     Int
+  checksum        String
+
+  // Payload (JSON)
+  payload         Json
+
+  // Audit
+  createdAt       DateTime @default(now())
+  createdBy       String
+  source          String   // scheduled, manual, api
+  correlationId   String
+
+  @@index([tenantId, snapshotType])
+  @@index([capturedAt])
+  @@index([correlationId])
+  @@map("ghl_snapshots")
+}

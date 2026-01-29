@@ -1,0 +1,23 @@
+PHASE 1 - CAPTURE THE ROLLUP ERROR
+
+Command: rm -rf coverage && pnpm -w test:coverage 2>&1 | tee /tmp/gate2_rollup_full.log ; echo "EXIT=$?"
+
+EXIT=1
+
+FULL TAIL:
+> sales-os@0.1.0 test:coverage /Users/ranjansingh/Desktop/NeuronX
+> vitest run --coverage
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Cannot find module @rollup/rollup-darwin-arm64. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+    at requireWithFriendlyError (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/rollup@4.55.1/node_modules/rollup/dist/native.js:86:9)
+    at Object.<anonymous> (/Users/ranjansingh/Desktop/NeuronX/node_modules/.pnpm/rollup@4.55.1/node_modules/rollup/dist/native.js:95:76)
+
+ERROR PATTERN EXTRACTION:
+- Cannot find module @rollup/rollup-darwin-arm64
+- npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828)
+- MODULE_NOT_FOUND
+- ELIFECYCLE Command failed with exit code 1
+
+ROOT CAUSE: Node 23.x compatibility issue with rollup native binaries. The error message explicitly mentions npm's optional dependency bug and suggests reinstalling.

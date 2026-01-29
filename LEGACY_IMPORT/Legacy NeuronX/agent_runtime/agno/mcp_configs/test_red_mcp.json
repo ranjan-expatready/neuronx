@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "providers": {
+    "github": {
+      "enabled": true,
+      "actions": ["list_issues"],
+      "command": ["echo", "github-mcp-server"]
+    }
+  }
+}

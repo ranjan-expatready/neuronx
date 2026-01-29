@@ -1,0 +1,21 @@
+PHASE 6 - EXPECTED RESULTS AFTER NODE 22 SWITCH
+
+EXPECTED BEHAVIOR AFTER LOCAL NODE SWITCH TO 22:
+- rm -rf coverage
+- pnpm -w test:coverage
+- Should complete without rollup native module errors
+- Coverage directory should contain:
+  - coverage/coverage-summary.json (main file)
+  - coverage/lcov-report/ (HTML report)
+  - coverage/coverage-final.json (detailed data)
+  - Other coverage artifacts
+
+EXPECTED COVERAGE SUMMARY CHECK:
+- ls -la coverage: Should show multiple files including coverage-summary.json
+- find coverage -maxdepth 2 -type f: Should list JSON, HTML, and text files
+- jq '.total.lines.pct' coverage/coverage-summary.json: Should return a number (e.g., "18.57")
+
+CURRENT STATUS:
+- Cannot verify locally due to Node version constraints
+- CI will use Node 22 and should work
+- Fix is implemented and documented for user to apply locally

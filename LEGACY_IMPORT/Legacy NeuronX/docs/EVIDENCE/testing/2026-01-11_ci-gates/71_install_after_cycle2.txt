@@ -1,0 +1,33 @@
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 10, reused 0, downloaded 5, added 0
+apps/control-plane-api                   |  WARN  deprecated eslint@8.57.1
+Progress: resolved 20, reused 0, downloaded 12, added 0
+Progress: resolved 25, reused 0, downloaded 18, added 0
+apps/control-plane-api                   |  WARN  deprecated supertest@6.3.4
+Progress: resolved 32, reused 0, downloaded 27, added 0
+Progress: resolved 39, reused 0, downloaded 33, added 0
+apps/core-api                            |  WARN  deprecated @types/ioredis@5.0.0
+Progress: resolved 49, reused 0, downloaded 42, added 0
+Progress: resolved 62, reused 0, downloaded 47, added 0
+Progress: resolved 67, reused 0, downloaded 60, added 0
+Progress: resolved 70, reused 0, downloaded 66, added 0
+Progress: resolved 77, reused 0, downloaded 71, added 0
+Progress: resolved 95, reused 0, downloaded 85, added 0
+Progress: resolved 105, reused 0, downloaded 97, added 0
+Progress: resolved 114, reused 0, downloaded 104, added 0
+Progress: resolved 128, reused 0, downloaded 119, added 0
+Progress: resolved 152, reused 0, downloaded 145, added 0
+Progress: resolved 178, reused 0, downloaded 166, added 0
+Progress: resolved 195, reused 0, downloaded 179, added 0
+Progress: resolved 213, reused 0, downloaded 194, added 0
+Progress: resolved 230, reused 0, downloaded 216, added 0
+Progress: resolved 249, reused 0, downloaded 235, added 0
+Progress: resolved 267, reused 0, downloaded 251, added 0
+Progress: resolved 290, reused 0, downloaded 268, added 0
+Progress: resolved 307, reused 0, downloaded 286, added 0
+Progress: resolved 326, reused 0, downloaded 301, added 0
+Progress: resolved 332, reused 0, downloaded 315, added 0
+Progress: resolved 346, reused 0, downloaded 319, added 0
+Progress: resolved 363, reused 0, downloaded 336, added 0
+Progress: resolved 387, reused 0, downloaded 358, added 0
+Progress: resolved 399, reused 0, downloaded 366, added 0

@@ -1,0 +1,27 @@
+{
+  "id": "event-123",
+  "tenantId": "tenant-123",
+  "type": "sales.lead.scored",
+  "correlationId": "correlation-456",
+  "timestamp": "2024-01-03T10:30:00.000Z",
+  "payload": {
+    "leadId": "lead-789",
+    "score": 85,
+    "leadData": {
+      "email": "john.doe@techcorp.com",
+      "phone": "+1-555-0123",
+      "firstName": "John",
+      "lastName": "Doe",
+      "companyName": "Tech Corp",
+      "companySize": 150,
+      "industry": "technology",
+      "source": "website",
+      "createdAt": "2024-01-03T10:00:00.000Z"
+    }
+  },
+  "metadata": {
+    "correlationId": "correlation-456",
+    "source": "lead-scorer",
+    "version": "1.0"
+  }
+}
