@@ -1,0 +1,296 @@
+{
+  "tenantId": "test-tenant-001",
+  "surface": "OPERATOR",
+  "timeRange": "7d",
+  "generatedAt": "2026-01-06T10:00:00.000Z",
+  "policyVersion": "1.0.0",
+  "correlationId": "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123",
+  "overallBand": "YELLOW",
+  "sections": [
+    {
+      "key": "salesEffectiveness",
+      "title": "Sales Effectiveness",
+      "description": "Key metrics tracking sales funnel performance and conversion rates",
+      "overallBand": "YELLOW",
+      "metrics": [
+        {
+          "key": "lead_to_contact_rate",
+          "label": "Lead to Contact Rate",
+          "description": "Percentage of leads that become contacts",
+          "value": 85.5,
+          "unit": "percentage",
+          "band": "GREEN",
+          "evidence": {
+            "source": "fsm",
+            "queryParams": {
+              "timeFilter": {
+                "createdAt": {
+                  "gte": "2025-12-30T10:00:00.000Z",
+                  "lte": "2026-01-06T10:00:00.000Z"
+                }
+              },
+              "teamFilter": {}
+            },
+            "policyVersion": "1.0.0",
+            "correlationIds": [
+              "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123"
+            ],
+            "recordCount": 200,
+            "timestamp": "2026-01-06T10:00:00.000Z"
+          },
+          "trend": 1
+        },
+        {
+          "key": "contact_to_qualified_rate",
+          "label": "Contact to Qualified Rate",
+          "description": "Percentage of contacts that become qualified opportunities",
+          "value": 62.3,
+          "unit": "percentage",
+          "band": "YELLOW",
+          "evidence": {
+            "source": "fsm",
+            "queryParams": {
+              "timeFilter": {
+                "createdAt": {
+                  "gte": "2025-12-30T10:00:00.000Z",
+                  "lte": "2026-01-06T10:00:00.000Z"
+                }
+              },
+              "teamFilter": {}
+            },
+            "policyVersion": "1.0.0",
+            "correlationIds": [
+              "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123"
+            ],
+            "recordCount": 170,
+            "timestamp": "2026-01-06T10:00:00.000Z"
+          },
+          "trend": 0
+        },
+        {
+          "key": "qualified_to_booked_rate",
+          "label": "Qualified to Booked Rate",
+          "description": "Percentage of qualified opportunities that get booked",
+          "value": 38.7,
+          "unit": "percentage",
+          "band": "YELLOW",
+          "evidence": {
+            "source": "fsm",
+            "queryParams": {
+              "timeFilter": {
+                "createdAt": {
+                  "gte": "2025-12-30T10:00:00.000Z",
+                  "lte": "2026-01-06T10:00:00.000Z"
+                }
+              },
+              "teamFilter": {}
+            },
+            "policyVersion": "1.0.0",
+            "correlationIds": [
+              "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123"
+            ],
+            "recordCount": 106,
+            "timestamp": "2026-01-06T10:00:00.000Z"
+          },
+          "trend": -1
+        },
+        {
+          "key": "booked_to_consult_done_rate",
+          "label": "Booked to Consult Done Rate",
+          "description": "Percentage of booked calls that complete successfully",
+          "value": 87.2,
+          "unit": "percentage",
+          "band": "GREEN",
+          "evidence": {
+            "source": "fsm",
+            "queryParams": {
+              "timeFilter": {
+                "createdAt": {
+                  "gte": "2025-12-30T10:00:00.000Z",
+                  "lte": "2026-01-06T10:00:00.000Z"
+                }
+              },
+              "teamFilter": {}
+            },
+            "policyVersion": "1.0.0",
+            "correlationIds": [
+              "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123"
+            ],
+            "recordCount": 41,
+            "timestamp": "2026-01-06T10:00:00.000Z"
+          },
+          "trend": 1
+        },
+        {
+          "key": "no_show_rate",
+          "label": "No Show Rate",
+          "description": "Percentage of booked calls that result in no-shows",
+          "value": 3.2,
+          "unit": "percentage",
+          "band": "GREEN",
+          "evidence": {
+            "source": "fsm",
+            "queryParams": {
+              "timeFilter": {
+                "createdAt": {
+                  "gte": "2025-12-30T10:00:00.000Z",
+                  "lte": "2026-01-06T10:00:00.000Z"
+                }
+              },
+              "teamFilter": {}
+            },
+            "policyVersion": "1.0.0",
+            "correlationIds": [
+              "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123"
+            ],
+            "recordCount": 41,
+            "timestamp": "2026-01-06T10:00:00.000Z"
+          },
+          "trend": 0
+        },
+        {
+          "key": "avg_time_in_new_state",
+          "label": "Avg Time in NEW State",
+          "description": "Average time leads spend in NEW state before contact attempt",
+          "value": 18.5,
+          "unit": "hours",
+          "band": "GREEN",
+          "evidence": {
+            "source": "fsm",
+            "queryParams": {
+              "timeFilter": {
+                "createdAt": {
+                  "gte": "2025-12-30T10:00:00.000Z",
+                  "lte": "2026-01-06T10:00:00.000Z"
+                }
+              },
+              "teamFilter": {}
+            },
+            "policyVersion": "1.0.0",
+            "correlationIds": [
+              "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123"
+            ],
+            "recordCount": 171,
+            "timestamp": "2026-01-06T10:00:00.000Z"
+          },
+          "trend": -1
+        }
+      ]
+    },
+    {
+      "key": "operationalExcellence",
+      "title": "Operational Excellence",
+      "description": "Metrics tracking system performance, SLAs, and execution reliability",
+      "overallBand": "GREEN",
+      "metrics": [
+        {
+          "key": "sla_breach_rate",
+          "label": "SLA Breach Rate",
+          "description": "Percentage of opportunities that breach SLA deadlines",
+          "value": 1.8,
+          "unit": "percentage",
+          "band": "GREEN",
+          "evidence": {
+            "source": "fsm",
+            "queryParams": {
+              "timeFilter": {
+                "createdAt": {
+                  "gte": "2025-12-30T10:00:00.000Z",
+                  "lte": "2026-01-06T10:00:00.000Z"
+                }
+              },
+              "teamFilter": {}
+            },
+            "policyVersion": "1.0.0",
+            "correlationIds": [
+              "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123"
+            ],
+            "recordCount": 200,
+            "timestamp": "2026-01-06T10:00:00.000Z"
+          },
+          "trend": 1
+        },
+        {
+          "key": "sla_at_risk_count",
+          "label": "SLA At-Risk Count",
+          "description": "Number of opportunities currently at risk of SLA breach",
+          "value": 3,
+          "unit": "count",
+          "band": "GREEN",
+          "evidence": {
+            "source": "fsm",
+            "queryParams": {
+              "timeFilter": {
+                "createdAt": {
+                  "gte": "2025-12-30T10:00:00.000Z",
+                  "lte": "2026-01-06T10:00:00.000Z"
+                }
+              },
+              "teamFilter": {}
+            },
+            "policyVersion": "1.0.0",
+            "correlationIds": [
+              "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123"
+            ],
+            "recordCount": 3,
+            "timestamp": "2026-01-06T10:00:00.000Z"
+          },
+          "trend": 0
+        },
+        {
+          "key": "execution_success_rate",
+          "label": "Execution Success Rate",
+          "description": "Percentage of execution commands that succeed",
+          "value": 96.2,
+          "unit": "percentage",
+          "band": "GREEN",
+          "evidence": {
+            "source": "audit_log",
+            "queryParams": {
+              "timeFilter": {
+                "createdAt": {
+                  "gte": "2025-12-30T10:00:00.000Z",
+                  "lte": "2026-01-06T10:00:00.000Z"
+                }
+              },
+              "teamFilter": {}
+            },
+            "policyVersion": "1.0.0",
+            "correlationIds": [
+              "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123"
+            ],
+            "recordCount": 1000,
+            "timestamp": "2026-01-06T10:00:00.000Z"
+          },
+          "trend": 0
+        },
+        {
+          "key": "retry_rate",
+          "label": "Retry Rate",
+          "description": "Percentage of executions that required retries",
+          "unit": "percentage",
+          "band": "GREEN",
+          "evidence": {
+            "source": "audit_log",
+            "queryParams": {
+              "timeFilter": {
+                "createdAt": {
+                  "gte": "2025-12-30T10:00:00.000Z",
+                  "lte": "2026-01-06T10:00:00.000Z"
+                }
+              },
+              "teamFilter": {}
+            },
+            "policyVersion": "1.0.0",
+            "correlationIds": [
+              "scorecard_test-tenant-001_OPERATOR_7d_1640995200000_abc123"
+            ],
+            "recordCount": 1000,
+            "timestamp": "2026-01-06T10:00:00.000Z"
+          },
+          "trend": 0
+        }
+      ]
+    }
+  ]
+}

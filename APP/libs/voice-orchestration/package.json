@@ -1,0 +1,36 @@
+{
+  "name": "@neuronx/voice-orchestration",
+  "version": "1.0.0",
+  "description": "Voice Orchestration Engine - NeuronX-owned voice behavior with policy-driven governance",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@neuronx/domain": "workspace:*",
+    "@neuronx/execution-framework": "workspace:*",
+    "zod": "^3.22.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/js-yaml": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0"
+  },
+  "keywords": [
+    "neuronx",
+    "voice",
+    "orchestration",
+    "policy-driven",
+    "governance",
+    "telephony"
+  ],
+  "author": "NeuronX Team",
+  "license": "UNLICENSED"
+}

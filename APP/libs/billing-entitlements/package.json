@@ -1,0 +1,35 @@
+{
+  "name": "@neuronx/billing-entitlements",
+  "version": "1.0.0",
+  "description": "Billing and entitlements authority for NeuronX",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.0.0",
+    "js-yaml": "^4.1.0",
+    "zod": "^3.22.0",
+    "@nestjs/common": "^10.0.0",
+    "@types/js-yaml": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0"
+  },
+  "keywords": [
+    "neuronx",
+    "billing",
+    "entitlements",
+    "usage",
+    "limits"
+  ],
+  "author": "NeuronX Team",
+  "license": "UNLICENSED"
+}
