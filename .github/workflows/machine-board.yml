@@ -9,7 +9,7 @@ name: machine-board
 # 2. Protected path artifacts (PLAN, VERIFICATION sections)
 # 3. Risk tier requirements (rollback for T1/T2)
 # 4. Secret detection
-# 5. Trae review artifact presence for T1-T4 PRs
+# 5. Autonomous review artifact presence for T1-T4 PRs
 # 6. No-doc-spam enforcement (single collaboration surface)
 #
 # Reference: GOVERNANCE/GUARDRAILS.md
@@ -171,9 +171,9 @@ Please check the [workflow logs](${{ github.server_url }}/${{ github.repository 
    - Include rollback plan in PR description
    - Include verification proof
 
-4. **Trae Review**
-   - Request Trae review per \`RUNBOOKS/trae-review.md\`
-   - Ensure TRAE_REVIEW artifact exists
+4. **Autonomous Review**
+   - Create verification artifact in \`COCKPIT/artifacts/VERIFICATION/\`
+   - Ensure artifact contains \`verdict: PASS\`
 
 5. **No Doc Spam**
    - Use \`COCKPIT/WORKSPACE/TEAM_LOG.md\` for coordination

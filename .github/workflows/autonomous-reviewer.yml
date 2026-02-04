@@ -16,6 +16,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled]
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to validate'
+        required: false
+        type: string
 
 jobs:
   autonomous-reviewer:
