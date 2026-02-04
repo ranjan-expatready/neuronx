@@ -91,10 +91,10 @@ jobs:
 
       - name: Validate SDLC Phase
         id: validate-sdlc
+        env:
+          LABELS: ${{ steps.issue-context.outputs.labels }}
+          ISSUE_BODY: ${{ steps.issue-context.outputs.issue_body }}
         run: |
-          LABELS="${{ steps.issue-context.outputs.labels }}"
-          ISSUE_BODY="${{ steps.issue-context.outputs.issue_body }}"
-
           echo "📋 Validating SDLC phase..."
           echo "   Labels: $LABELS"
 
@@ -106,9 +106,9 @@ jobs:
             fi
           fi
 
-          # Check for PLAN reference or override
-          ISSUE_BODY_LOWER=$(echo "$ISSUE_BODY" | tr '[:upper:]' '[:lower:]')
-          if [[ "$ISSUE_BODY_LOWER" == *"cockpit/artifacts/plan/"* ]]; then
+          # Check for PLAN reference or override (case insensitive)
+          # Use env var directly to avoid command substitution issues with backticks
+          if echo "$ISSUE_BODY" | grep -qi "cockpit/artifacts/plan/"; then
             echo "✅ PLAN artifact reference found"
           elif [[ "$LABELS" == *"sdlc-override"* ]]; then
             echo "⚠️ SDLC override label present - proceeding without PLAN reference"
