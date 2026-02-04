@@ -1,5 +1,17 @@
 # Trae — External Security and Policy Reviewer
 
+> **DEPRECATED** (2026-02-04)
+> This document describes a tool-specific reviewer that has been superseded by the
+> Autonomous Reviewer pattern. The reviewer function is now fulfilled by the
+> QA/Reliability Droid or any qualified autonomous reviewer.
+>
+> **Superseded By**: CLAUDE.md Section J (Reviewer & Tool Agnosticism)
+> **New Workflow**: `.github/workflows/autonomous-reviewer.yml`
+>
+> This file is preserved for historical traceability only.
+
+---
+
 ## Overview
 
 Trae is a mandatory external reviewer for all T1–T4 changes in the Autonomous Engineering OS. Trae operates in a read-only advisory mode, providing security and policy review without write access to the repository.
@@ -351,9 +363,12 @@ recommendations: "Fix security issues and re-request review."
 ### REQUEST_CHANGES
 
 **When Trae requests changes**:
-- Minor security issues (non-blocking but should be fixed)
-- Policy violations that can be addressed in follow-up
+- Security or policy issues that must be addressed before merge
+- Gaps in evidence or documentation that prevent approval
 - Missing documentation or evidence
+
+**Enforcement**:
+- A `REQUEST_CHANGES` verdict blocks merge until a follow-up review returns `APPROVE`
 
 **Artifact example**:
 ```yaml
@@ -373,7 +388,7 @@ recommendations: "Address SQL injection risk then re-request review."
 In emergencies where Trae is unavailable:
 
 1. **Emergency Declaration**: Founder can declare emergency via issue comment
-2. **Manual Override**: `#emergency-override` in PR description
+2. **Manual Override**: Add an `## EMERGENCY OVERRIDE` section in the PR description including an `Authorized by:` line
 3. **Temporary Bypass**: Machine Board allows merge with explicit override flag
 4. **Post-Merge Review**: Trae reviews merged change and creates incident report if issues found
 
@@ -403,7 +418,7 @@ Machine Board (Enforcer) ←→ Trae Reviewer (Validator) ←→ Factory (Arbite
 1. **Factory**: Prepares PR, sends to Trae
 2. **Trae**: Reviews, returns verdict
 3. **Factory**: Creates TRAE_REVIEW artifact
-4. **Machine Board**: Validates artifact exists and verdict=APPROVE
+4. **Machine Board**: Validates artifact exists and verdict is APPROVE or EMERGENCY_OVERRIDE
 5. **Branch Protection**: Blocks merge if any check fails
 
 ### Trae + Human Approval
@@ -412,6 +427,31 @@ Trae replaces human approval for T1/T2 changes in most cases:
 - **Before Trae**: T1/T2 required founder/CTO approval
 - **After Trae**: T1/T2 require Trae approval + Machine Board validation
 - **Human Override**: Founder can override in emergencies with explicit declaration
+
+---
+
+## REVIEW COMMENTARY
+
+### Mandatory TEAM_LOG Usage
+
+**COCKPIT/WORKSPACE/TEAM_LOG.md** is the ONLY place for Trae review commentary outside formal verdicts.
+
+**When to use TEAM_LOG**:
+- Review notes and observations
+- Questions for Antigravity or Factory
+- Risk concerns outside formal verdict
+- Recommendations for improvement
+
+**When to use TRAE_REVIEW artifact**:
+- Formal verdict (APPROVE/REJECT/REQUEST_CHANGES)
+- Security findings
+- Policy violations
+- Required for PR merge
+
+**Prohibited**:
+- ❌ Creating separate review discussion files
+- ❌ Ad-hoc "TRAE-NOTES-*.md" files
+- ❌ Coordination via new documents
 
 ---
 

@@ -1,0 +1,263 @@
+name: autonomous-reviewer
+
+# Autonomous Reviewer Gate — Tool-Agnostic Review Enforcement
+# This workflow validates that an autonomous review has been performed for T1-T2 changes.
+# It accepts review artifacts from any qualified source (QA Droid, Security Droid, etc.)
+# and is NOT coupled to any specific tool or IDE.
+#
+# Supersedes: trae-review-validator.yml (DEPRECATED)
+# Reference: CLAUDE.md Section J (Reviewer & Tool Agnosticism)
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+    branches: [main]
+
+jobs:
+  autonomous-reviewer:
+    name: Validate Autonomous Review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Changed Files
+        id: changed-files
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100
+            });
+
+            const files = pr.data.map(f => f.filename);
+            console.log(`Changed files (${files.length}):`);
+            files.forEach(f => console.log(`  - ${f}`));
+            core.setOutput('files', files.join('\n'));
+            core.setOutput('count', files.length);
+
+      - name: Determine Review Requirement
+        id: review-required
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const changedFiles = `${{ steps.changed-files.outputs.files }}`.split('\n').filter(f => f);
+            const labels = context.payload.pull_request.labels.map(l => l.name);
+
+            // Protected paths that require review
+            const protectedPaths = [
+              'GOVERNANCE/',
+              'AGENTS/',
+              '.github/workflows/',
+              'STATE/',
+              'FOUNDATION/'
+            ];
+
+            // Check if protected paths are touched
+            const touchesProtected = changedFiles.some(file =>
+              protectedPaths.some(path => file.startsWith(path))
+            );
+
+            // Check for T1/T2 labels
+            const isHighRisk = labels.some(l =>
+              l.toLowerCase().includes('t1') ||
+              l.toLowerCase().includes('t2') ||
+              l.toLowerCase().includes('critical') ||
+              l.toLowerCase().includes('high-risk')
+            );
+
+            // Skip for artifact-only changes
+            const isArtifactOnly = changedFiles.every(f =>
+              f.startsWith('COCKPIT/artifacts/')
+            );
+
+            // Skip for BACKLOG-only changes
+            const isBacklogOnly = changedFiles.every(f =>
+              f.startsWith('BACKLOG/')
+            );
+
+            const requiresReview = (touchesProtected || isHighRisk) && !isArtifactOnly && !isBacklogOnly;
+
+            console.log(`Touches protected paths: ${touchesProtected}`);
+            console.log(`Has high-risk labels: ${isHighRisk}`);
+            console.log(`Is artifact-only: ${isArtifactOnly}`);
+            console.log(`Is backlog-only: ${isBacklogOnly}`);
+            console.log(`Requires autonomous review: ${requiresReview}`);
+
+            core.setOutput('required', requiresReview.toString());
+            core.setOutput('reason', touchesProtected ? 'protected_paths' : (isHighRisk ? 'high_risk_labels' : 'none'));
+
+      - name: Check for Review Artifact
+        id: find-artifact
+        if: steps.review-required.outputs.required == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const prNumber = context.issue.number;
+
+            // Look for verification artifacts
+            const verificationDir = 'COCKPIT/artifacts/VERIFICATION';
+            let foundArtifact = null;
+            let verdict = null;
+
+            if (fs.existsSync(verificationDir)) {
+              const files = fs.readdirSync(verificationDir);
+
+              // Look for artifact matching this PR
+              for (const file of files) {
+                if (file.includes(`-${prNumber}`) || file.includes(`PR${prNumber}`)) {
+                  const content = fs.readFileSync(path.join(verificationDir, file), 'utf8');
+
+                  // Check for verdict in content
+                  const verdictMatch = content.match(/verdict[:\s]*(PASS|FAIL|NEEDS_WORK|APPROVE)/i);
+                  if (verdictMatch) {
+                    foundArtifact = file;
+                    verdict = verdictMatch[1].toUpperCase();
+                    break;
+                  }
+                }
+              }
+
+              // Also check legacy TRAE_REVIEW location for backwards compatibility
+              const traeDir = 'COCKPIT/artifacts/TRAE_REVIEW';
+              if (!foundArtifact && fs.existsSync(traeDir)) {
+                const traeFiles = fs.readdirSync(traeDir);
+                for (const file of traeFiles) {
+                  if (file.includes(`-${prNumber}`) && file.endsWith('.yml')) {
+                    const content = fs.readFileSync(path.join(traeDir, file), 'utf8');
+                    const verdictMatch = content.match(/verdict[:\s]*(APPROVE|REJECT|REQUEST_CHANGES)/i);
+                    if (verdictMatch) {
+                      foundArtifact = `TRAE_REVIEW/${file}`;
+                      verdict = verdictMatch[1].toUpperCase();
+                      if (verdict === 'APPROVE') verdict = 'PASS';
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+
+            if (foundArtifact) {
+              console.log(`Found review artifact: ${foundArtifact}`);
+              console.log(`Verdict: ${verdict}`);
+              core.setOutput('found', 'true');
+              core.setOutput('artifact', foundArtifact);
+              core.setOutput('verdict', verdict);
+            } else {
+              console.log('No review artifact found');
+              core.setOutput('found', 'false');
+              core.setOutput('artifact', '');
+              core.setOutput('verdict', '');
+            }
+
+      - name: Validate Review
+        id: validate
+        if: steps.review-required.outputs.required == 'true'
+        run: |
+          echo "================================================"
+          echo "AUTONOMOUS REVIEWER GATE"
+          echo "================================================"
+
+          if [ "${{ steps.find-artifact.outputs.found }}" == "true" ]; then
+            VERDICT="${{ steps.find-artifact.outputs.verdict }}"
+            ARTIFACT="${{ steps.find-artifact.outputs.artifact }}"
+
+            echo "Artifact: $ARTIFACT"
+            echo "Verdict: $VERDICT"
+
+            if [ "$VERDICT" == "PASS" ] || [ "$VERDICT" == "APPROVE" ]; then
+              echo "✅ Autonomous review PASSED"
+              echo "result=pass" >> $GITHUB_OUTPUT
+              exit 0
+            else
+              echo "❌ Autonomous review verdict: $VERDICT"
+              echo "result=fail" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "❌ No review artifact found for PR #${{ github.event.pull_request.number }}"
+            echo "result=missing" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Skip Review
+        if: steps.review-required.outputs.required == 'false'
+        run: |
+          echo "================================================"
+          echo "AUTONOMOUS REVIEWER GATE - SKIPPED"
+          echo "================================================"
+          echo "Reason: Review not required for this PR"
+          echo "- Not touching protected paths"
+          echo "- No high-risk labels"
+          echo "✅ Validation passed (skipped)"
+
+      - name: Post Success Comment
+        if: success() && steps.review-required.outputs.required == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const artifact = '${{ steps.find-artifact.outputs.artifact }}';
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `### ✅ Autonomous Review Validated
+
+**Status**: PASSED
+**Artifact**: \`${artifact}\`
+
+This PR has been reviewed by an autonomous reviewer and is ready for merge.
+
+---
+*Autonomous Reviewer Gate - Tool-Agnostic Review Enforcement*`
+            });
+
+      - name: Post Failure Comment
+        if: failure() && steps.review-required.outputs.required == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const reason = '${{ steps.review-required.outputs.reason }}';
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `### ❌ Autonomous Review Required
+
+**Status**: FAILED
+**Reason**: ${reason === 'protected_paths' ? 'Protected paths modified' : 'High-risk labels detected'}
+
+This PR requires an autonomous review before merge.
+
+### To Fix:
+1. Have the QA/Reliability Droid or Security Droid review the changes
+2. Create a verification artifact in \`COCKPIT/artifacts/VERIFICATION/\`
+3. Ensure artifact contains \`verdict: PASS\`
+
+### Artifact Format:
+\`\`\`yaml
+# COCKPIT/artifacts/VERIFICATION/VER-YYYYMMDD-PR${context.issue.number}.md
+artifact_type: VERIFICATION
+pr_number: ${context.issue.number}
+reviewer: QA_DROID
+verdict: PASS
+findings: []
+\`\`\`
+
+---
+*Autonomous Reviewer Gate - Tool-Agnostic Review Enforcement*`
+            });
