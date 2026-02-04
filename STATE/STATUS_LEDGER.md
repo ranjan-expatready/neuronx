@@ -12,19 +12,19 @@ This ledger provides a human-readable snapshot of the Autonomous Engineering OS'
 
 ### Active Sprint Goal
 
-**Objective**: Migrate Legacy NeuronX to APP/ ✅ COMPLETED
+**Objective**: Establish Real Product Development (MVP Rehydration)
 
 **Priority**: HIGH
 
 **Started**: 2026-01-29
 
-**Expected Completion**: 2026-01-29
+**Expected Completion**: TBD
 
-**Status**: ✅ DONE
+**Status**: 🔵 IN PROGRESS
 
-**Description**: Incrementally moving legacy code to target APP structure.
+**Description**: Rehydrating legacy code into active PRODUCT/ and BACKLOG/ items.
 
-**Result**: ✅ Success. All legacy components migrated to APP/services, APP/web, and APP/libs. Legacy import deleted.
+**Result**: ⏳ Ongoing. PRD created, Backlog initialized.
 
 ---
 
@@ -34,9 +34,12 @@ This ledger provides a human-readable snapshot of the Autonomous Engineering OS'
 
 | Issue # | Title | Priority | Risk Tier | Status | Link |
 |---------|-------|----------|-----------|--------|------|
-| - | - | - | - | - | -
+| Issue # | Title | Priority | Risk Tier | Status | Link |
+|---------|-------|----------|-----------|--------|------|
+| 124 | Self-Invoking Dispatcher Impl | HIGH | T2 | CLOSED | [PLAN-20260129] |
+| 123 | MVP Rehydration (Backlog Initialization) | HIGH | T3 | IN PROGRESS | [BS-001] |
 
-**No active issues** (Issue #17 closed after simulation completion)
+**active issues**: 1
 
 ---
 
@@ -77,6 +80,7 @@ This ledger provides a human-readable snapshot of the Autonomous Engineering OS'
 
 | Test Name | Purpose | Risk Tier | Status | Outcome | Evidence |
 |-----------|---------|-----------|--------|---------|----------|
+| Dispatcher Auto-Trigger Test | Validate Issue Label triggers Factory | T2 | ✅ COMPLETE | EXPECTED PASS ✅ | Log c5f01721 |
 | Trae Enforcement Test B (Positive) | Validate T1 change passes with Trae APPROVE artifact | T1 | ✅ COMPLETE | EXPECTED PASS ✅ | PR #25, Run #21337337080, Run #21337337094 |
 | Trae Enforcement Test A (Negative) | Validate T1 change blocked without Trae artifact | T1 | ✅ COMPLETE | EXPECTED FAIL ✅ | PR #23, Run #21335357058 |
 
@@ -123,29 +127,33 @@ This ledger provides a human-readable snapshot of the Autonomous Engineering OS'
 
 ### Ordered List (Execute Top to Bottom)
 
-1. **Start Real Product Development**
+1. **MVP Rehydration Execution (Sprint 1)**
    - **Priority**: HIGH
-   - **Owner**: Founder/CTO Agents
+   - **Owner**: Factory (Silent Bootstrap)
    - **Estimated Time**: Ongoing
-   - **Dependencies**: SDLC Simulation Complete ✅, Daily Brief Generator Installed ✅
-   - **Risk Tier**: T0
+   - **Dependencies**: PRODUCT/ populated ✅
+   - **Risk Tier**: T3
    - **Actions**:
-     - Populate PRODUCT/ with real product requirements
-     - Create backlog items for MVP features
-     - Begin product development using autonomous agents
-     - Review daily brief and approvals queue artifacts (5-10 min daily)
+     - Execute verifying/refactoring of rehydrated components
+     - Validate via tests
+     - Update status ledger per component
 
-2. **Configure SDLC Board Automation** (Optional)
-   - **Priority**: LOW
-   - **Owner**: Founder/CTO
-   - **Estimated Time**: 15-20 minutes
-   - **Dependencies**: None
-   - **Risk Tier**: T0
-   - **Actions**:
-     - Manual web UI configuration per SDLC_AUTOMATION_VERIFICATION.md
-     - Not required: Daily brief generator provides automated project status tracking
+4. **Phase 1: Self-Invoking Dispatcher** (✅ COMPLETED)
+   - **Priority**: COMPLETED
+   - **Owner**: Antigravity
+   - **Date**: 2026-01-29
+   - **Deliverable**: `.github/workflows/dispatcher.yml` + `scripts/dispatch_factory.py`
+   - **Status**: Implemented & Mock Validated
+   - **Note**: Mock script active; requires real Runner logic in Phase 2.
 
-3. **Configure Antigravity Cockpit** (Optional)
+3. **Phase 1: Self-Invoking Dispatcher** (✅ COMPLETED)
+   - **Priority**: COMPLETED
+   - **Owner**: Antigravity/Factory
+   - **Date**: 2026-01-29
+   - **Deliverable**: `.github/workflows/dispatcher.yml` + `scripts/dispatch_factory.py`
+   - **Status**: Ready for Testing (Issue Label Trigger)
+
+4. **Configure Antigravity Cockpit** (Optional)
    - **Priority**: LOW
    - **Owner**: Founder/CTO
    - **Estimated Time**: ~30 minutes

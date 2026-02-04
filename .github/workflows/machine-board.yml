@@ -3,6 +3,16 @@ name: machine-board
 # Pull Request Governance Enforcement - Machine Board of Directors
 # This workflow enforces automated governance on all pull requests.
 # PRs must pass all validation checks before merge is allowed.
+#
+# Validation Checks:
+# 1. STATE file updates for non-BACKLOG PRs
+# 2. Protected path artifacts (PLAN, VERIFICATION sections)
+# 3. Risk tier requirements (rollback for T1/T2)
+# 4. Secret detection
+# 5. Trae review artifact presence for T1-T4 PRs
+# 6. No-doc-spam enforcement (single collaboration surface)
+#
+# Reference: GOVERNANCE/GUARDRAILS.md
 
 permissions:
   contents: read
@@ -19,6 +29,7 @@ on:
 jobs:
   machine-board:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
 
     steps:
       - name: Checkout code
@@ -31,6 +42,10 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+
       - name: Get Changed Files
         id: changed-files
         uses: actions/github-script@v6
@@ -39,104 +54,167 @@ jobs:
             const pr = await github.rest.pulls.listFiles({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: context.issue.number
+              pull_number: context.issue.number,
+              per_page: 100
             });
 
             const files = pr.data.map(f => f.filename).join('\n');
-            console.log('Changed files:', pr.data.length, 'files');
-            return files;
+            console.log(`Changed files (${pr.data.length}):`);
+            pr.data.forEach(f => console.log(`  - ${f.filename}`));
+            core.setOutput('files', files);
+            core.setOutput('count', pr.data.length);
 
-      - name: Run Governance Validator
-        id: machine-board
-        env:
-          PR_NUMBER: ${{ github.event.number }}
-          PR_DESCRIPTION: ${{ github.event.pull_request.body || github.event.head_commit.message }}
-          GITHUB_BASE_REF: ${{ github.event.base_ref || github.event.pull_request.base.ref || 'main' }}
-          EVENT_NAME: ${{ github.event_name }}
-          CHANGED_FILES: ${{ steps.changed-files.outputs.result }}
-        run: |
-          echo "🤖 Running Machine Board of Directors Governance Validator"
-          echo "Event: $EVENT_NAME"
-          echo "PR Number: $PR_NUMBER"
-          echo "Base Branch: $GITHUB_BASE_REF"
-          echo "Changed Files: $CHANGED_FILES"
-          echo ""
-
-          # Skip validation on push events (only for PRs)
-          if [ "$EVENT_NAME" != "pull_request" ] && [ "$EVENT_NAME" != "pull_request_target" ]; then
-            echo "ℹ️  Skipping governance validator on push events"
-            echo "✅ Governance validation passed (skipped)"
-            exit 0
-          fi
-
-          # Export CHANGED_FILES for Python script
-          export CHANGED_FILES="$CHANGED_FILES"
-
-          python scripts/governance_validator.py
-
-      - name: Upload validation results
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
-        with:
-          name: governance-validator-results
-          path: .governance_validator_results.json
-          retention-days: 30
-
-      - name: Comment results on PR
-        if: github.event_name == 'pull_request' && always()
+      - name: Get PR Description
+        id: pr-info
         uses: actions/github-script@v6
         with:
           script: |
-            const fs = require('fs');
-            const resultsPath = '.governance_validator_results.json';
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            const body = pr.data.body || '';
+            core.setOutput('body', body);
+            core.setOutput('title', pr.data.title);
+            return body;
 
-            if (fs.existsSync(resultsPath)) {
-              const results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
+      - name: Run Governance Validator
+        id: validate
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+          CHANGED_FILES: ${{ steps.changed-files.outputs.files }}
+          PR_DESCRIPTION: ${{ steps.pr-info.outputs.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          python scripts/governance_validator.py
 
-              let comment = '## 🤖 Machine Board of Directors - Validation Results\n\n';
+      - name: Comment on Success
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            // Check if we already have a success comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
 
-              const passed = results.results.every(r => r.passed);
-              const status = passed ? '✅ PASSED' : '❌ FAILED';
+            const botComment = comments.data.find(c =>
+              c.user.type === 'Bot' &&
+              c.body.includes('Machine Board of Directors')
+            );
 
-              comment += `**Overall Status: ${status}**\n\n`;
-              comment += '### Validation Checks\n\n';
+            const successMsg = `### ✅ Machine Board of Directors - Validation Passed
 
-              results.results.forEach(r => {
-                const icon = r.passed ? '✅' : '❌';
-                comment += `${icon} **${r.name}**\n`;
-                if (r.message) {
-                  comment += `   ${r.message}\n`;
-                }
-                comment += '\n';
-              });
+All governance checks have passed. This PR is ready for review.
 
-              // Add guidance for failures
-              if (!passed) {
-                comment += '### Required Actions\n\n';
-                comment += 'To fix validation failures:\n\n';
-                comment += '1. **Missing Artifacts**: Add PLAN and VERIFICATION sections to PR description\n';
-                comment += '2. **STATE Files**: Update STATE/STATUS_LEDGER.md and STATE/LAST_KNOWN_STATE.md\n';
-                comment += '3. **Risk Tier**: For T1/T2, include rollback plan and verification proof\n';
-                comment += '4. **Secrets**: Remove or rotate any exposed credentials\n\n';
-                comment += 'See GOVERNANCE/GUARDRAILS.md for detailed requirements.\n';
-              }
+**Checks Completed:**
+- STATE file updates
+- Protected path artifacts
+- Risk tier requirements
+- Secret detection
+- Doc-spam prevention
 
-              // Post comment
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
+---
+*Automated governance check by Machine Board*`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: comment
+                comment_id: botComment.id,
+                body: successMsg
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: successMsg
               });
             }
 
-      - name: Fail if validation failed
-        if: steps.machine-board.outcome == 'failure'
-        run: |
-          echo "❌ Governance validation failed"
-          echo "Please fix the validation errors and push a new commit."
-          exit 1
+      - name: Comment on Failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            // Check if we already have a failure comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
 
-      - name: Mark as passed
-        if: steps.machine-board.outcome == 'success'
-        run: echo "✅ Governance validation passed"
+            const botComment = comments.data.find(c =>
+              c.user.type === 'Bot' &&
+              c.body.includes('Machine Board of Directors')
+            );
+
+            const failMsg = `### ❌ Machine Board of Directors - Validation Failed
+
+Please check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
+
+**Common Fixes:**
+
+1. **STATE Updates Required**
+   - Update \`STATE/STATUS_LEDGER.md\` with current changes
+   - Update \`STATE/LAST_KNOWN_STATE.md\` if needed
+
+2. **Protected Path Artifacts**
+   - Add \`## PLAN\` section to PR description
+   - Add \`## VERIFICATION\` section to PR description
+
+3. **T1/T2 Risk Tier**
+   - Include rollback plan in PR description
+   - Include verification proof
+
+4. **Trae Review**
+   - Request Trae review per \`RUNBOOKS/trae-review.md\`
+   - Ensure TRAE_REVIEW artifact exists
+
+5. **No Doc Spam**
+   - Use \`COCKPIT/WORKSPACE/TEAM_LOG.md\` for coordination
+   - Only create artifacts in \`COCKPIT/artifacts/\`
+
+---
+*Automated governance check by Machine Board*`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: failMsg
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: failMsg
+              });
+            }
+
+  # Push validation (informational only, doesn't block)
+  push-audit:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Audit Push
+        run: |
+          echo "🤖 Machine Board of Directors - Push Audit"
+          echo "================================================"
+          echo "Push to main detected."
+          echo "Commit: ${{ github.sha }}"
+          echo "Author: ${{ github.actor }}"
+          echo ""
+          echo "Note: Direct pushes should be avoided."
+          echo "All changes should go through PR workflow."
+          echo "================================================"
