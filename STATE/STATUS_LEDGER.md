@@ -241,8 +241,8 @@ This ledger provides a human-readable snapshot of the Autonomous Engineering OS'
 
 **Branch Protection Settings**:
 - ✅ Require PR before merging: enabled
-- ✅ Required status checks: machine-board, trae-review (T1-T4 PRs)
-- ❌ Human approvals: 0 (disabled, Trae replaces human approval for T1-T2)
+- ✅ Required status checks: machine-board, autonomous-reviewer (T1-T4 PRs)
+- ❌ Human approvals: 0 (disabled, Autonomous Reviewer replaces human approval for T1-T2)
 - ❌ Code owner reviews: disabled
 - ✅ Enforce on admins: enabled (no bypass)
 - ✅ Force push protection: enabled
@@ -253,24 +253,26 @@ This ledger provides a human-readable snapshot of the Autonomous Engineering OS'
 - Protected Path Artifacts: Requires PLAN/VERIFICATION for GOVERNANCE/, AGENTS/, etc.
 - STATE File Updates: Required for non-BACKLOG PRs
 - Risk Tier Requirements: T1/T2 require rollback + verification proof
-- Trae Review: T1-T4 PRs require Trae external review approval (read-only advisory)
+- Autonomous Review: T1-T4 PRs require autonomous reviewer approval (read-only advisory)
 - Framework Structure: Validates framework files exist
 
-**Trae External Reviewer Integration**:
-- ✅ AGENTS/TRAE.md - Trae agent defined as mandatory external reviewer
-- ✅ COCKPIT/artifacts/TRAE_REVIEW/ - Trae review artifact type
-- ✅ RUNBOOKS/trae-review.md - Invocation and protocol
-- ✅ .github/workflows/trae-review-validator.yml - Trae review validation
-- ✅ scripts/governance_validator.py - Trae review validation check
+**Autonomous Reviewer Integration** (Tool-Agnostic):
+- ✅ COCKPIT/artifacts/VERIFICATION/ - Review artifact location
+- ✅ .github/workflows/autonomous-reviewer.yml - Autonomous review validation
+- ✅ scripts/governance_validator.py - Review validation check
+- ⚠️ AGENTS/TRAE.md - DEPRECATED (preserved for traceability)
+- ⚠️ .github/workflows/trae-review-validator.yml - DEPRECATED (superseded)
+- ⚠️ RUNBOOKS/trae-review.md - DEPRECATED (superseded)
 
 **T1-T4 PR Requirements**:
-- Must have TRAE_REVIEW artifact with verdict "APPROVE" or "EMERGENCY_OVERRIDE"
-- Artifact must match PR number (TRAE-{YYYYMMDD}-{PR-NUMBER}.yml)
+- Must have VERIFICATION artifact with verdict "PASS" or "APPROVE"
+- Artifact must match PR number (VER-{YYYYMMDD}-PR{NUMBER}.md)
 - Artifact must be fresh (< 7 days old)
 - Emergency override supported with documentation
+- Legacy TRAE_REVIEW artifacts still accepted for backwards compatibility
 
 **Last Proof Test**: PR #7 merged with 0 human approvals (2026-01-24)
-**Trae Proof Test**: TBD (test PR to validate Trae review enforcement)
+**Autonomous Reviewer Test**: TBD (test PR to validate autonomous review enforcement)
 
 ---
 
@@ -403,7 +405,7 @@ This ledger provides a human-readable snapshot of the Autonomous Engineering OS'
 The Autonomous Engineering OS framework is now complete and stable with:
 - ✓ Company Constitution (FOUNDATION/01_VISION.md - v1.0, CANONICAL)
 - ✓ Governance (PR-only, Machine Board governance stable)
-- ✓ Trae External Reviewer (mandatory external security/policy reviewer for T1-T4)
+- ✓ Autonomous Reviewer (mandatory review for T1-T4, tool-agnostic)
 - ✓ Quality Gates (Staged coverage policy)
 - ✓ State Management (Auto-resume, status ledger)
 - ✓ Cockpit Integration (Antigravity Manager View)
@@ -415,7 +417,7 @@ The Autonomous Engineering OS framework is now complete and stable with:
 
 **Governance Enforcement**: Active via .github/workflows/machine-board.yml ✅
 **Machine Board Status**: Operational (PR #10 merged, Actions #21327980330 PASS) ✅
-**Trae Integration**: Complete (AGENTS/TRAE.md, trae-review-validator.yml, TRAE_REVIEW artifacts) ✅
+**Autonomous Reviewer**: Tool-agnostic (autonomous-reviewer.yml, VERIFICATION artifacts) ✅
 **Vision Binding**: All agents now bound to FOUNDATION/01_VISION.md before any action ✅
 **Company Constitution**: Established (v1.0, CANONICAL - all agents align to Vision) ✅
 **Blockers Cleared**: 5/5 (governance-validator.yml issues, branch protection, workflow conflicts) ✅
@@ -439,7 +441,7 @@ The Autonomous Engineering OS framework is now complete and stable with:
 **Vision Binding**:
 - Antigravity must read VISION.md before generating any PLAN
 - Factory Droids must read VISION.md before executing any task
-- Trae must check Vision alignment for all reviews
+- Autonomous Reviewer must check Vision alignment for all reviews
 - Machine Board blocks PRs that contradict VISION.md
 
 **This is how you go from system → company.**
@@ -448,6 +450,7 @@ The Autonomous Engineering OS framework is now complete and stable with:
 
 ## Version History
 
+- v1.8 (2026-02-04): Tool-agnostic reviewer normalization (Trae → Autonomous Reviewer)
 - v1.7 (2026-01-28): Best Practices Closure Loop implemented (FRAMEWORK/BEST_PRACTICES.md, FRAMEWORK/HANDOFF_RULES.md, PLAN validation unit tests, enhanced Daily Brief)
 - v1.6 (2026-01-26): Company Constitution established (FOUNDATION/01_VISION.md, all agents Vision-bound)
 - v1.5 (2026-01-25): SDLC Board automation rules documented, configuration protocol created
@@ -458,8 +461,8 @@ The Autonomous Engineering OS framework is now complete and stable with:
 
 ---
 
-**Last Updated**: 2026-01-28
-**State Ledger Version**: v1.7
+**Last Updated**: 2026-02-04
+**State Ledger Version**: v1.8
 **Framework Status**: STABLE ✅
 **Governance Enforcement**: ACTIVE ✅
 **Machine Board**: OPERATIONAL ✅

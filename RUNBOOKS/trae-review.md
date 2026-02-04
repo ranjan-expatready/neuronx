@@ -1,5 +1,17 @@
 # Trae Review Runbook — Invocation and Protocol
 
+> **DEPRECATED** (2026-02-04)
+> This runbook describes a tool-specific review protocol that has been superseded.
+> The reviewer function is now fulfilled by autonomous reviewers (QA/Reliability Droid).
+>
+> **Superseded By**: CLAUDE.md Section J (Reviewer & Tool Agnosticism)
+> **New Workflow**: `.github/workflows/autonomous-reviewer.yml`
+> **New Artifact Path**: `COCKPIT/artifacts/VERIFICATION/`
+>
+> This file is preserved for historical traceability only.
+
+---
+
 Machine-board sanity check marker: 2026-01-25
 
 ## Overview
@@ -182,7 +194,8 @@ Trae analyzes the PR and returns a JSON verdict:
 **Verdict Types**:
 - `APPROVE`: No issues, safe to merge
 - `REJECT`: Critical issues found, must fix before merge
-- `REQUEST_CHANGES`: Minor issues, should address but not blocking
+- `REQUEST_CHANGES`: Issues found, must fix and re-request before merge
+- `EMERGENCY_OVERRIDE`: Trae unavailable and critical fix authorized; post-merge review required
 - `ERROR`: Trae service error or issue
 - `PENDING`: Review in progress (for async Trae)
 

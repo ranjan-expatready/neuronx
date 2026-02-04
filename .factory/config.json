@@ -1,0 +1,121 @@
+{
+  "$schema": "https://factory.ai/schemas/config.json",
+  "version": "1.0",
+  "metadata": {
+    "project": "NeuronX",
+    "created": "2026-02-04",
+    "owner": "Antigravity (CTO)"
+  },
+  "execution": {
+    "default_model": "claude-opus",
+    "execution_mode": "cloud",
+    "artifact_policy": "persist_and_enhance",
+    "memory_spine": "COCKPIT/artifacts"
+  },
+  "droids": {
+    "product": {
+      "description": "Requirements, backlog, prioritization",
+      "risk_tier": "T3",
+      "allowed_paths": ["PRODUCT/", "BACKLOG/", "COCKPIT/artifacts/PLAN/"],
+      "forbidden_paths": ["APP/", "GOVERNANCE/"]
+    },
+    "architect": {
+      "description": "Design, tradeoffs, system impact",
+      "risk_tier": "T3",
+      "allowed_paths": ["ARCHITECTURE/", "PRODUCT/", "COCKPIT/artifacts/PLAN/"],
+      "forbidden_paths": ["APP/", "GOVERNANCE/"]
+    },
+    "tech_lead": {
+      "description": "File planning, sequencing, risk assessment",
+      "risk_tier": "T3",
+      "allowed_paths": ["COCKPIT/artifacts/PLAN/", "BACKLOG/"],
+      "forbidden_paths": ["GOVERNANCE/"]
+    },
+    "engineer": {
+      "description": "Implementation, code, tests",
+      "risk_tier": "T3",
+      "allowed_paths": ["APP/", "tests/", "package.json", "tsconfig.json"],
+      "forbidden_paths": ["GOVERNANCE/", "AGENTS/"]
+    },
+    "qa": {
+      "description": "Testing, validation, edge cases",
+      "risk_tier": "T3",
+      "allowed_paths": ["tests/", "COCKPIT/artifacts/VERIFICATION/"],
+      "forbidden_paths": ["APP/", "GOVERNANCE/"]
+    },
+    "release": {
+      "description": "Merge readiness, compliance, deployment",
+      "risk_tier": "T2",
+      "allowed_paths": [".github/workflows/", "RUNBOOKS/"],
+      "forbidden_paths": ["GOVERNANCE/"]
+    }
+  },
+  "sdlc": {
+    "phases": [
+      {
+        "name": "intent",
+        "trigger": "issue_opened",
+        "droid": "product",
+        "output": "COCKPIT/artifacts/PLAN/spec-*.md"
+      },
+      {
+        "name": "design",
+        "trigger": "spec_committed",
+        "droid": "architect",
+        "output": "COCKPIT/artifacts/PLAN/design-*.md"
+      },
+      {
+        "name": "plan",
+        "trigger": "design_committed",
+        "droid": "tech_lead",
+        "output": "COCKPIT/artifacts/PLAN/plan-*.md"
+      },
+      {
+        "name": "implement",
+        "trigger": "label:ready-for-implementation",
+        "droid": "engineer",
+        "output": "APP/**, tests/**"
+      },
+      {
+        "name": "validate",
+        "trigger": "pull_request_opened",
+        "droid": "qa",
+        "output": "COCKPIT/artifacts/VERIFICATION/*.md"
+      },
+      {
+        "name": "release",
+        "trigger": "ci_green",
+        "droid": "release",
+        "output": "merge_approval"
+      }
+    ]
+  },
+  "governance": {
+    "protected_paths": [
+      "GOVERNANCE/",
+      "AGENTS/",
+      "COCKPIT/",
+      ".github/workflows/",
+      "STATE/"
+    ],
+    "risk_tier_gates": {
+      "T1": ["founder_approval", "autonomous_review"],
+      "T2": ["autonomous_review"],
+      "T3": ["machine_board"],
+      "T0": []
+    },
+    "reviewer": {
+      "type": "autonomous",
+      "artifact_path": "COCKPIT/artifacts/VERIFICATION/",
+      "verdict_values": ["PASS", "FAIL", "NEEDS_WORK"]
+    }
+  },
+  "reinforcement_rules": {
+    "existence_first": true,
+    "enhance_over_replace": true,
+    "artifacts_over_chat": true,
+    "sdlc_order_enforced": true,
+    "ci_is_judge": true,
+    "self_audit_required": true
+  }
+}
