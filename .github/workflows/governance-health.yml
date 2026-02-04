@@ -1,0 +1,226 @@
+name: governance-health
+
+# Governance Health Check — Weekly System Health Monitor
+# Runs weekly and on-demand to verify governance infrastructure
+# Outputs GREEN/YELLOW/RED summary
+# Reference: GOVERNANCE/GUARDRAILS.md
+
+permissions:
+  contents: read
+  actions: read
+
+on:
+  schedule:
+    - cron: '0 10 * * 1'  # Weekly Monday 10:00 UTC
+  workflow_dispatch:
+
+jobs:
+  governance-health:
+    name: Governance Health Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check Required Files
+        id: files
+        run: |
+          # Check workflows
+          WORKFLOW_STATUS="GREEN"
+          WORKFLOW_DETAILS=""
+
+          if [ -f ".github/workflows/machine-board.yml" ]; then
+            WORKFLOW_DETAILS="machine-board.yml ✓"
+          else
+            WORKFLOW_STATUS="RED"
+            WORKFLOW_DETAILS="machine-board.yml ✗"
+          fi
+
+          if [ -f ".github/workflows/autonomous-reviewer.yml" ]; then
+            WORKFLOW_DETAILS="$WORKFLOW_DETAILS, autonomous-reviewer.yml ✓"
+          else
+            if [ "$WORKFLOW_STATUS" = "GREEN" ]; then WORKFLOW_STATUS="YELLOW"; fi
+            WORKFLOW_DETAILS="$WORKFLOW_DETAILS, autonomous-reviewer.yml ✗"
+          fi
+
+          echo "workflow_status=$WORKFLOW_STATUS" >> $GITHUB_OUTPUT
+          echo "workflow_details=$WORKFLOW_DETAILS" >> $GITHUB_OUTPUT
+
+          # Check core files
+          CORE_STATUS="GREEN"
+          CORE_DETAILS=""
+          CORE_COUNT=0
+
+          for file in "CLAUDE.md" ".factory/config.json" "STATE/STATUS_LEDGER.md"; do
+            if [ -f "$file" ]; then
+              CORE_DETAILS="$CORE_DETAILS $file ✓,"
+              CORE_COUNT=$((CORE_COUNT + 1))
+            else
+              CORE_DETAILS="$CORE_DETAILS $file ✗,"
+            fi
+          done
+
+          if [ $CORE_COUNT -eq 0 ]; then CORE_STATUS="RED"
+          elif [ $CORE_COUNT -lt 3 ]; then CORE_STATUS="YELLOW"; fi
+
+          echo "core_status=$CORE_STATUS" >> $GITHUB_OUTPUT
+          echo "core_details=${CORE_DETAILS%,}" >> $GITHUB_OUTPUT
+
+          # Check ADR system
+          ADR_STATUS="GREEN"
+          if [ -d "GOVERNANCE/DECISIONS" ]; then
+            ADR_COUNT=$(find GOVERNANCE/DECISIONS -name "*.md" | wc -l | tr -d ' ')
+            if [ "$ADR_COUNT" -eq 0 ]; then
+              ADR_STATUS="YELLOW"
+              ADR_DETAILS="GOVERNANCE/DECISIONS/ exists but empty"
+            else
+              ADR_DETAILS="GOVERNANCE/DECISIONS/ exists with $ADR_COUNT files"
+            fi
+          else
+            ADR_STATUS="RED"
+            ADR_DETAILS="GOVERNANCE/DECISIONS/ missing"
+          fi
+
+          echo "adr_status=$ADR_STATUS" >> $GITHUB_OUTPUT
+          echo "adr_details=$ADR_DETAILS" >> $GITHUB_OUTPUT
+
+      - name: Check Workflow Runs
+        id: runs
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const workflows = ['machine-board', 'autonomous-reviewer'];
+            let status = 'GREEN';
+            let details = [];
+
+            for (const name of workflows) {
+              try {
+                const runs = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: `${name}.yml`,
+                  per_page: 1
+                });
+
+                if (runs.data.workflow_runs.length > 0) {
+                  const run = runs.data.workflow_runs[0];
+                  const conclusion = run.conclusion || 'in_progress';
+                  if (conclusion === 'success') {
+                    details.push(`${name}: pass`);
+                  } else if (conclusion === 'failure') {
+                    status = status === 'GREEN' ? 'YELLOW' : status;
+                    details.push(`${name}: FAILED`);
+                  } else {
+                    details.push(`${name}: ${conclusion}`);
+                  }
+                } else {
+                  status = status === 'GREEN' ? 'YELLOW' : status;
+                  details.push(`${name}: no runs`);
+                }
+              } catch (e) {
+                details.push(`${name}: error checking`);
+              }
+            }
+
+            core.setOutput('status', status);
+            core.setOutput('details', details.join(', '));
+
+      - name: Check Branch Protection
+        id: protection
+        uses: actions/github-script@v6
+        with:
+          script: |
+            let status = 'GREEN';
+            let details = '';
+
+            try {
+              const protection = await github.rest.repos.getBranchProtection({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                branch: 'main'
+              });
+
+              const checks = protection.data.required_status_checks?.contexts || [];
+              const hasBoard = checks.some(c => c.includes('machine-board'));
+              const hasReviewer = checks.some(c => c.includes('Autonomous Review') || c.includes('autonomous-reviewer'));
+
+              if (hasBoard && hasReviewer) {
+                details = `Required checks: ${checks.join(', ')}`;
+              } else if (hasBoard || hasReviewer) {
+                status = 'YELLOW';
+                details = `Partial checks: ${checks.join(', ')}`;
+              } else {
+                status = 'RED';
+                details = 'Required checks not configured';
+              }
+            } catch (e) {
+              if (e.status === 404) {
+                status = 'RED';
+                details = 'Branch protection not configured';
+              } else {
+                status = 'YELLOW';
+                details = `Cannot verify: ${e.message}`;
+              }
+            }
+
+            core.setOutput('status', status);
+            core.setOutput('details', details);
+
+      - name: Generate Summary
+        id: summary
+        run: |
+          # Determine overall status
+          STATUSES="${{ steps.files.outputs.workflow_status }} ${{ steps.files.outputs.core_status }} ${{ steps.files.outputs.adr_status }} ${{ steps.runs.outputs.status }} ${{ steps.protection.outputs.status }}"
+
+          if echo "$STATUSES" | grep -q "RED"; then
+            OVERALL="RED"
+            EMOJI="🔴"
+          elif echo "$STATUSES" | grep -q "YELLOW"; then
+            OVERALL="YELLOW"
+            EMOJI="🟡"
+          else
+            OVERALL="GREEN"
+            EMOJI="🟢"
+          fi
+
+          echo "overall=$OVERALL" >> $GITHUB_OUTPUT
+          echo "emoji=$EMOJI" >> $GITHUB_OUTPUT
+
+      - name: Report Summary
+        run: |
+          STATUS_EMOJI() {
+            case $1 in
+              GREEN) echo "🟢" ;;
+              YELLOW) echo "🟡" ;;
+              RED) echo "🔴" ;;
+              *) echo "⚪" ;;
+            esac
+          }
+
+          cat << 'EOF' >> $GITHUB_STEP_SUMMARY
+          # Governance Health Check
+
+          **Date**: $(date -u +"%Y-%m-%d %H:%M UTC")
+          **Overall Status**: ${{ steps.summary.outputs.emoji }} ${{ steps.summary.outputs.overall }}
+
+          ## Check Results
+
+          | Check | Status | Details |
+          |-------|--------|---------|
+          | Workflows | $(STATUS_EMOJI ${{ steps.files.outputs.workflow_status }}) | ${{ steps.files.outputs.workflow_details }} |
+          | Core Files | $(STATUS_EMOJI ${{ steps.files.outputs.core_status }}) | ${{ steps.files.outputs.core_details }} |
+          | ADR System | $(STATUS_EMOJI ${{ steps.files.outputs.adr_status }}) | ${{ steps.files.outputs.adr_details }} |
+          | Workflow Runs | $(STATUS_EMOJI ${{ steps.runs.outputs.status }}) | ${{ steps.runs.outputs.details }} |
+          | Branch Protection | $(STATUS_EMOJI ${{ steps.protection.outputs.status }}) | ${{ steps.protection.outputs.details }} |
+
+          ---
+          *Governance Health Check - Autonomous Engineering OS*
+          EOF
+
+      - name: Exit with Status
+        run: |
+          if [ "${{ steps.summary.outputs.overall }}" = "RED" ]; then
+            echo "::error::Governance health check failed with RED status"
+            exit 1
+          fi
