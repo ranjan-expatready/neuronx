@@ -17,6 +17,7 @@ Where `NNNN` is a zero-padded sequence number.
 | # | Title | Status | Date |
 |---|-------|--------|------|
 | 0001 | Tool-Agnostic Autonomous Reviewer | Accepted | 2026-02-04 |
+| 0002 | Factory Execution Seal | Accepted | 2026-02-04 |
 
 ---
 

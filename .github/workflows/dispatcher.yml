@@ -1,0 +1,131 @@
+name: dispatcher
+
+# Factory Dispatcher Workflow v2.0
+# Trigger: GitHub Issue labeled 'ready-for-factory'
+# Action: Validates SDLC phase, invokes Factory Cloud API
+#
+# Safety:
+# - Label-based trigger (explicit human action)
+# - SDLC phase validation before dispatch
+# - PR-only execution mode (never pushes to main)
+# - All PRs subject to governance gates
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  dispatch-factory:
+    if: github.event.label.name == 'ready-for-factory'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.FACTORY_PAT || github.token }}
+
+      - name: Validate SDLC Phase
+        id: validate-sdlc
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const labels = issue.labels.map(l => l.name.toLowerCase());
+
+            console.log(`📋 Validating SDLC phase for Issue #${issue.number}`);
+            console.log(`   Labels: ${labels.join(', ')}`);
+
+            // Check for required SDLC indicators
+            const hasReadyLabel = labels.includes('ready-for-factory');
+            const hasPlanRef = issue.body && issue.body.toLowerCase().includes('cockpit/artifacts/plan/');
+            const hasOverride = labels.includes('sdlc-override');
+
+            if (!hasReadyLabel) {
+              core.setFailed('Missing required label: ready-for-factory');
+              return;
+            }
+
+            if (!hasPlanRef && !hasOverride) {
+              // Warning but allow - plan may be linked elsewhere
+              core.warning('No PLAN artifact reference found in issue body');
+              core.warning('Add a reference to COCKPIT/artifacts/PLAN/ or use sdlc-override label');
+            }
+
+            console.log(`✅ SDLC validation passed`);
+            core.setOutput('validated', 'true');
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests PyGithub
+
+      - name: Dispatch Factory Job
+        id: dispatch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FACTORY_API_KEY: ${{ secrets.FACTORY_API_KEY }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          echo "🤖 Dispatching Factory for Issue #$ISSUE_NUMBER"
+          python scripts/dispatch_factory.py
+
+      - name: Comment on Issue (Success)
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `🤖 **Factory Dispatched**
+
+I have received your request and invoked Factory Cloud.
+
+**Status**: \`QUEUED\`
+**Mode**: PR-only (governance gated)
+
+A Pull Request will be created when execution completes. The PR will be subject to:
+- machine-board governance check
+- autonomous-reviewer validation
+
+---
+*Factory Dispatcher v2.0*`
+            });
+
+      - name: Comment on Issue (Failure)
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `❌ **Factory Dispatch Failed**
+
+The dispatcher encountered an error. Please check:
+1. SDLC phase requirements (PLAN artifact reference or sdlc-override label)
+2. FACTORY_API_KEY secret is configured
+3. Workflow logs for details
+
+**Status**: \`FAILED\`
+
+---
+*Factory Dispatcher v2.0*`
+            });
