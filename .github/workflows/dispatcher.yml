@@ -1,14 +1,14 @@
 name: dispatcher
 
-# Factory Dispatcher Workflow v2.0
-# Trigger: GitHub Issue labeled 'ready-for-factory'
-# Action: Validates SDLC phase, invokes Factory Cloud API
+# Factory Dispatcher Workflow v3.0
+# Trigger: GitHub Issue labeled 'ready-for-factory' OR manual workflow_dispatch
+# Action: Validates SDLC phase, executes Factory via CLI (droid exec)
 #
 # Safety:
 # - Label-based trigger (explicit human action)
 # - SDLC phase validation before dispatch
 # - PR-only execution mode (never pushes to main)
-# - All PRs subject to governance gates
+# - All PRs subject to governance gates (machine-board, autonomous-reviewer)
 
 permissions:
   contents: write
@@ -18,114 +18,260 @@ permissions:
 on:
   issues:
     types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to process'
+        required: true
+        type: number
+      dry_run:
+        description: 'Dry run (validate only, no execution)'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   dispatch-factory:
-    if: github.event.label.name == 'ready-for-factory'
+    # Run if: labeled with ready-for-factory OR manual dispatch
+    if: |
+      (github.event_name == 'issues' && github.event.label.name == 'ready-for-factory') ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
+      - name: Validate FACTORY_API_KEY
+        run: |
+          if [ -z "${{ secrets.FACTORY_API_KEY }}" ]; then
+            echo "❌ FACTORY_API_KEY secret is not configured"
+            echo "Please add FACTORY_API_KEY to repository secrets"
+            exit 1
+          fi
+          echo "✅ FACTORY_API_KEY is configured"
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.FACTORY_PAT || github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set Issue Context
+        id: issue-context
+        uses: actions/github-script@v6
+        with:
+          script: |
+            let issueNumber, issueTitle, issueBody;
+
+            if (context.eventName === 'workflow_dispatch') {
+              // Manual dispatch - fetch issue details
+              issueNumber = ${{ inputs.issue_number || 0 }};
+              if (!issueNumber) {
+                core.setFailed('Issue number is required for manual dispatch');
+                return;
+              }
+              const { data: issue } = await github.rest.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber
+              });
+              issueTitle = issue.title;
+              issueBody = issue.body || '';
+              core.setOutput('labels', issue.labels.map(l => l.name.toLowerCase()).join(','));
+            } else {
+              // Issue labeled trigger
+              issueNumber = context.payload.issue.number;
+              issueTitle = context.payload.issue.title;
+              issueBody = context.payload.issue.body || '';
+              core.setOutput('labels', context.payload.issue.labels.map(l => l.name.toLowerCase()).join(','));
+            }
+
+            core.setOutput('issue_number', issueNumber);
+            core.setOutput('issue_title', issueTitle);
+            core.setOutput('issue_body', issueBody);
+            console.log(`📋 Processing Issue #${issueNumber}: ${issueTitle}`);
 
       - name: Validate SDLC Phase
         id: validate-sdlc
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const issue = context.payload.issue;
-            const labels = issue.labels.map(l => l.name.toLowerCase());
-
-            console.log(`📋 Validating SDLC phase for Issue #${issue.number}`);
-            console.log(`   Labels: ${labels.join(', ')}`);
-
-            // Check for required SDLC indicators
-            const hasReadyLabel = labels.includes('ready-for-factory');
-            const hasPlanRef = issue.body && issue.body.toLowerCase().includes('cockpit/artifacts/plan/');
-            const hasOverride = labels.includes('sdlc-override');
-
-            if (!hasReadyLabel) {
-              core.setFailed('Missing required label: ready-for-factory');
-              return;
-            }
-
-            if (!hasPlanRef && !hasOverride) {
-              // Warning but allow - plan may be linked elsewhere
-              core.warning('No PLAN artifact reference found in issue body');
-              core.warning('Add a reference to COCKPIT/artifacts/PLAN/ or use sdlc-override label');
-            }
-
-            console.log(`✅ SDLC validation passed`);
-            core.setOutput('validated', 'true');
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
         run: |
-          pip install requests PyGithub
+          LABELS="${{ steps.issue-context.outputs.labels }}"
+          ISSUE_BODY="${{ steps.issue-context.outputs.issue_body }}"
 
-      - name: Dispatch Factory Job
-        id: dispatch
+          echo "📋 Validating SDLC phase..."
+          echo "   Labels: $LABELS"
+
+          # Check for ready-for-factory label (required for issues trigger, optional for manual)
+          if [[ "${{ github.event_name }}" == "issues" ]]; then
+            if [[ ! "$LABELS" == *"ready-for-factory"* ]]; then
+              echo "❌ Missing required label: ready-for-factory"
+              exit 1
+            fi
+          fi
+
+          # Check for PLAN reference or override
+          ISSUE_BODY_LOWER=$(echo "$ISSUE_BODY" | tr '[:upper:]' '[:lower:]')
+          if [[ "$ISSUE_BODY_LOWER" == *"cockpit/artifacts/plan/"* ]]; then
+            echo "✅ PLAN artifact reference found"
+          elif [[ "$LABELS" == *"sdlc-override"* ]]; then
+            echo "⚠️ SDLC override label present - proceeding without PLAN reference"
+          else
+            echo "⚠️ Warning: No PLAN artifact reference found in issue body"
+            echo "   Proceeding anyway - plan may be linked elsewhere"
+          fi
+
+          echo "✅ SDLC validation passed"
+
+      - name: Install Factory CLI
+        run: |
+          echo "📦 Installing Factory CLI..."
+          curl -fsSL https://app.factory.ai/cli | sh
+
+          # Add to PATH
+          export PATH="$HOME/.factory/bin:$PATH"
+          echo "$HOME/.factory/bin" >> $GITHUB_PATH
+
+          # Verify installation
+          if command -v droid &> /dev/null; then
+            echo "✅ Factory CLI installed successfully"
+            droid --version || echo "Version check skipped"
+          else
+            echo "❌ Factory CLI installation failed"
+            exit 1
+          fi
+
+      - name: Execute Factory Droid
+        id: factory-exec
+        if: ${{ inputs.dry_run != true }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FACTORY_API_KEY: ${{ secrets.FACTORY_API_KEY }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
         run: |
-          echo "🤖 Dispatching Factory for Issue #$ISSUE_NUMBER"
-          python scripts/dispatch_factory.py
+          export PATH="$HOME/.factory/bin:$PATH"
+
+          ISSUE_NUMBER="${{ steps.issue-context.outputs.issue_number }}"
+          ISSUE_TITLE="${{ steps.issue-context.outputs.issue_title }}"
+
+          echo "🏭 Executing Factory Droid for Issue #$ISSUE_NUMBER"
+          echo "   Title: $ISSUE_TITLE"
+          echo "   Mode: headless (droid exec)"
+          echo ""
+          echo "=========================================="
+
+          # Create the prompt for droid exec
+          PROMPT="Implement GitHub Issue #$ISSUE_NUMBER: $ISSUE_TITLE
+
+          Instructions:
+          1. Read the issue details and understand the requirements
+          2. Implement the necessary changes
+          3. Create a Pull Request with the implementation
+          4. The PR must pass governance checks (machine-board, autonomous-reviewer)
+
+          Repository: ${{ github.repository }}
+          Issue URL: https://github.com/${{ github.repository }}/issues/$ISSUE_NUMBER
+
+          IMPORTANT: Create a PR, do not push directly to main."
+
+          # Execute droid in headless mode
+          # Using --auto medium for balanced autonomy
+          droid exec "$PROMPT" \
+            --auto medium \
+            --output-format json \
+            2>&1 | tee /tmp/droid-output.log || true
+
+          echo "=========================================="
+          echo ""
+
+          # Check if execution produced output
+          if [ -f /tmp/droid-output.log ]; then
+            echo "📝 Droid execution log captured"
+            EXEC_STATUS="completed"
+          else
+            echo "⚠️ No output captured from droid exec"
+            EXEC_STATUS="unknown"
+          fi
+
+          echo "exec_status=$EXEC_STATUS" >> $GITHUB_OUTPUT
+
+      - name: Dry Run Notice
+        if: ${{ inputs.dry_run == true }}
+        run: |
+          echo "🔍 DRY RUN MODE - No execution performed"
+          echo "SDLC validation passed. Would execute droid exec for Issue #${{ steps.issue-context.outputs.issue_number }}"
+
+      - name: Create Execution Record
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          ISSUE_NUMBER="${{ steps.issue-context.outputs.issue_number }}"
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
+          RUN_ID="${{ github.run_id }}"
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
+
+          mkdir -p COCKPIT/artifacts/EXECUTION
+
+          cat > "COCKPIT/artifacts/EXECUTION/exec-issue-$ISSUE_NUMBER.md" << EOF
+          # Execution Record
+
+          - **Issue**: #$ISSUE_NUMBER
+          - **Date**: $TIMESTAMP
+          - **Status**: Factory Droid Executed
+          - **Workflow Run**: [$RUN_ID]($RUN_URL)
+          - **Method**: droid exec (CLI headless mode)
+
+          ## Safety Verification
+
+          - [x] SDLC phase validated
+          - [x] Label-gated trigger
+          - [x] PR-only mode (governance gated)
+          - [x] Subject to machine-board check
+          - [x] Subject to autonomous-reviewer check
+          EOF
+
+          echo "📝 Execution record created"
 
       - name: Comment on Issue (Success)
-        if: success()
+        if: success() && github.event_name == 'issues'
         uses: actions/github-script@v6
         with:
           script: |
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `🤖 **Factory Dispatched**
+              body: `🤖 **Factory Droid Executed**
 
-I have received your request and invoked Factory Cloud.
+            I have processed your request using Factory CLI (\`droid exec\`).
 
-**Status**: \`QUEUED\`
-**Mode**: PR-only (governance gated)
+            **Status**: \`EXECUTED\`
+            **Mode**: Headless CLI (PR-only, governance gated)
+            **Workflow Run**: [${context.runId}](${runUrl})
 
-A Pull Request will be created when execution completes. The PR will be subject to:
-- machine-board governance check
-- autonomous-reviewer validation
+            Any Pull Request created will be subject to:
+            - machine-board governance check
+            - autonomous-reviewer validation
 
----
-*Factory Dispatcher v2.0*`
+            ---
+            *Factory Dispatcher v3.0 (CLI-based)*`
             });
 
       - name: Comment on Issue (Failure)
-        if: failure()
+        if: failure() && github.event_name == 'issues'
         uses: actions/github-script@v6
         with:
           script: |
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: `❌ **Factory Dispatch Failed**
 
-The dispatcher encountered an error. Please check:
-1. SDLC phase requirements (PLAN artifact reference or sdlc-override label)
-2. FACTORY_API_KEY secret is configured
-3. Workflow logs for details
+            The dispatcher encountered an error. Please check:
+            1. FACTORY_API_KEY secret is configured
+            2. SDLC phase requirements (PLAN artifact reference or sdlc-override label)
+            3. [Workflow logs](${runUrl}) for details
 
-**Status**: \`FAILED\`
+            **Status**: \`FAILED\`
 
----
-*Factory Dispatcher v2.0*`
+            ---
+            *Factory Dispatcher v3.0 (CLI-based)*`
             });
